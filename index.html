@@ -97,7 +97,7 @@
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 0.4rem;
+            gap: 0.3rem;
             background: var(--surface);
             padding: 5px;
             border-radius: 40px;
@@ -108,9 +108,9 @@
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -200,7 +200,7 @@
             gap: 2rem;
         }
 
-        @media(max-width: 900px) {
+        @media(max-width: 950px) {
             .grid-2 { grid-template-columns: 1fr; }
             nav { flex-direction: column; align-items: stretch; }
             .nav-right { justify-content: space-between; }
@@ -438,7 +438,8 @@
                     <li><button class="nav-btn active" id="btn-home" onclick="showPage('home')" data-i18n="navHome">หน้าหลัก</button></li>
                     <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')" data-i18n="navRobots">เว็บหุ่นยนต์</button></li>
                     <li><button class="nav-btn" id="btn-others" onclick="showPage('others')" data-i18n="navOthers">เว็บอื่นๆ</button></li>
-                    <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อ / แบบประเมิน</button></li>
+                    <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
+                    <li><button class="nav-btn" id="btn-evaluation" onclick="showPage('evaluation')" data-i18n="navEvaluation">แบบประเมิน</button></li>
                 </ul>
                 
                 <!-- ตัวเลือกเปลี่ยนภาษา (3 ภาษา) -->
@@ -546,65 +547,64 @@
             </div>
         </div>
 
-        <!-- ================= PAGE 4: CONTACT & EVALUATION ================= -->
+        <!-- ================= PAGE 4: CONTACT DEVELOPER (หน้าติดต่อผู้พัฒนา แยกเดี่ยว) ================= -->
         <div id="page-contact" class="page-view">
-            <div class="grid-2">
-                <!-- ข้อมูลติดต่อผู้พัฒนา -->
-                <div class="card" style="margin-bottom: 0;">
-                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="contactHeader">📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์</h2>
-                    <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="contactSub">หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้</p>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 15px;">
-                        <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 15px; border-radius: 10px;">
-                            <strong style="color: var(--accent-gold);" data-i18n="devNameTitle">👤 ผู้พัฒนาหลัก:</strong>
-                            <p style="color: #fff; font-size: 0.95rem; margin-top: 4px;">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</p>
-                        </div>
-                        <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 15px; border-radius: 10px;">
-                            <strong style="color: var(--accent-gold);" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
-                            <p style="color: #fff; font-size: 0.95rem; margin-top: 4px;">bb36177-rgb/srver</p>
-                        </div>
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="contactHeader">📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="contactSub">หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
+                        <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="devNameTitle">👤 ผู้พัฒนาหลัก:</strong>
+                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</p>
+                    </div>
+                    <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
+                        <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
+                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;">bb36177-rgb/srver</p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- แบบประเมินและแจ้งปัญหา (สร้างขึ้นเอง ไม่ใช้ Google Forms) -->
-                <div class="card" style="margin-bottom: 0;">
-                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมินความพึงพอใจและแจ้งปัญหา</h2>
-                    <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="formSub">ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป</p>
-                    
-                    <form onsubmit="submitFeedback(event)">
-                        <div class="form-group">
-                            <label data-i18n="lblName">ชื่อผู้ใช้งาน / ผู้ติดต่อ:</label>
-                            <input type="text" id="fb-name" required placeholder="กรอกชื่อของคุณ...">
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="lblType">ประเภทการส่งข้อมูล:</label>
-                            <select id="fb-type">
-                                <option value="evaluation" data-i18n="optEval">⭐ แบบประเมินความพึงพอใจเว็บไซต์</option>
-                                <option value="issue" data-i18n="optIssue">🛠️ แจ้งปัญหา / บั๊กในระบบ</option>
-                                <option value="suggestion" data-i18n="optSugg">💡 เสนอแนะฟีเจอร์ใหม่</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="lblScore">ระดับความพึงพอใจ:</label>
-                            <select id="fb-score">
-                                <option value="5" data-i18n="score5">⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)</option>
-                                <option value="4" data-i18n="score4">⭐⭐⭐⭐ ดีมาก (4 ดาว)</option>
-                                <option value="3" data-i18n="score3">⭐⭐ปานกลาง (3 ดาว)</option>
-                                <option value="2" data-i18n="score2">⭐ ควรปรับปรุง (2 ดาว)</option>
-                                <option value="1" data-i18n="score1">❌ แย่มาก (1 ดาว)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="lblDetails">รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:</label>
-                            <textarea id="fb-details" rows="3" required placeholder="พิมพ์รายละเอียดของคุณที่นี่..."></textarea>
-                        </div>
-                        <button type="submit" class="gold-btn" style="width: 100%;" data-i18n="submitBtn">📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา</button>
-                    </form>
-                </div>
+        <!-- ================= PAGE 5: EVALUATION & ISSUES (หน้าแบบประเมินและแจ้งปัญหา แยกเดี่ยว) ================= -->
+        <div id="page-evaluation" class="page-view">
+            <div class="card" style="max-width: 800px; margin: 0 auto 2rem auto;">
+                <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมินความพึงพอใจและแจ้งปัญหา</h2>
+                <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="formSub">ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป</p>
+                
+                <form onsubmit="submitFeedback(event)">
+                    <div class="form-group">
+                        <label data-i18n="lblName">ชื่อผู้ใช้งาน / ผู้ติดต่อ:</label>
+                        <input type="text" id="fb-name" required placeholder="กรอกชื่อของคุณ...">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lblType">ประเภทการส่งข้อมูล:</label>
+                        <select id="fb-type">
+                            <option value="evaluation" data-i18n="optEval">⭐ แบบประเมินความพึงพอใจเว็บไซต์</option>
+                            <option value="issue" data-i18n="optIssue">🛠️ แจ้งปัญหา / บั๊กในระบบ</option>
+                            <option value="suggestion" data-i18n="optSugg">💡 เสนอแนะฟีเจอร์ใหม่</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lblScore">ระดับความพึงพอใจ:</label>
+                        <select id="fb-score">
+                            <option value="5" data-i18n="score5">⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)</option>
+                            <option value="4" data-i18n="score4">⭐⭐⭐⭐ ดีมาก (4 ดาว)</option>
+                            <option value="3" data-i18n="score3">⭐⭐ปานกลาง (3 ดาว)</option>
+                            <option value="2" data-i18n="score2">⭐ ควรปรับปรุง (2 ดาว)</option>
+                            <option value="1" data-i18n="score1">❌ แย่มาก (1 ดาว)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lblDetails">รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:</label>
+                        <textarea id="fb-details" rows="3" required placeholder="พิมพ์รายละเอียดของคุณที่นี่..."></textarea>
+                    </div>
+                    <button type="submit" class="gold-btn" style="width: 100%;" data-i18n="submitBtn">📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา</button>
+                </form>
             </div>
 
             <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
-            <div class="card" style="margin-top: 2rem;">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
                 <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;">
                     <!-- รายการจะถูกแสดงผลที่นี่ผ่าน JavaScript -->
@@ -628,7 +628,8 @@
                 navHome: "หน้าหลัก",
                 navRobots: "เว็บหุ่นยนต์",
                 navOthers: "เว็บอื่นๆ",
-                navContact: "ติดต่อ / แบบประเมิน",
+                navContact: "ติดต่อผู้พัฒนา",
+                navEvaluation: "แบบประเมิน",
                 heroTitle: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
                 heroSubtitle: "ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ",
                 welcomeTitle: "ยินดีต้อนรับสู่ชิงหลงเซิฟ",
@@ -680,7 +681,8 @@
                 navHome: "Home",
                 navRobots: "Robot Web",
                 navOthers: "Other Webs",
-                navContact: "Contact / Evaluation",
+                navContact: "Contact",
+                navEvaluation: "Evaluation",
                 heroTitle: "Ching Long Server - Archive Hub & Personal System",
                 heroSubtitle: "A centralized hub for project links, codes, and smart schedule calendar.",
                 welcomeTitle: "Welcome to Ching Long Server",
@@ -732,7 +734,8 @@
                 navHome: "首页",
                 navRobots: "机器人网站",
                 navOthers: "其他网站",
-                navContact: "联系 / 评估表",
+                navContact: "联系开发者",
+                navEvaluation: "评估表",
                 heroTitle: "青龙服务器 - 档案中心与个人系统",
                 heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
                 welcomeTitle: "欢迎来到青龙服务器",
@@ -781,7 +784,7 @@
             }
         };
 
-        // ตัวแปรเก็บเวลาอัปเดต GitHub ที่ดึงมาได้
+        // ตัวแปรเก็บเวลาอัปเดต GitHub ที่ดึงมาได้จาก Repository 'srver'
         let cachedCommitDate = null;
 
         async function updateFooterTime() {
@@ -853,6 +856,7 @@
             if(pageId === 'robots') document.getElementById('btn-robots').classList.add('active');
             if(pageId === 'others') document.getElementById('btn-others').classList.add('active');
             if(pageId === 'contact') document.getElementById('btn-contact').classList.add('active');
+            if(pageId === 'evaluation') document.getElementById('btn-evaluation').classList.add('active');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
