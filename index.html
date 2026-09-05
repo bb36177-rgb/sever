@@ -242,7 +242,7 @@
         }
 
         .cal-cell {
-            aspect-ratio: 1;
+            min-height: 85px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(212, 175, 55, 0.1);
             border-radius: 8px;
@@ -250,10 +250,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px;
+            padding: 6px 4px;
             cursor: pointer;
             transition: 0.2s;
             position: relative;
+            overflow: hidden;
         }
 
         .cal-cell:hover {
@@ -261,13 +262,27 @@
             background: rgba(212, 175, 55, 0.08);
         }
 
-        .cal-cell.has-event::after {
-            content: '';
-            width: 6px; height: 6px;
-            background: #ff4d4d;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 6px;
+        .cal-cell .day-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 3px;
+        }
+
+        .cal-cell .event-preview {
+            font-size: 0.65rem;
+            color: #ffcc00;
+            background: rgba(212, 175, 55, 0.15);
+            padding: 2px 4px;
+            border-radius: 4px;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.1;
+            text-align: center;
         }
 
         .admin-panel {
@@ -439,7 +454,6 @@
                     <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')" data-i18n="navRobots">เว็บหุ่นยนต์</button></li>
                     <li><button class="nav-btn" id="btn-others" onclick="showPage('others')" data-i18n="navOthers">เว็บอื่นๆ</button></li>
                     <li><button class="nav-btn" id="btn-evaluation" onclick="showPage('evaluation')" data-i18n="navEvaluation">แบบประเมิน</button></li>
-                    <!-- ย้ายเมนูติดต่อผู้พัฒนามาไว้ท้ายสุดตามคำสั่ง -->
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
@@ -588,9 +602,7 @@
             <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
-                <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;">
-                    <!-- รายการจะถูกแสดงผลที่นี่ผ่าน JavaScript -->
-                </div>
+                <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
         </div>
 
@@ -603,7 +615,10 @@
                 <div style="display: flex; flex-direction: column; gap: 20px;">
                     <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
                         <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="devNameTitle">👤 ผู้พัฒนาหลัก:</strong>
-                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;" data-i18n="devNameVal">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</p>
+                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;">
+                            <span data-i18n="devNameVal">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</span><br>
+                            Gmail: <a href="mailto:bb36177@banbung.ac.th" style="color: var(--accent-gold); text-decoration: none;">bb36177@banbung.ac.th</a>
+                        </p>
                     </div>
                     <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
                         <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
@@ -857,7 +872,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ระบบปฏิทินส่วนตัว (เก็บข้อมูลใน LocalStorage)
+        // ระบบปฏิทินส่วนตัว (เก็บข้อมูลใน LocalStorage พร้อมแสดงข้อความตัวอย่างบนช่องปฏิทิน)
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": "ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย",
             "2026-09-15": "ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."
@@ -888,11 +903,13 @@
                 const formattedDay = String(day).padStart(2, '0');
                 const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
 
-                cell.innerHTML = `<span style="font-size: 0.85rem; font-weight: 600;">${day}</span>`;
+                let cellHTML = `<span class="day-number">${day}</span>`;
 
                 if (eventsData[dateKey]) {
-                    cell.classList.add('has-event');
+                    cellHTML += `<div class="event-preview">${eventsData[dateKey]}</div>`;
                 }
+
+                cell.innerHTML = cellHTML;
 
                 cell.onclick = () => {
                     selectDate(year, month, day, dateKey);
