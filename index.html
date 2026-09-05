@@ -228,8 +228,9 @@
 
         .grid-2 {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.1fr 0.9fr;
             gap: 2rem;
+            align-items: start;
         }
 
         @media(max-width: 950px) {
@@ -238,44 +239,45 @@
             .nav-right { justify-content: space-between; }
         }
 
-        /* ================= 🌟 ปฏิทินและแผงควบคุม ================= */
+        /* ================= 🌟 ปฏิทินและแผงควบคุม (แก้ปัญหาล้นจอ/ซ้อนทับ) ================= */
         .calendar-wrapper {
             background: linear-gradient(145deg, #1f0b0e, #2b0c11);
             border: 2px solid var(--accent-gold);
             border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3), inset 0 0 15px rgba(212, 175, 55, 0.1);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: auto;
+            padding: 1.2rem;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            width: 100%;
         }
 
         .cal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            gap: 10px;
         }
 
         .cal-header h3 {
             color: var(--accent-gold);
-            font-size: 1.25rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            white-space: nowrap;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
         .cal-nav-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .cal-nav-btn {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(170, 119, 28, 0.3));
             border: 2px solid var(--accent-gold);
             color: var(--accent-gold);
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
             font-weight: bold;
@@ -294,30 +296,29 @@
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
+            gap: 4px;
             text-align: center;
         }
 
         .cal-day-name {
             font-weight: 700;
             color: var(--accent-gold);
-            font-size: 0.9rem;
-            padding-bottom: 8px;
+            font-size: 0.8rem;
+            padding-bottom: 4px;
         }
 
         .cal-cell {
-            min-height: 52px;
-            background: rgba(20, 7, 9, 0.85);
+            min-height: 46px;
+            background: rgba(20, 7, 9, 0.9);
             border: 1px solid var(--border-gold);
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px 2px;
+            padding: 3px 1px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: all 0.2s ease;
             overflow: hidden;
         }
 
@@ -330,15 +331,14 @@
         .cal-cell.today {
             border: 2px solid #ffea79;
             background: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
         .cal-cell .day-number {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 2px;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            margin-bottom: 1px;
         }
 
         .cal-cell.today .day-number {
@@ -346,26 +346,25 @@
         }
 
         .cal-cell .event-preview {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #ffea79;
             background: rgba(212, 175, 55, 0.25);
-            padding: 1px 3px;
-            border-radius: 3px;
+            padding: 1px 2px;
+            border-radius: 2px;
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            margin-bottom: 2px;
             text-align: center;
         }
 
         .admin-panel {
             background: linear-gradient(135deg, rgba(139, 0, 0, 0.25), rgba(31, 11, 14, 0.9));
             border: 2px dashed var(--accent-gold);
-            padding: 18px;
-            border-radius: 14px;
-            margin-top: 1.8rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 1.2rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
         .admin-panel input, .admin-panel textarea {
@@ -373,36 +372,38 @@
             background: #000;
             border: 1px solid var(--border-gold);
             color: #fff;
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-top: 6px;
-            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 5px;
+            margin-bottom: 10px;
             outline: none;
+            font-size: 0.9rem;
             transition: 0.3s;
         }
 
         .admin-panel input:focus, .admin-panel textarea:focus {
             border-color: #ffea79;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
         .gold-btn {
             background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
             color: #000;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 16px;
             font-weight: 800;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
             text-transform: uppercase;
+            font-size: 0.85rem;
             letter-spacing: 0.5px;
         }
 
         .gold-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 25px var(--accent-gold);
+            box-shadow: 0 0 20px var(--accent-gold);
             filter: brightness(1.1);
         }
 
@@ -621,11 +622,11 @@
                         <div class="cal-day-name" data-i18n="dayFri">ศ</div>
                         <div class="cal-day-name" data-i18n="daySat">ส</div>
                     </div>
-                    <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
+                    <div class="cal-grid" id="cal-cells" style="margin-top: 6px;"></div>
 
                     <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
-                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
+                        <strong style="font-size: 0.85rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
