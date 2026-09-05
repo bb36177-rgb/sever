@@ -238,46 +238,15 @@
             .nav-right { justify-content: space-between; }
         }
 
-        /* ================= 🌟 ปฏิทินและแผงควบคุม (อนิเมชั่นสุดเวอร์) ================= */
+        /* ================= 🌟 ปฏิทินและแผงควบคุม ================= */
         .calendar-wrapper {
             background: linear-gradient(145deg, #1f0b0e, #2b0c11);
             border: 2px solid var(--accent-gold);
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 0 30px rgba(212, 175, 55, 0.3), inset 0 0 15px rgba(212, 175, 55, 0.1);
-            animation: superGlowPulse 3s infinite alternate ease-in-out;
             position: relative;
             overflow: hidden;
-        }
-
-        .calendar-wrapper::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(0deg, transparent, rgba(255, 215, 0, 0.05), transparent);
-            transform: rotate(45deg);
-            animation: lightBeam 6s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes superGlowPulse {
-            0% {
-                box-shadow: 0 0 15px rgba(212, 175, 55, 0.2), inset 0 0 10px rgba(212, 175, 55, 0.1);
-                border-color: rgba(212, 175, 55, 0.4);
-            }
-            100% {
-                box-shadow: 0 0 40px rgba(212, 175, 55, 0.7), inset 0 0 25px rgba(212, 175, 55, 0.3);
-                border-color: #ffea79;
-                transform: scale(1.005);
-            }
-        }
-
-        @keyframes lightBeam {
-            0% { transform: translateY(-100%) rotate(45deg); }
-            100% { transform: translateY(100%) rotate(45deg); }
         }
 
         .cal-header {
@@ -291,12 +260,6 @@
             color: var(--accent-gold);
             font-size: 1.25rem;
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-            animation: titleShine 2s infinite alternate;
-        }
-
-        @keyframes titleShine {
-            0% { opacity: 0.85; text-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
-            100% { opacity: 1; text-shadow: 0 0 15px rgba(255, 234, 121, 0.8); }
         }
 
         .cal-nav-controls {
@@ -317,15 +280,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+            transition: all 0.3s ease;
         }
 
         .cal-nav-btn:hover {
             background: var(--accent-gold);
             color: #000;
-            transform: scale(1.25) rotate(360deg);
-            box-shadow: 0 0 25px var(--accent-gold), 0 0 50px rgba(255, 215, 0, 0.5);
+            transform: scale(1.1);
         }
 
         .cal-grid {
@@ -340,7 +301,6 @@
             color: var(--accent-gold);
             font-size: 0.85rem;
             padding-bottom: 8px;
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
         }
 
         .cal-cell {
@@ -354,7 +314,7 @@
             justify-content: flex-start;
             padding: 6px 4px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
@@ -362,21 +322,12 @@
         .cal-cell:hover {
             border-color: #ffea79;
             background: rgba(212, 175, 55, 0.2);
-            transform: translateY(-6px) scale(1.08);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-            z-index: 10;
+            transform: translateY(-4px);
         }
 
         .cal-cell.today {
             border: 2px solid #ffea79;
             background: rgba(212, 175, 55, 0.12);
-            box-shadow: 0 0 15px rgba(255, 234, 121, 0.5);
-            animation: todayBlink 1.5s infinite alternate;
-        }
-
-        @keyframes todayBlink {
-            0% { box-shadow: 0 0 10px rgba(255, 234, 121, 0.3); }
-            100% { box-shadow: 0 0 25px rgba(255, 234, 121, 0.8); }
         }
 
         .cal-cell .day-number {
@@ -395,12 +346,9 @@
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            line-height: 1.1;
+            white-space: nowrap;
+            margin-bottom: 2px;
             text-align: center;
-            box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
         }
 
         .admin-panel {
@@ -409,15 +357,7 @@
             padding: 18px;
             border-radius: 14px;
             margin-top: 1.8rem;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 0 15px rgba(212, 175, 55, 0.1);
-            animation: borderDashMove 15s linear infinite;
-        }
-
-        @keyframes borderDashMove {
-            0% { border-color: var(--accent-gold); }
-            50% { border-color: #ffea79; box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4), inset 0 0 25px rgba(212, 175, 55, 0.2); }
-            100% { border-color: var(--accent-gold); }
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
         .admin-panel input, .admin-panel textarea {
@@ -430,47 +370,32 @@
             margin-top: 6px;
             margin-bottom: 12px;
             outline: none;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+            transition: 0.3s;
         }
 
         .admin-panel input:focus, .admin-panel textarea:focus {
             border-color: #ffea79;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6), inset 0 2px 5px rgba(0,0,0,0.9);
-            transform: scale(1.01);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
         .gold-btn {
             background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
-            background-size: 200% 200%;
             color: #000;
             border: none;
             padding: 12px 20px;
             font-weight: 800;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            animation: buttonGradientShift 4s ease infinite;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        @keyframes buttonGradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .gold-btn:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 0 35px var(--accent-gold), 0 0 70px rgba(255, 234, 121, 0.8);
-            filter: brightness(1.15);
-        }
-
-        .gold-btn:active {
-            transform: translateY(2px) scale(0.97);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--accent-gold);
+            filter: brightness(1.1);
         }
 
         /* Form Controls */
@@ -514,14 +439,14 @@
             border: 1px solid var(--border-gold);
             border-radius: 12px;
             padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
         .project-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-5px);
             box-shadow: var(--shadow-gold);
             border-color: #fff;
         }
@@ -566,7 +491,6 @@
         .link-btn:hover {
             background: var(--accent-gold);
             color: #000;
-            transform: scale(1.02);
         }
 
         .contact-action-btns {
@@ -595,7 +519,6 @@
         .action-chip:hover {
             background: var(--accent-gold);
             color: #000;
-            transform: translateY(-2px);
         }
 
         /* Footer */
@@ -672,7 +595,7 @@
                     </div>
                 </div>
 
-                <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ (อนิเมชั่นอลังการเวอร์) -->
+                <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ -->
                 <div class="calendar-wrapper">
                     <div class="cal-header">
                         <h3 id="cal-month-year">October 2026</h3>
@@ -692,23 +615,22 @@
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
-                    <!-- แผงควบคุมเพิ่ม/แก้ไขงาน -->
+                    <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
-                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ 日程管理模式 (添加/编辑/删除)</strong>
-                        <div style="position: relative; margin-top: 6px; margin-bottom: 12px;">
-                            <input type="date" id="event-date" onchange="onDateInputChange()" style="margin: 0;">
-                            <div id="date-placeholder-overlay" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #777; font-size: 0.9rem; pointer-events: none; display: none;">วว/ดด/ปปปป</div>
-                        </div>
-                        <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="点击日历日期进行编辑，或在此输入..."></textarea>
-                        <button class="gold-btn" onclick="saveEvent()" style="width: 100%;" data-i18n="saveBtn">保存 / 更新日程</button>
+                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ 日程管理模式 (添加多个任务)</strong>
+                        <input type="date" id="event-date" onchange="onDateInputChange()">
+                        <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่..."></textarea>
+                        <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
                     </div>
                 </div>
             </div>
 
-            <!-- แสดงรายละเอียดงานที่ถูกเลือกจากปฏิทิน -->
+            <!-- แสดงรายการงานที่ถูกเลือกจากปฏิทิน (พร้อมปุ่มลบแต่ละงาน) -->
             <div class="card" style="margin-top: 2rem;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 预约详情 / 待办事项</h3>
-                <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">点击上方日历中的日期以查看或编辑当天的备忘录。</p>
+                <div id="selected-date-tasks" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                    <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">点击上方日历中的日期以查看或编辑当天的备忘录。</p>
+                </div>
             </div>
         </div>
 
@@ -845,12 +767,11 @@
                 objTitle: "วัตถุประสงค์ระบบ:",
                 objDesc: "จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น",
                 daySun: "อา", dayMon: "จ", dayTue: "อ", dayWed: "พ", dayThu: "พฤ", dayFri: "ศ", daySat: "ส",
-                adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่ม/แก้ไข/ลบ)",
-                eventPlaceholder: "คลิกวันที่ในปฏิทินเพื่อแก้ไข หรือพิมพ์เพิ่มที่นี่...",
-                datePlaceholderText: "วว/ดด/ปปปป",
-                saveBtn: "บันทึก/อัปเดตตารางงาน",
+                adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)",
+                eventPlaceholder: "คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่...",
+                saveBtn: "➕ เพิ่มงานใหม่ในวันนี้",
                 selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
-                selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือแก้ไขบันทึกงานของวันนั้นๆ",
+                selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ",
                 robotHeader: "🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ",
                 robotSub: "รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น",
                 proj1Tag: "หุ่นยนต์ สพฐ. / อัตโนมัติ",
@@ -911,12 +832,11 @@
                 objTitle: "System Objectives:",
                 objDesc: "Organize and preserve source codes and project links, featuring a modern-ancient Chinese themed personal scheduling calendar.",
                 daySun: "Su", dayMon: "Mo", dayTue: "Tu", dayWed: "We", dayThu: "Th", dayFri: "Fr", daySat: "Sa",
-                adminTitle: "⚙️ Schedule Management (Add/Edit/Delete)",
-                eventPlaceholder: "Click a date on calendar to edit, or type here...",
-                datePlaceholderText: "DD/MM/YYYY",
-                saveBtn: "Save / Update Schedule",
+                adminTitle: "⚙️ Schedule Management (Add Multiple Tasks)",
+                eventPlaceholder: "Click calendar date or type new task here...",
+                saveBtn: "➕ Add New Task",
                 selTitle: "📌 Appointment Details / Tasks",
-                selDesc: "Click a date on the calendar above to view or edit notes for that day.",
+                selDesc: "Click a date on the calendar above to view or add tasks for that day.",
                 robotHeader: "🤖 Category: Robotics & Automation",
                 robotSub: "Collection of website links, codes, and rule documents for various robotics competitions.",
                 proj1Tag: "OBEC Robot / Automation",
@@ -977,12 +897,11 @@
                 objTitle: "系统目标：",
                 objDesc: "整理并保存源代码及项目链接，配备融合中国古风与现代风格的个人日程管理日历。",
                 daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
-                adminTitle: "⚙️ 日程管理模式（添加/编辑/删除）",
-                eventPlaceholder: "点击日历日期进行编辑，或在此输入...",
-                datePlaceholderText: "YYYY/MM/DD",
-                saveBtn: "保存 / 更新日程",
+                adminTitle: "⚙️ 日程管理模式（每日添加多个任务）",
+                eventPlaceholder: "点击日历日期或在此输入新任务...",
+                saveBtn: "➕ 添加今日新任务",
                 selTitle: "📌 预约详情 / 待办事项",
-                selDesc: "点击上方日历中的日期以查看或编辑当天的备忘录。",
+                selDesc: "点击上方日历中的日期以查看或添加当天的任务。",
                 robotHeader: "🤖 分类：机器人与自动化",
                 robotSub: "收集各类机器人竞赛的网站链接、代码及规则文件。",
                 proj1Tag: "基础教育委员会 机器人 / 自动化",
@@ -1046,12 +965,6 @@
                 if(t[key]) el.setAttribute('placeholder', t[key]);
             });
 
-            // อัปเดตข้อความจำลอง Placeholder ของช่องวันที่ตามภาษา
-            const dateInput = document.getElementById('event-date');
-            const overlay = document.getElementById('date-placeholder-overlay');
-            overlay.innerText = t.datePlaceholderText;
-            overlay.style.display = !dateInput.value ? 'block' : 'none';
-
             renderCalendar();
             renderFeedbacks();
             if(lastCommitDateString) {
@@ -1092,9 +1005,10 @@
         }
 
         let currentCalendarDate = new Date(2026, 8, 1);
+        // เปลี่ยนโครงสร้างเก็บข้อมูลเป็น Array เพื่อรองรับหลายงานต่อวัน
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
-            "2026-09-10": "ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย",
-            "2026-09-15": "ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."
+            "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
+            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
         };
 
         function changeMonth(direction) {
@@ -1146,8 +1060,10 @@
                 const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
 
                 let cellHTML = `<span class="day-number">${day}</span>`;
-                if (eventsData[dateKey]) {
-                    cellHTML += `<div class="event-preview">${eventsData[dateKey]}</div>`;
+                if (eventsData[dateKey] && eventsData[dateKey].length > 0) {
+                    eventsData[dateKey].forEach(task => {
+                        cellHTML += `<div class="event-preview">• ${task}</div>`;
+                    });
                 }
 
                 cell.innerHTML = cellHTML;
@@ -1170,62 +1086,59 @@
                 en: `📌 Notes for ${monthNames['en'][month]} ${day}, ${yDisplay}`, 
                 zh: `📌 ${yDisplay}年${monthNames['zh'][month]}${day}日备忘录` 
             };
-            let noDataText = { 
-                th: "ไม่มีบันทึกงานหรือนัดหมายในวันนี้", 
-                en: "No notes for today.", 
-                zh: "今天没有备忘录。" 
-            };
 
             document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
-            const desc = eventsData[dateKey] || "";
-            document.getElementById('selected-date-desc').innerText = desc || noDataText[currentLang];
             document.getElementById('event-date').value = dateKey;
-            document.getElementById('date-placeholder-overlay').style.display = 'none';
-            document.getElementById('event-desc').value = desc;
+            document.getElementById('event-desc').value = "";
+            renderTasksList(dateKey);
         }
 
         function onDateInputChange() {
             const dateVal = document.getElementById('event-date').value;
-            const overlay = document.getElementById('date-placeholder-overlay');
-            const currentLang = document.getElementById('langSwitch').value;
-            let noDataText = { th: "ไม่มีบันทึกงานหรือนัดหมายในวันนี้", en: "No notes for today.", zh: "今天没有备忘录。" };
-
             if(dateVal) {
-                overlay.style.display = 'none';
                 const parts = dateVal.split('-');
                 if(parts.length === 3) {
-                    const y = parseInt(parts[0]);
-                    const m = parseInt(parts[1]) - 1;
-                    const d = parseInt(parts[2]);
-                    const monthNames = {
-                        th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
-                        en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                        zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-                    };
-                    let yDisplay = (currentLang === 'th') ? (y + 543) : y;
-                    let dateTitlePrefix = { 
-                        th: `📌 บันทึกประจำวันที่ ${d} ${monthNames['th'][m]} ${yDisplay}`, 
-                        en: `📌 Notes for ${monthNames['en'][m]} ${d}, ${yDisplay}`, 
-                        zh: `📌 ${yDisplay}年${monthNames['zh'][m]}${d}日备忘录` 
-                    };
-                    document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
+                    selectDate(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), dateVal);
                 }
-                document.getElementById('event-desc').value = eventsData[dateVal] || "";
-                document.getElementById('selected-date-desc').innerText = eventsData[dateVal] || noDataText[currentLang];
-            } else {
-                overlay.style.display = 'block';
             }
         }
 
-        function saveEvent() {
+        function renderTasksList(dateKey) {
+            const container = document.getElementById('selected-date-tasks');
+            container.innerHTML = '';
+            const currentLang = document.getElementById('langSwitch').value;
+            let noDataText = { 
+                th: "ยังไม่มีรายการงานในวันนี้ สามารถพิมพ์เพิ่มด้านบนได้เลยครับ", 
+                en: "No tasks for today. You can add one above.", 
+                zh: "今天没有任务，可以在上方添加。" 
+            };
+
+            const tasks = eventsData[dateKey];
+            if(!tasks || tasks.length === 0) {
+                container.innerHTML = `<p style="color: #b0a89c; font-size: 0.9rem;">${noDataText[currentLang]}</p>`;
+                return;
+            }
+
+            tasks.forEach((task, index) => {
+                const taskRow = document.createElement('div');
+                taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
+                taskRow.innerHTML = `
+                    <span style="color: #fff; font-size: 0.9rem;">• ${task}</span>
+                    <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>
+                `;
+                container.appendChild(taskRow);
+            });
+        }
+
+        function addEvent() {
             const dateVal = document.getElementById('event-date').value;
             const descVal = document.getElementById('event-desc').value;
             const currentLang = document.getElementById('langSwitch').value;
 
             let alertMsgs = {
-                th: { selectFirst: "กรุณาเลือกวันที่ก่อนทำการบันทึก!", deleted: "ลบข้อมูลบันทึกของวันที่เลือกเรียบร้อยแล้ว!", saved: "บันทึกและอัปเดตตารางงานเรียบร้อยแล้ว!" },
-                en: { selectFirst: "Please select a date first!", deleted: "Deleted notes for the selected date!", saved: "Schedule saved/updated successfully!" },
-                zh: { selectFirst: "请先选择日期！", deleted: "已删除所选日期的备忘录！", saved: "日程保存/更新成功！" }
+                th: { selectFirst: "กรุณาเลือกวันที่ก่อนเพิ่มงาน!", enterText: "กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!" },
+                en: { selectFirst: "Please select a date first!", enterText: "Please enter task details!" },
+                zh: { selectFirst: "请先选择日期！", enterText: "请输入任务详情！" }
             };
 
             if(!dateVal) {
@@ -1234,16 +1147,31 @@
             }
 
             if(descVal.trim() === "") {
-                delete eventsData[dateVal];
-                alert(alertMsgs[currentLang].deleted);
-            } else {
-                eventsData[dateVal] = descVal;
-                alert(alertMsgs[currentLang].saved);
+                alert(alertMsgs[currentLang].enterText);
+                return;
             }
 
+            if(!eventsData[dateVal]) {
+                eventsData[dateVal] = [];
+            }
+            eventsData[dateVal].push(descVal.trim());
+
             localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
+            document.getElementById('event-desc').value = "";
             renderCalendar();
-            onDateInputChange();
+            renderTasksList(dateVal);
+        }
+
+        function deleteTask(dateKey, index) {
+            if(eventsData[dateKey]) {
+                eventsData[dateKey].splice(index, 1);
+                if(eventsData[dateKey].length === 0) {
+                    delete eventsData[dateKey];
+                }
+                localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
+                renderCalendar();
+                renderTasksList(dateKey);
+            }
         }
 
         const feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks')) || [
@@ -1353,10 +1281,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             fetchGitHubLastUpdate();
-            // ตรวจสอบสถานะการแสดง Placeholder ตอนเริ่มต้น
-            if(!document.getElementById('event-date').value) {
-                document.getElementById('date-placeholder-overlay').style.display = 'block';
-            }
         });
     </script>
 </body>
