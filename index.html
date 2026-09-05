@@ -683,7 +683,7 @@
         <!-- ================= PAGE 4: EVALUATION & ISSUES ================= -->
         <div id="page-evaluation" class="page-view">
             <div class="card" style="max-width: 800px; margin: 0 auto 2rem auto;">
-                <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมินความพึงพอใจและแจ้งปัญหา</h2>
+                <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมิน/แจ้งปัญหา</h2>
                 <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="formSub">ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป</p>
                 
                 <form onsubmit="submitFeedback(event)">
@@ -717,7 +717,7 @@
                 </form>
             </div>
 
-            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
+            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา (แสดงทันทีแบบไม่ง้อปุ่มค้นหา) -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
                 <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
@@ -801,7 +801,7 @@
                 sendEmailBtn: "✉️ ส่งอีเมล (Send Email)",
                 copyEmailBtn: "📋 คัดลอก Gmail",
                 emailCopiedAlert: "คัดลอกอีเมล bb36177@banbung.ac.th ไปยังคลิปบอร์ดแล้ว!",
-                formHeader: "📝 แบบประเมินความพึงพอใจและแจ้งปัญหา",
+                formHeader: "📝 แบบประเมิน/แจ้งปัญหา",
                 formSub: "ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป",
                 lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:",
                 namePlaceholder: "กรอกชื่อของคุณ...",
@@ -867,7 +867,7 @@
                 sendEmailBtn: "✉️ Send Email",
                 copyEmailBtn: "📋 Copy Gmail",
                 emailCopiedAlert: "Copied email bb36177@banbung.ac.th to clipboard!",
-                formHeader: "📝 Evaluation & Issue Report Form",
+                formHeader: "📝 Evaluation & Issue Report",
                 formSub: "Evaluate our website usage or report any bugs/issues you encounter so we can improve.",
                 lblName: "Your Name / Contact:",
                 namePlaceholder: "Enter your name...",
@@ -898,7 +898,7 @@
                 navHome: "首页",
                 navRobots: "机器人网站",
                 navOthers: "其他网站",
-                navEvaluation: "评估表",
+                navEvaluation: "评估与反馈",
                 navContact: "联系开发者",
                 heroTitle: "青龙服务器 - 档案中心与个人系统",
                 heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
@@ -933,7 +933,7 @@
                 sendEmailBtn: "✉️ 发送电子邮件",
                 copyEmailBtn: "📋 复制 Gmail",
                 emailCopiedAlert: "已将邮箱 bb36177@banbung.ac.th 复制到剪贴板！",
-                formHeader: "📝 满意度评估与问题反馈表",
+                formHeader: "📝 评估与问题反馈",
                 formSub: "对我们的网站使用情况进行评估或报告您遇到的错误/问题，以便我们改进。",
                 lblName: "您的姓名 / 联系方式：",
                 namePlaceholder: "请输入您的姓名...",
@@ -949,7 +949,7 @@
                 score1: "❌ 非常差 (1星)",
                 lblDetails: "详情 / 反馈内容：",
                 detailsPlaceholder: "在此输入您的详细信息...",
-                submitBtn: "📤 提交评估 /反馈",
+                submitBtn: "📤 提交评估 / 反馈",
                 feedbackListTitle: "📋 系统中记录的反馈与问题列表",
                 noFeedbackText: "系统中尚无反馈记录",
                 scoreLabelText: "满意度评分：",
@@ -960,7 +960,6 @@
             }
         };
 
-        // ตัวแปรสำหรับเก็บเวลาอัปเดตระบบ
         let lastCommitDateString = "";
 
         function changeLanguage(lang) {
@@ -982,7 +981,6 @@
             renderCalendar();
             renderFeedbacks();
             
-            // อัปเดตการแสดงผลเวลาด้านล่างตามภาษาที่เลือก
             if(lastCommitDateString) {
                 updateFooterTime(lastCommitDateString, lang);
             }
@@ -1012,7 +1010,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // กำหนดปี ค.ศ. 2026 ให้ถูกต้องสำหรับปฏิทิน
+        // เซ็ตค่าเริ่มต้นปฏิทินให้ตรงกับเดือนปัจจุบัน (กันยายน 2026)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1281,6 +1279,7 @@
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
             fetchGitHubLastUpdate();
+            renderFeedbacks();
         });
     </script>
 </body>
