@@ -17,9 +17,9 @@
             --primary-red: #8b0000;
             --accent-gold: #d4af37;
             --accent-gold-light: #f3e5ab;
-            --text-light: #fdfbf7;
-            --text-muted: #c5b358;
-            --border-gold: rgba(212, 175, 55, 0.3);
+            --text-light: #ffffff;
+            --text-muted: #e6d58c;
+            --border-gold: rgba(212, 175, 55, 0.4);
             --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
@@ -292,21 +292,21 @@
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 6px;
             text-align: center;
         }
 
         .cal-day-name {
             font-weight: 700;
             color: var(--accent-gold);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding-bottom: 8px;
         }
 
         .cal-cell {
             min-height: 85px;
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(20, 7, 9, 0.85);
+            border: 1px solid var(--border-gold);
             border-radius: 10px;
             display: flex;
             flex-direction: column;
@@ -321,20 +321,26 @@
 
         .cal-cell:hover {
             border-color: #ffea79;
-            background: rgba(212, 175, 55, 0.2);
-            transform: translateY(-4px);
+            background: rgba(212, 175, 55, 0.25);
+            transform: translateY(-3px);
         }
 
         .cal-cell.today {
             border: 2px solid #ffea79;
-            background: rgba(212, 175, 55, 0.12);
+            background: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
         }
 
         .cal-cell .day-number {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-light);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
             margin-bottom: 3px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        .cal-cell.today .day-number {
+            color: #ffea79;
         }
 
         .cal-cell .event-preview {
@@ -598,26 +604,26 @@
                 <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ -->
                 <div class="calendar-wrapper">
                     <div class="cal-header">
-                        <h3 id="cal-month-year">October 2026</h3>
+                        <h3 id="cal-month-year">September 2026</h3>
                         <div class="cal-nav-controls">
                             <button class="cal-nav-btn" onclick="changeMonth(-1)" title="เดือนก่อนหน้า">◀</button>
                             <button class="cal-nav-btn" onclick="changeMonth(1)" title="เดือนถัดไป">▶</button>
                         </div>
                     </div>
                     <div class="cal-grid" id="cal-days-name">
-                        <div class="cal-day-name" data-i18n="daySun">日</div>
-                        <div class="cal-day-name" data-i18n="dayMon">一</div>
-                        <div class="cal-day-name" data-i18n="dayTue">二</div>
-                        <div class="cal-day-name" data-i18n="dayWed">三</div>
-                        <div class="cal-day-name" data-i18n="dayThu">四</div>
-                        <div class="cal-day-name" data-i18n="dayFri">五</div>
-                        <div class="cal-day-name" data-i18n="daySat">六</div>
+                        <div class="cal-day-name" data-i18n="daySun">อา</div>
+                        <div class="cal-day-name" data-i18n="dayMon">จ</div>
+                        <div class="cal-day-name" data-i18n="dayTue">อ</div>
+                        <div class="cal-day-name" data-i18n="dayWed">พ</div>
+                        <div class="cal-day-name" data-i18n="dayThu">พฤ</div>
+                        <div class="cal-day-name" data-i18n="dayFri">ศ</div>
+                        <div class="cal-day-name" data-i18n="daySat">ส</div>
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
                     <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
-                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ 日程管理模式 (添加多个任务)</strong>
+                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
                         <input type="date" id="event-date" onchange="onDateInputChange()">
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
@@ -629,7 +635,7 @@
             <div class="card" style="margin-top: 2rem;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 预约详情 / 待办事项</h3>
                 <div id="selected-date-tasks" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-                    <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">点击上方日历中的日期以查看或编辑当天的备忘录。</p>
+                    <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ</p>
                 </div>
             </div>
         </div>
@@ -1005,7 +1011,6 @@
         }
 
         let currentCalendarDate = new Date(2026, 8, 1);
-        // เปลี่ยนโครงสร้างเก็บข้อมูลเป็น Array เพื่อรองรับหลายงานต่อวัน
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
