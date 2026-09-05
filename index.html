@@ -626,7 +626,6 @@
                     <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
                         <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
-                        <!-- เปลี่ยนเป็น input text เพื่อให้ Placeholder เปลี่ยนตามภาษาได้สมบูรณ์ -->
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
@@ -961,6 +960,9 @@
             }
         };
 
+        // ตัวแปรสำหรับเก็บเวลาอัปเดตระบบ
+        let lastCommitDateString = "";
+
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
@@ -979,6 +981,8 @@
 
             renderCalendar();
             renderFeedbacks();
+            
+            // อัปเดตการแสดงผลเวลาด้านล่างตามภาษาที่เลือก
             if(lastCommitDateString) {
                 updateFooterTime(lastCommitDateString, lang);
             }
@@ -991,14 +995,6 @@
                 alert(translations[currentLang].emailCopiedAlert);
             });
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('site_lang') || 'th';
-            document.getElementById('langSwitch').value = savedLang;
-            changeLanguage(savedLang);
-            renderCalendar();
-            renderFeedbacks();
-        });
 
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
@@ -1016,6 +1012,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // กำหนดปี ค.ศ. 2026 ให้ถูกต้องสำหรับปฏิทิน
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1242,7 +1239,6 @@
             });
         }
 
-        let lastCommitDateString = "";
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
@@ -1281,6 +1277,9 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('site_lang') || 'th';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage(savedLang);
             fetchGitHubLastUpdate();
         });
     </script>
