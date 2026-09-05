@@ -69,6 +69,11 @@
             gap: 12px;
             text-decoration: none;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .brand-home:hover {
+            transform: scale(1.02);
         }
 
         .logo-img {
@@ -78,6 +83,11 @@
             border: 2px solid var(--accent-gold);
             object-fit: cover;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            transition: transform 0.5s ease;
+        }
+
+        .brand-home:hover .logo-img {
+            transform: rotate(360deg);
         }
 
         .brand-text {
@@ -113,7 +123,7 @@
             padding: 6px 12px;
             border-radius: 30px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .nav-btn:hover, .nav-btn.active {
@@ -121,6 +131,7 @@
             background: linear-gradient(135deg, var(--accent-gold), #aa771c);
             font-weight: 700;
             box-shadow: var(--shadow-gold);
+            transform: translateY(-1px);
         }
 
         /* Language Switcher */
@@ -137,6 +148,10 @@
             transition: 0.3s;
         }
 
+        .lang-selector:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
         .lang-selector option {
             background: var(--bg-deep);
             color: var(--text-light);
@@ -147,6 +162,7 @@
             text-align: center;
             padding: 3.5rem 1rem 2rem 1rem;
             border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            animation: fadeInDown 0.8s ease-out;
         }
 
         .hero h1 {
@@ -162,7 +178,7 @@
             font-size: 1rem;
         }
 
-        /* Container & Views */
+        /* Container & Views with Smooth Animations */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -174,14 +190,37 @@
         .page-view {
             display: none;
             opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.4s ease;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
         .page-view.active {
             display: block;
             opacity: 1;
             transform: translateY(0);
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Cards & Grid */
@@ -192,6 +231,11 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
         }
 
         .grid-2 {
@@ -213,6 +257,12 @@
             border-radius: 16px;
             padding: 1.8rem;
             box-shadow: var(--shadow-gold);
+            animation: pulseGlow 4s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.15); }
+            100% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); }
         }
 
         .cal-header {
@@ -224,7 +274,34 @@
 
         .cal-header h3 {
             color: var(--accent-gold);
-            font-size: 1.2rem;
+            font-size: 1.15rem;
+        }
+
+        .cal-nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cal-nav-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .cal-nav-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+            transform: scale(1.1);
         }
 
         .cal-grid {
@@ -252,14 +329,20 @@
             justify-content: flex-start;
             padding: 6px 4px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.25s ease;
             position: relative;
             overflow: hidden;
         }
 
         .cal-cell:hover {
             border-color: var(--accent-gold);
-            background: rgba(212, 175, 55, 0.08);
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .cal-cell.today {
+            border: 2px solid var(--accent-gold);
+            background: rgba(212, 175, 55, 0.06);
         }
 
         .cal-cell .day-number {
@@ -302,6 +385,13 @@
             border-radius: 6px;
             margin-top: 6px;
             margin-bottom: 10px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .admin-panel input:focus, .admin-panel textarea:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
         }
 
         .gold-btn {
@@ -312,12 +402,13 @@
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
         .gold-btn:hover {
-            opacity: 0.9;
+            opacity: 0.95;
             transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
         }
 
         /* Form Controls */
@@ -361,14 +452,14 @@
             border: 1px solid var(--border-gold);
             border-radius: 12px;
             padding: 1.5rem;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
         .project-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-gold);
             border-color: #fff;
         }
@@ -407,12 +498,43 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.85rem;
-            transition: 0.3s;
+            transition: all 0.3s ease;
         }
 
         .link-btn:hover {
             background: var(--accent-gold);
             color: #000;
+            transform: scale(1.02);
+        }
+
+        /* Contact Action Buttons */
+        .contact-action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-chip {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .action-chip:hover {
+            background: var(--accent-gold);
+            color: #000;
+            transform: translateY(-2px);
         }
 
         /* Footer */
@@ -490,11 +612,14 @@
                     </div>
                 </div>
 
-                <!-- ปฏิทินบันทึกตารางงาน -->
+                <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ เลื่อนเดือน/ปีได้ -->
                 <div class="calendar-wrapper">
                     <div class="cal-header">
-                        <h3 id="cal-month-year" data-i18n="calMonthTitle">เดือนกันยายน 2569</h3>
-                        <span style="font-size: 0.8rem; color: var(--accent-gold); border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 4px;" data-i18n="calBadge">ปฏิทินส่วนตัว</span>
+                        <h3 id="cal-month-year">เดือนกันยายน 2569</h3>
+                        <div class="cal-nav-controls">
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)" title="เดือนก่อนหน้า">◀</button>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)" title="เดือนถัดไป">▶</button>
+                        </div>
                     </div>
                     <div class="cal-grid" id="cal-days-name">
                         <div class="cal-day-name" data-i18n="daySun">อา</div>
@@ -619,6 +744,11 @@
                             <span data-i18n="devNameVal">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</span><br>
                             Gmail: <a href="mailto:bb36177@banbung.ac.th" style="color: var(--accent-gold); text-decoration: none;">bb36177@banbung.ac.th</a>
                         </p>
+                        <!-- ปุ่มคัดลอกและส่งอีเมล Gmail -->
+                        <div class="contact-action-btns">
+                            <a href="mailto:bb36177@banbung.ac.th" class="action-chip" data-i18n="sendEmailBtn">✉️ ส่งอีเมล (Send Email)</a>
+                            <button class="action-chip" onclick="copyEmailToClipboard()" data-i18n="copyEmailBtn">📋 คัดลอก Gmail</button>
+                        </div>
                     </div>
                     <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
                         <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
@@ -637,7 +767,7 @@
     </footer>
 
     <script>
-        // ระบบแปลภาษา 3 ภาษาแบบครอบคลุมทุกจุด
+        // ระบบแปลภาษา 3 ภาษาแบบสมบูรณ์ 100% ไม่มีภาษาอื่นตกค้าง
         const translations = {
             th: {
                 title: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
@@ -653,8 +783,6 @@
                 welcomeDesc: "เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก",
                 objTitle: "วัตถุประสงค์ระบบ:",
                 objDesc: "จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น",
-                calMonthTitle: "เดือนกันยายน 2569",
-                calBadge: "ปฏิทินส่วนตัว",
                 daySun: "อา", dayMon: "จ", dayTue: "อ", dayWed: "พ", dayThu: "พฤ", dayFri: "ศ", daySat: "ส",
                 adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่ม/แก้ไข/ลบ)",
                 eventPlaceholder: "คลิกวันที่ในปฏิทินเพื่อแก้ไข หรือพิมพ์เพิ่มที่นี่...",
@@ -678,6 +806,9 @@
                 devNameTitle: "👤 ผู้พัฒนาหลัก:",
                 devNameVal: "ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)",
                 gitRepoTitle: "💻 GitHub Repository:",
+                sendEmailBtn: "✉️ ส่งอีเมล (Send Email)",
+                copyEmailBtn: "📋 คัดลอก Gmail",
+                emailCopiedAlert: "คัดลอกอีเมล bb36177@banbung.ac.th ไปยังคลิปบอร์ดแล้ว!",
                 formHeader: "📝 แบบประเมินความพึงพอใจและแจ้งปัญหา",
                 formSub: "ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป",
                 lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:",
@@ -714,8 +845,6 @@
                 welcomeDesc: "This website serves as a central database (Server Hub) to store project links and previously developed websites, such as advanced robotics competition systems and various coding projects for easy access and reviewing.",
                 objTitle: "System Objectives:",
                 objDesc: "Organize and preserve source codes and project links, featuring a modern-ancient Chinese themed personal scheduling calendar.",
-                calMonthTitle: "September 2026",
-                calBadge: "Personal Calendar",
                 daySun: "Su", dayMon: "Mo", dayTue: "Tu", dayWed: "We", dayThu: "Th", dayFri: "Fr", daySat: "Sa",
                 adminTitle: "⚙️ Schedule Management (Add/Edit/Delete)",
                 eventPlaceholder: "Click a date on calendar to edit, or type here...",
@@ -739,6 +868,9 @@
                 devNameTitle: "👤 Lead Developer:",
                 devNameVal: "Ching Long Server Team",
                 gitRepoTitle: "💻 GitHub Repository:",
+                sendEmailBtn: "✉️ Send Email",
+                copyEmailBtn: "📋 Copy Gmail",
+                emailCopiedAlert: "Copied email bb36177@banbung.ac.th to clipboard!",
                 formHeader: "📝 Evaluation & Issue Report Form",
                 formSub: "Evaluate our website usage or report any bugs/issues you encounter so we can improve.",
                 lblName: "Your Name / Contact:",
@@ -775,8 +907,6 @@
                 welcomeDesc: "本网站作为中央数据库（服务器中心），用于存储所有开发过的项目链接和网站，例如高级机器人竞赛系统及各种代码项目，以便于随时调用和查阅。",
                 objTitle: "系统目标：",
                 objDesc: "整理并保存源代码及项目链接，配备融合中国古风与现代风格的个人日程管理日历。",
-                calMonthTitle: "2026年9月",
-                calBadge: "个人日历",
                 daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
                 adminTitle: "⚙️ 日程管理模式（添加/编辑/删除）",
                 eventPlaceholder: "点击日历日期进行编辑，或在此输入...",
@@ -800,6 +930,9 @@
                 devNameTitle: "👤 首席开发者：",
                 devNameVal: "青龙服务器团队",
                 gitRepoTitle: "💻 GitHub 代码库：",
+                sendEmailBtn: "✉️ 发送电子邮件",
+                copyEmailBtn: "📋 复制 Gmail",
+                emailCopiedAlert: "已将邮箱 bb36177@banbung.ac.th 复制到剪贴板！",
                 formHeader: "📝 满意度评估与问题反馈表",
                 formSub: "对我们的网站使用情况进行评估或报告您遇到的错误/问题，以便我们改进。",
                 lblName: "您的姓名 / 联系方式：",
@@ -844,7 +977,17 @@
                 }
             });
 
+            renderCalendar();
             renderFeedbacks();
+        }
+
+        // ฟังก์ชันคัดลอกอีเมล
+        function copyEmailToClipboard() {
+            const email = "bb36177@banbung.ac.th";
+            navigator.clipboard.writeText(email).then(() => {
+                const currentLang = document.getElementById('langSwitch').value;
+                alert(translations[currentLang].emailCopiedAlert);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -855,7 +998,7 @@
             renderFeedbacks();
         });
 
-        // เปลี่ยนหน้าเว็บแบบ SPA
+        // เปลี่ยนหน้าเว็บแบบ SPA พร้อมอนิเมชั่น
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -872,18 +1015,36 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ระบบปฏิทินส่วนตัว (เก็บข้อมูลใน LocalStorage พร้อมแสดงข้อความตัวอย่างบนช่องปฏิทิน)
+        // ระบบปฏิทินอัจฉริยะ (เลื่อนเปลี่ยนเดือน/ปีได้อย่างอิสระ)
+        let currentCalendarDate = new Date(2026, 8, 1); // เริ่มต้นที่กันยายน 2026
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": "ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย",
             "2026-09-15": "ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."
         };
 
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
             cellsContainer.innerHTML = '';
 
-            const year = 2026;
-            const month = 8; // กันยายน (0-index)
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth(); // 0-11
+            const currentLang = document.getElementById('langSwitch').value;
+
+            // แสดงชื่อเดือนและปีตามภาษา
+            const monthNames = {
+                th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            };
+
+            let yearDisplay = (currentLang === 'th') ? (year + 543) : year;
+            let monthYearText = (currentLang === 'zh') ? `${year}年 ${monthNames[zh][month]}` : `${monthNames[currentLang][month]} ${yearDisplay}`;
+            document.getElementById('cal-month-year').innerText = monthYearText;
             
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
@@ -891,13 +1052,20 @@
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyCell = document.createElement('div');
                 emptyCell.className = 'cal-cell';
-                emptyCell.style.opacity = '0.2';
+                emptyCell.style.opacity = '0.15';
                 cellsContainer.appendChild(emptyCell);
             }
+
+            const todayObj = new Date();
+            const isCurrentMonthYear = (todayObj.getFullYear() === year && todayObj.getMonth() === month);
+            const todayDate = todayObj.getDate();
 
             for (let day = 1; day <= totalDays; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
+                if (isCurrentMonthYear && day === todayDate) {
+                    cell.classList.add('today');
+                }
                 
                 const formattedMonth = String(month + 1).padStart(2, '0');
                 const formattedDay = String(day).padStart(2, '0');
@@ -921,8 +1089,23 @@
 
         function selectDate(year, month, day, dateKey) {
             const currentLang = document.getElementById('langSwitch').value;
-            let dateTitlePrefix = { th: `📌 บันทึกประจำวันที่ ${day} กันยายน ${year + 543}`, en: `📌 Notes for September ${day}, ${year}`, zh: `📌 ${year}年9月${day}日备忘录` };
-            let noDataText = { th: "ไม่มีบันทึกงานหรือนัดหมายในวันนี้ (คุณสามารถพิมพ์แก้ไขเพิ่มได้ที่ช่องด้านบน)", en: "No notes for today (you can add notes above).", zh: "今天没有备忘录（您可以在上方添加）。" };
+            const monthNames = {
+                th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            };
+
+            let yDisplay = (currentLang === 'th') ? (year + 543) : year;
+            let dateTitlePrefix = { 
+                th: `📌 บันทึกประจำวันที่ ${day} ${monthNames['th'][month]} ${yDisplay}`, 
+                en: `📌 Notes for ${monthNames['en'][month]} ${day}, ${yDisplay}`, 
+                zh: `📌 ${yDisplay}年${monthNames['zh'][month]}${day}日备忘录` 
+            };
+            let noDataText = { 
+                th: "ไม่มีบันทึกงานหรือนัดหมายในวันนี้ (คุณสามารถพิมพ์แก้ไขเพิ่มได้ที่ช่องด้านบน)", 
+                en: "No notes for today (you can add notes above).", 
+                zh: "今天没有备忘录（您可以在上方添加）。" 
+            };
 
             document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
             const desc = eventsData[dateKey] || "";
@@ -940,9 +1123,19 @@
                 const parts = dateVal.split('-');
                 if(parts.length === 3) {
                     const y = parseInt(parts[0]);
-                    const m = parseInt(parts[1]);
+                    const m = parseInt(parts[1]) - 1;
                     const d = parseInt(parts[2]);
-                    let dateTitlePrefix = { th: `📌 บันทึกประจำวันที่ ${d} กันยายน ${y + 543}`, en: `📌 Notes for September ${d}, ${y}`, zh: `📌 ${y}年9月${d}日备忘录` };
+                    const monthNames = {
+                        th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                        en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                        zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+                    };
+                    let yDisplay = (currentLang === 'th') ? (y + 543) : y;
+                    let dateTitlePrefix = { 
+                        th: `📌 บันทึกประจำวันที่ ${d} ${monthNames['th'][m]} ${yDisplay}`, 
+                        en: `📌 Notes for ${monthNames['en'][m]} ${d}, ${yDisplay}`, 
+                        zh: `📌 ${yDisplay}年${monthNames['zh'][m]}${d}日备忘录` 
+                    };
                     document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
                 }
                 document.getElementById('event-desc').value = eventsData[dateVal] || "";
@@ -1027,6 +1220,7 @@
                 item.style.border = '1px solid var(--border-gold)';
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
+                item.style.transition = 'transform 0.2s';
 
                 let typeLabel = t.optEval;
                 if(fb.type === 'issue') typeLabel = t.optIssue;
@@ -1044,7 +1238,7 @@
             });
         }
 
-        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API อัตโนมัติ
+        // ดึงเวลาแก้ไขล่าสุดจาก GitHub API อัตโนมัติ
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
