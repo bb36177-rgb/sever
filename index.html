@@ -776,6 +776,7 @@
                 adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)",
                 eventPlaceholder: "คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่...",
                 saveBtn: "➕ เพิ่มงานใหม่ในวันนี้",
+                datePlaceholderFormat: "วว/ดด/ปปปป",
                 selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
                 selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ",
                 robotHeader: "🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ",
@@ -841,6 +842,7 @@
                 adminTitle: "⚙️ Schedule Management (Add Multiple Tasks)",
                 eventPlaceholder: "Click calendar date or type new task here...",
                 saveBtn: "➕ Add New Task",
+                datePlaceholderFormat: "DD/MM/YYYY",
                 selTitle: "📌 Appointment Details / Tasks",
                 selDesc: "Click a date on the calendar above to view or add tasks for that day.",
                 robotHeader: "🤖 Category: Robotics & Automation",
@@ -906,6 +908,7 @@
                 adminTitle: "⚙️ 日程管理模式（每日添加多个任务）",
                 eventPlaceholder: "点击日历日期或在此输入新任务...",
                 saveBtn: "➕ 添加今日新任务",
+                datePlaceholderFormat: "年/月/日 (YYYY/MM/DD)",
                 selTitle: "📌 预约详情 / 待办事项",
                 selDesc: "点击上方日历中的日期以查看或添加当天的任务。",
                 robotHeader: "🤖 分类：机器人与自动化",
@@ -944,7 +947,7 @@
                 score1: "❌ 非常差 (1星)",
                 lblDetails: "详情 / 反馈内容：",
                 detailsPlaceholder: "在此输入您的详细信息...",
-                submitBtn: "📤 提交评估 / 反馈",
+                submitBtn: "📤 提交评估 /反馈",
                 feedbackListTitle: "📋 系统中记录的反馈与问题列表",
                 noFeedbackText: "系统中尚无反馈记录",
                 scoreLabelText: "满意度评分：",
@@ -970,6 +973,13 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(t[key]) el.setAttribute('placeholder', t[key]);
             });
+
+            // อัปเดต Placeholder ของช่องเลือกวันที่ตามภาษา
+            const dateInputEl = document.getElementById('event-date');
+            if(dateInputEl && t.datePlaceholderFormat) {
+                // สำหรับ input type="date" การใส่ data attribute หรือ attr พิเศษช่วยสื่อความหมาย
+                dateInputEl.setAttribute('data-placeholder', t.datePlaceholderFormat);
+            }
 
             renderCalendar();
             renderFeedbacks();
