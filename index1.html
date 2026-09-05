@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>龙 Archive Hub - คลังเก็บผลงานและระบบส่วนตัว</title>
+    <!-- นำเข้าฟอนต์ Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #080203;
+            --surface: #140709;
+            --surface-card: #1f0b0e;
+            --primary-red: #8b0000;
+            --accent-gold: #d4af37;
+            --accent-gold-light: #f3e5ab;
+            --text-light: #fdfbf7;
+            --text-muted: #c5b358;
+            --border-gold: rgba(212, 175, 55, 0.3);
+            --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #1a0508 0%, var(--bg-deep) 70%);
+            overflow-x: hidden;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(14, 4, 6, 0.9);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-gold);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        nav {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .brand-home {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-gold);
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        .brand-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            background: var(--surface);
+            padding: 6px;
+            border-radius: 40px;
+            border: 1px solid var(--border-gold);
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: #000;
+            background: linear-gradient(135deg, var(--accent-gold), #aa771c);
+            font-weight: 700;
+            box-shadow: var(--shadow-gold);
+        }
+
+        /* Hero Banner */
+        .hero {
+            text-align: center;
+            padding: 3.5rem 1rem 2rem 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        /* Container & Views */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.4s ease;
+        }
+
+        .page-view.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cards & Grid */
+        .card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media(max-width: 900px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            nav { flex-direction: column; gap: 15px; }
+        }
+
+        /* Calendar Styles */
+        .calendar-wrapper {
+            background: var(--surface-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .cal-header h3 {
+            color: var(--accent-gold);
+            font-size: 1.3rem;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .cal-day-name {
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            padding-bottom: 8px;
+        }
+
+        .cal-cell {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+        }
+
+        .cal-cell:hover {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        .cal-cell.has-event::after {
+            content: '';
+            width: 6px; height: 6px;
+            background: #ff4d4d;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 6px;
+        }
+
+        .admin-panel {
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px dashed var(--accent-gold);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .admin-panel input, .admin-panel textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, var(--accent-gold), #aa771c);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .gold-btn:hover {
+            opacity: 0.9;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Project Cards */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+            border-color: #fff;
+        }
+
+        .project-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-gold);
+        }
+
+        .project-card h3 {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .project-card p {
+            color: #b0a89c;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .link-btn {
+            display: inline-block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .link-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* Footer */
+        footer {
+            background: #040101;
+            border-top: 1px solid var(--border-gold);
+            text-align: center;
+            padding: 1.8rem 1rem;
+            margin-top: auto;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .copyright {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <nav>
+            <a class="brand-home" onclick="showPage('home')">
+                <img src="logo-web.jpg" alt="Logo" class="logo-img">
+                <span class="brand-text">龙 ARCHIVE HUB</span>
+            </a>
+            <ul class="nav-menu">
+                <li><button class="nav-btn active" id="btn-home" onclick="showPage('home')">หน้าหลัก</button></li>
+                <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')">เว็บหุ่นยนต์</button></li>
+                <li><button class="nav-btn" id="btn-others" onclick="showPage('others')">เว็บอื่นๆ</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Banner -->
+    <div class="hero">
+        <h1>คลังเก็บผลงานและระบบเว็บส่วนตัว</h1>
+        <p>ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ</p>
+    </div>
+
+    <div class="container">
+
+        <!-- ================= PAGE 1: HOME ================= -->
+        <div id="page-home" class="page-view active">
+            <div class="grid-2">
+                <!-- ข้อมูลต้อนรับและความรู้ -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;">ยินดีต้อนรับสู่เซิร์ฟเวอร์เก็บงาน</h2>
+                    <p style="color: #d1c7bd; margin-bottom: 1rem;">
+                        เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก
+                    </p>
+                    <div style="background: rgba(212, 175, 55, 0.05); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 0 8px 8px 0;">
+                        <strong style="color: var(--accent-gold);">วัตถุประสงค์ระบบ:</strong>
+                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น</p>
+                    </div>
+                </div>
+
+                <!-- ปฏิทินบันทึกตารางงาน -->
+                <div class="calendar-wrapper">
+                    <div class="cal-header">
+                        <h3 id="cal-month-year">เดือนกันยายน 2569</h3>
+                        <span style="font-size: 0.8rem; color: var(--accent-gold); border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 4px;">ปฏิทินส่วนตัว</span>
+                    </div>
+                    <div class="cal-grid" id="cal-days-name">
+                        <div class="cal-day-name">อา</div>
+                        <div class="cal-day-name">จ</div>
+                        <div class="cal-day-name">อ</div>
+                        <div class="cal-day-name">พ</div>
+                        <div class="cal-day-name">พฤ</div>
+                        <div class="cal-day-name">ศ</div>
+                        <div class="cal-day-name">ส</div>
+                    </div>
+                    <div class="cal-grid" id="cal-cells" style="margin-top: 8px;">
+                        <!-- วันที่ถูกสร้างด้วย JavaScript -->
+                    </div>
+
+                    <!-- แผงควบคุมเพิ่มงาน (เฉพาะเจ้าของเว็บ) -->
+                    <div class="admin-panel">
+                        <strong style="font-size: 0.9rem; color: var(--accent-gold);">⚙️ โหมดจัดการตารางงาน (เจ้าของเว็บ)</strong>
+                        <input type="date" id="event-date">
+                        <textarea id="event-desc" rows="2" placeholder="ระบุสิ่งที่ต้องทำ / นัดหมายในวันนี้..."></textarea>
+                        <button class="gold-btn" onclick="saveEvent()" style="width: 100%;">บันทึกตารางงาน</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- แสดงรายละเอียดงานที่ถูกเลือกจากปฏิทิน -->
+            <div class="card" style="margin-top: 2rem;">
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title">📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ</h3>
+                <p id="selected-date-desc" style="color: #b0a89c;">คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูบันทึกงานของวันนั้นๆ</p>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: ROBOT PROJECTS ================= -->
+        <div id="page-robots" class="page-view">
+            <div class="card">
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;">รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น</p>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div>
+                            <span class="project-tag">หุ่นยนต์ สพฐ. / อัตโนมัติ</span>
+                            <h3>การแข่งขันหุ่นยนต์ระดับสูง สพฐ.</h3>
+                            <p>เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์</p>
+                        </div>
+                        <a href="#" class="link-btn" onclick="alert('นี่คือลิงก์ตัวอย่าง โปรดใส่ URL เว็บไซต์จริงของคุณที่นี่'); return false;">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: OTHER PROJECTS ================= -->
+        <div id="page-others" class="page-view">
+            <div class="card">
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;">พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต</p>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div>
+                            <span class="project-tag">อนาคต / Coming Soon</span>
+                            <h3>พื้นที่เตรียมบรรจุผลงานใหม่</h3>
+                            <p>เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้</p>
+                        </div>
+                        <span class="link-btn" style="opacity: 0.5; border-color: #555; color: #777; cursor: not-allowed;">⏳ กำลังพัฒนา</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p id="footer-time">กำลังโหลดเวลาอัปเดต...</p>
+        <p class="copyright">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
+    </footer>
+
+    <script>
+        // เปลี่ยนหน้าเว็บแบบ SPA
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById('page-' + pageId);
+            if(target) target.classList.add('active');
+
+            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+            if(pageId === 'robots') document.getElementById('btn-robots').classList.add('active');
+            if(pageId === 'others') document.getElementById('btn-others').classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ระบบปฏิทินส่วนตัว (เก็บข้อมูลใน LocalStorage)
+        const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
+            "2026-09-10": "ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย",
+            "2026-09-15": "ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."
+        };
+
+        function renderCalendar() {
+            const cellsContainer = document.getElementById('cal-cells');
+            cellsContainer.innerHTML = '';
+
+            // ตัวอย่างกำหนดให้เป็นเดือนกันยายน 2026 (ตามเวลาปัจจุบัน)
+            const year = 2026;
+            const month = 8; // กันยายน (0-index)
+            
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            // ช่องว่างก่อนวันแรกของเดือน
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'cal-cell';
+                emptyCell.style.opacity = '0.2';
+                cellsContainer.appendChild(emptyCell);
+            }
+
+            // สร้างช่องวันในเดือน
+            for (let day = 1; day <= totalDays; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'cal-cell';
+                
+                const formattedMonth = String(month + 1).padStart(2, '0');
+                const formattedDay = String(day).padStart(2, '0');
+                const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
+
+                cell.innerHTML = `<span style="font-size: 0.85rem; font-weight: 600;">${day}</span>`;
+
+                if (eventsData[dateKey]) {
+                    cell.classList.add('has-event');
+                }
+
+                cell.onclick = () => {
+                    document.getElementById('selected-date-title').innerText = `📌 บันทึกประจำวันที่ ${day} กันยายน ${year + 543}`;
+                    document.getElementById('selected-date-desc').innerText = eventsData[dateKey] || "ไม่มีบันทึกงานหรือนัดหมายในวันนี้";
+                    document.getElementById('event-date').value = dateKey;
+                };
+
+                cellsContainer.appendChild(cell);
+            }
+        }
+
+        function saveEvent() {
+            const dateVal = document.getElementById('event-date').value;
+            const descVal = document.getElementById('event-desc').value;
+
+            if(!dateVal) {
+                alert('กรุณาเลือกวันที่ในปฏิทินก่อนบันทึก!');
+                return;
+            }
+
+            if(descVal.trim() === "") {
+                delete eventsData[dateVal];
+            } else {
+                eventsData[dateVal] = descVal;
+            }
+
+            localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
+            renderCalendar();
+            alert('บันทึกตารางงานเรียบร้อยแล้ว!');
+            document.getElementById('event-desc').value = '';
+        }
+
+        // แสดงเวลาอัปเดตระบบที่ Footer
+        function updateFooterTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+            document.getElementById('footer-time').innerText = `อัปเดตระบบเซิร์ฟเวอร์ล่าสุดเมื่อ: ${now.toLocaleDateString('th-TH', options)} น.`;
+        }
+
+        window.onload = () => {
+            renderCalendar();
+            updateFooterTime();
+        };
+    </script>
+</body>
+</html>
