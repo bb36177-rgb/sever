@@ -250,7 +250,6 @@
             overflow: hidden;
         }
 
-        /* เอฟเฟกต์แสงสะท้อนวิ่งผ่านการ์ดปฏิทิน */
         .calendar-wrapper::before {
             content: '';
             position: absolute;
@@ -306,7 +305,6 @@
             gap: 10px;
         }
 
-        /* ปุ่มเลื่อนเดือนสุดเวอร์: หมวดเรืองแสง ขยายใหญ่ และหมุนเมื่อชี้ */
         .cal-nav-btn {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(170, 119, 28, 0.3));
             border: 2px solid var(--accent-gold);
@@ -330,10 +328,6 @@
             box-shadow: 0 0 25px var(--accent-gold), 0 0 50px rgba(255, 215, 0, 0.5);
         }
 
-        .cal-nav-btn:active {
-            transform: scale(0.9) rotate(360deg);
-        }
-
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -349,7 +343,6 @@
             text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
         }
 
-        /* ช่องวันในปฏิทิน เด้งรับเมาส์แบบสะใจ */
         .cal-cell {
             min-height: 85px;
             background: rgba(0, 0, 0, 0.25);
@@ -410,7 +403,6 @@
             box-shadow: 0 0 5px rgba(212, 175, 55, 0.2);
         }
 
-        /* แผงควบคุม (Admin Panel) พร้อมเส้นประวิ่งได้และเงาสุดอลัง */
         .admin-panel {
             background: linear-gradient(135deg, rgba(139, 0, 0, 0.25), rgba(31, 11, 14, 0.9));
             border: 2px dashed var(--accent-gold);
@@ -448,7 +440,6 @@
             transform: scale(1.01);
         }
 
-        /* ปุ่มบันทึกสุดเวอร์: เรืองแสงกระพริบ ขยายพองโต และสั่นระริก */
         .gold-btn {
             background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
             background-size: 200% 200%;
@@ -578,7 +569,6 @@
             transform: scale(1.02);
         }
 
-        /* Contact Action Buttons */
         .contact-action-btns {
             display: flex;
             gap: 10px;
@@ -671,7 +661,6 @@
         <!-- ================= PAGE 1: HOME ================= -->
         <div id="page-home" class="page-view active">
             <div class="grid-2">
-                <!-- ข้อมูลต้อนรับและความรู้ -->
                 <div class="card" style="margin-bottom: 0;">
                     <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="welcomeTitle">ยินดีต้อนรับสู่ชิงหลงเซิฟ</h2>
                     <p style="color: #d1c7bd; margin-bottom: 1rem;" data-i18n="welcomeDesc">
@@ -706,7 +695,10 @@
                     <!-- แผงควบคุมเพิ่ม/แก้ไขงาน -->
                     <div class="admin-panel">
                         <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ 日程管理模式 (添加/编辑/删除)</strong>
-                        <input type="date" id="event-date" onchange="onDateInputChange()">
+                        <div style="position: relative; margin-top: 6px; margin-bottom: 12px;">
+                            <input type="date" id="event-date" onchange="onDateInputChange()" style="margin: 0;">
+                            <div id="date-placeholder-overlay" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #777; font-size: 0.9rem; pointer-events: none; display: none;">วว/ดด/ปปปป</div>
+                        </div>
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="点击日历日期进行编辑，或在此输入..."></textarea>
                         <button class="gold-btn" onclick="saveEvent()" style="width: 100%;" data-i18n="saveBtn">保存 / 更新日程</button>
                     </div>
@@ -855,6 +847,7 @@
                 daySun: "อา", dayMon: "จ", dayTue: "อ", dayWed: "พ", dayThu: "พฤ", dayFri: "ศ", daySat: "ส",
                 adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่ม/แก้ไข/ลบ)",
                 eventPlaceholder: "คลิกวันที่ในปฏิทินเพื่อแก้ไข หรือพิมพ์เพิ่มที่นี่...",
+                datePlaceholderText: "วว/ดด/ปปปป",
                 saveBtn: "บันทึก/อัปเดตตารางงาน",
                 selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
                 selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือแก้ไขบันทึกงานของวันนั้นๆ",
@@ -920,6 +913,7 @@
                 daySun: "Su", dayMon: "Mo", dayTue: "Tu", dayWed: "We", dayThu: "Th", dayFri: "Fr", daySat: "Sa",
                 adminTitle: "⚙️ Schedule Management (Add/Edit/Delete)",
                 eventPlaceholder: "Click a date on calendar to edit, or type here...",
+                datePlaceholderText: "DD/MM/YYYY",
                 saveBtn: "Save / Update Schedule",
                 selTitle: "📌 Appointment Details / Tasks",
                 selDesc: "Click a date on the calendar above to view or edit notes for that day.",
@@ -985,6 +979,7 @@
                 daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
                 adminTitle: "⚙️ 日程管理模式（添加/编辑/删除）",
                 eventPlaceholder: "点击日历日期进行编辑，或在此输入...",
+                datePlaceholderText: "YYYY/MM/DD",
                 saveBtn: "保存 / 更新日程",
                 selTitle: "📌 预约详情 / 待办事项",
                 selDesc: "点击上方日历中的日期以查看或编辑当天的备忘录。",
@@ -1035,8 +1030,6 @@
             }
         };
 
-        let lastCommitDateString = "";
-
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
@@ -1052,6 +1045,12 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(t[key]) el.setAttribute('placeholder', t[key]);
             });
+
+            // อัปเดตข้อความจำลอง Placeholder ของช่องวันที่ตามภาษา
+            const dateInput = document.getElementById('event-date');
+            const overlay = document.getElementById('date-placeholder-overlay');
+            overlay.innerText = t.datePlaceholderText;
+            overlay.style.display = !dateInput.value ? 'block' : 'none';
 
             renderCalendar();
             renderFeedbacks();
@@ -1181,15 +1180,18 @@
             const desc = eventsData[dateKey] || "";
             document.getElementById('selected-date-desc').innerText = desc || noDataText[currentLang];
             document.getElementById('event-date').value = dateKey;
+            document.getElementById('date-placeholder-overlay').style.display = 'none';
             document.getElementById('event-desc').value = desc;
         }
 
         function onDateInputChange() {
             const dateVal = document.getElementById('event-date').value;
+            const overlay = document.getElementById('date-placeholder-overlay');
             const currentLang = document.getElementById('langSwitch').value;
             let noDataText = { th: "ไม่มีบันทึกงานหรือนัดหมายในวันนี้", en: "No notes for today.", zh: "今天没有备忘录。" };
 
             if(dateVal) {
+                overlay.style.display = 'none';
                 const parts = dateVal.split('-');
                 if(parts.length === 3) {
                     const y = parseInt(parts[0]);
@@ -1210,6 +1212,8 @@
                 }
                 document.getElementById('event-desc').value = eventsData[dateVal] || "";
                 document.getElementById('selected-date-desc').innerText = eventsData[dateVal] || noDataText[currentLang];
+            } else {
+                overlay.style.display = 'block';
             }
         }
 
@@ -1309,6 +1313,7 @@
             });
         }
 
+        let lastCommitDateString = "";
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
@@ -1346,7 +1351,13 @@
             document.getElementById('last-update-text').innerText = `${t.lastUpdatePrefix}${formattedDate}`;
         }
 
-        window.addEventListener('DOMContentLoaded', fetchGitHubLastUpdate);
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchGitHubLastUpdate();
+            // ตรวจสอบสถานะการแสดง Placeholder ตอนเริ่มต้น
+            if(!document.getElementById('event-date').value) {
+                document.getElementById('date-placeholder-overlay').style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
