@@ -983,6 +983,8 @@
             
             if(lastCommitDateString) {
                 updateFooterTime(lastCommitDateString, lang);
+            } else {
+                updateFooterTime(new Date().toISOString(), lang);
             }
         }
 
@@ -1024,6 +1026,7 @@
 
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
+            if(!cellsContainer) return;
             cellsContainer.innerHTML = '';
 
             const year = currentCalendarDate.getFullYear();
@@ -1101,6 +1104,7 @@
 
         function renderTasksList(dateKey) {
             const container = document.getElementById('selected-date-tasks');
+            if(!container) return;
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             let noDataText = { 
@@ -1202,6 +1206,7 @@
 
         function renderFeedbacks() {
             const container = document.getElementById('feedback-container');
+            if(!container) return;
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
@@ -1244,6 +1249,7 @@
 
             try {
                 const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('API Request Failed');
                 const data = await response.json();
                 if (data && data.length > 0) {
                     lastCommitDateString = data[0].commit.committer.date;
@@ -1253,33 +1259,41 @@
             } catch (error) {
                 lastCommitDateString = new Date().toISOString();
             }
-            const currentLang = document.getElementById('langSwitch').value;
+            
+            const currentLang = document.getElementById('langSwitch').value || 'th';
             updateFooterTime(lastCommitDateString, currentLang);
         }
 
         function updateFooterTime(dateStr, lang) {
+            const footerEl = document.getElementById('last-update-text');
+            if(!footerEl) return;
+
             const commitDate = new Date(dateStr);
-            const t = translations[lang];
+            const t = translations[lang] || translations['th'];
             let formattedDate = "";
 
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
-            if (lang === 'th') {
-                formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
-            } else if (lang === 'en') {
-                formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
-            } else {
-                formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
+            try {
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
+                if (lang === 'th') {
+                    formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
+                } else if (lang === 'en') {
+                    formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
+                } else {
+                    formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
+                }
+            } catch (e) {
+                formattedDate = commitDate.toLocaleString();
             }
 
-            document.getElementById('last-update-text').innerText = `${t.lastUpdatePrefix}${formattedDate}`;
+            footerEl.innerText = `${t.lastUpdatePrefix}${formattedDate}`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
-            fetchGitHubLastUpdate();
             renderFeedbacks();
+            fetchGitHubLastUpdate();
         });
     </script>
 </body>
