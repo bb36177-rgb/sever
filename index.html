@@ -386,6 +386,12 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
+        /* Color Scheme for Date Picker Icon */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
         .gold-btn {
             background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
             color: #000;
@@ -557,7 +563,7 @@
     <!-- Header & Navigation -->
     <header>
         <nav>
-            <a class="brand-home" onclick="showPage('home')">
+            <a class="brand-home" href="javascript:void(0)" onclick="showPage('home')">
                 <img src="logo-web.png" alt="Logo" class="logo-img">
                 <span class="brand-text" data-i18n="brandTitle">ชิงหลงเซิฟ (Ching Long Server)</span>
             </a>
@@ -626,7 +632,7 @@
                     <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
                         <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
-                        <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
+                        <input type="date" id="event-date">
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
                     </div>
@@ -655,7 +661,7 @@
                             <h3 data-i18n="proj1Name">การแข่งขันหุ่นยนต์ระดับสูง สพฐ.</h3>
                             <p data-i18n="proj1Desc">เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์</p>
                         </div>
-                        <a href="https://bb36177-rgb.github.io/Project1/" target="_blank" class="link-btn" data-i18n="openWebBtn">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
+                        <a href="https://bb36177-rgb.github.io/Project1/" target="_blank" rel="noopener noreferrer" class="link-btn" data-i18n="openWebBtn">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
                     </div>
                 </div>
             </div>
@@ -717,7 +723,7 @@
                 </form>
             </div>
 
-            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา (แสดงทันทีแบบไม่ง้อปุ่มค้นหา) -->
+            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
                 <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
@@ -778,7 +784,6 @@
                 adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)",
                 eventPlaceholder: "คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่...",
                 saveBtn: "➕ เพิ่มงานใหม่ในวันนี้",
-                datePlaceholderFormat: "วว/ดด/ปปปป",
                 selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
                 selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ",
                 robotHeader: "🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ",
@@ -844,7 +849,6 @@
                 adminTitle: "⚙️ Schedule Management (Add Multiple Tasks)",
                 eventPlaceholder: "Click calendar date or type new task here...",
                 saveBtn: "➕ Add New Task",
-                datePlaceholderFormat: "DD/MM/YYYY",
                 selTitle: "📌 Appointment Details / Tasks",
                 selDesc: "Click a date on the calendar above to view or add tasks for that day.",
                 robotHeader: "🤖 Category: Robotics & Automation",
@@ -910,7 +914,6 @@
                 adminTitle: "⚙️ 日程管理模式（每日添加多个任务）",
                 eventPlaceholder: "点击日历日期或在此输入新任务...",
                 saveBtn: "➕ 添加今日新任务",
-                datePlaceholderFormat: "YYYY/MM/DD (年/月/日)",
                 selTitle: "📌 预约详情 / 待办事项",
                 selDesc: "点击上方日历中的日期以查看或添加当天的任务。",
                 robotHeader: "🤖 分类：机器人与自动化",
@@ -962,6 +965,14 @@
 
         let lastCommitDateString = "";
 
+        // ฟังก์ชันสำหรับความปลอดภัยเพื่อป้องกัน XSS
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str;
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
@@ -983,8 +994,6 @@
             
             if(lastCommitDateString) {
                 updateFooterTime(lastCommitDateString, lang);
-            } else {
-                updateFooterTime(new Date().toISOString(), lang);
             }
         }
 
@@ -1012,7 +1021,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // เซ็ตค่าเริ่มต้นปฏิทินให้ตรงกับเดือนปัจจุบัน (กันยายน 2026)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1026,7 +1034,6 @@
 
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
-            if(!cellsContainer) return;
             cellsContainer.innerHTML = '';
 
             const year = currentCalendarDate.getFullYear();
@@ -1071,7 +1078,7 @@
                 let cellHTML = `<span class="day-number">${day}</span>`;
                 if (eventsData[dateKey] && eventsData[dateKey].length > 0) {
                     eventsData[dateKey].forEach(task => {
-                        cellHTML += `<div class="event-preview">• ${task}</div>`;
+                        cellHTML += `<div class="event-preview">• ${escapeHTML(task)}</div>`;
                     });
                 }
 
@@ -1104,7 +1111,6 @@
 
         function renderTasksList(dateKey) {
             const container = document.getElementById('selected-date-tasks');
-            if(!container) return;
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             let noDataText = { 
@@ -1123,7 +1129,7 @@
                 const taskRow = document.createElement('div');
                 taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
                 taskRow.innerHTML = `
-                    <span style="color: #fff; font-size: 0.9rem;">• ${task}</span>
+                    <span style="color: #fff; font-size: 0.9rem;">• ${escapeHTML(task)}</span>
                     <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>
                 `;
                 container.appendChild(taskRow);
@@ -1206,7 +1212,6 @@
 
         function renderFeedbacks() {
             const container = document.getElementById('feedback-container');
-            if(!container) return;
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
@@ -1223,8 +1228,8 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
-                let displayName = fb.nameKey === "default" ? t.defaultAuthorName : fb.name;
-                let displayDetails = fb.detailsKey === "defaultReview" ? t.defaultReviewText : fb.details;
+                let displayName = fb.nameKey === "default" ? t.defaultAuthorName : escapeHTML(fb.name);
+                let displayDetails = fb.detailsKey === "defaultReview" ? t.defaultReviewText : escapeHTML(fb.details);
 
                 let typeLabel = t.optEval;
                 if(fb.type === 'issue' || fb.typeKey === 'issue') typeLabel = t.optIssue;
@@ -1236,7 +1241,7 @@
                         <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
                     </div>
                     <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${displayDetails}</p>
-                    <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
+                    <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score) || 5)} (${fb.score}/5)</div>
                 `;
                 container.appendChild(item);
             });
@@ -1249,7 +1254,6 @@
 
             try {
                 const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('API Request Failed');
                 const data = await response.json();
                 if (data && data.length > 0) {
                     lastCommitDateString = data[0].commit.committer.date;
@@ -1259,41 +1263,33 @@
             } catch (error) {
                 lastCommitDateString = new Date().toISOString();
             }
-            
-            const currentLang = document.getElementById('langSwitch').value || 'th';
+            const currentLang = document.getElementById('langSwitch').value;
             updateFooterTime(lastCommitDateString, currentLang);
         }
 
         function updateFooterTime(dateStr, lang) {
-            const footerEl = document.getElementById('last-update-text');
-            if(!footerEl) return;
-
             const commitDate = new Date(dateStr);
-            const t = translations[lang] || translations['th'];
+            const t = translations[lang];
             let formattedDate = "";
 
-            try {
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
-                if (lang === 'th') {
-                    formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
-                } else if (lang === 'en') {
-                    formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
-                } else {
-                    formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
-                }
-            } catch (e) {
-                formattedDate = commitDate.toLocaleString();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
+            if (lang === 'th') {
+                formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
+            } else if (lang === 'en') {
+                formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
+            } else {
+                formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
             }
 
-            footerEl.innerText = `${t.lastUpdatePrefix}${formattedDate}`;
+            document.getElementById('last-update-text').innerText = `${t.lastUpdatePrefix}${formattedDate}`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
-            renderFeedbacks();
             fetchGitHubLastUpdate();
+            renderFeedbacks();
         });
     </script>
 </body>
