@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</title>
+    <title id="i-title">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</title>
     <!-- นำเข้าฟอนต์ Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,6 +59,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.8rem 1.5rem;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .brand-home {
@@ -79,18 +81,25 @@
         }
 
         .brand-text {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--accent-gold);
             letter-spacing: 0.5px;
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         .nav-menu {
             display: flex;
             list-style: none;
-            gap: 0.5rem;
+            gap: 0.4rem;
             background: var(--surface);
-            padding: 6px;
+            padding: 5px;
             border-radius: 40px;
             border: 1px solid var(--border-gold);
         }
@@ -99,9 +108,9 @@
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            padding: 8px 18px;
+            padding: 6px 14px;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -114,6 +123,25 @@
             box-shadow: var(--shadow-gold);
         }
 
+        /* Language Switcher */
+        .lang-selector {
+            background: var(--surface);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .lang-selector option {
+            background: var(--bg-deep);
+            color: var(--text-light);
+        }
+
         /* Hero Banner */
         .hero {
             text-align: center;
@@ -122,7 +150,7 @@
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             font-weight: 800;
             color: var(--accent-gold);
             text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
@@ -131,7 +159,7 @@
 
         .hero p {
             color: var(--text-muted);
-            font-size: 1.05rem;
+            font-size: 1rem;
         }
 
         /* Container & Views */
@@ -174,7 +202,8 @@
 
         @media(max-width: 900px) {
             .grid-2 { grid-template-columns: 1fr; }
-            nav { flex-direction: column; gap: 15px; }
+            nav { flex-direction: column; align-items: stretch; }
+            .nav-right { justify-content: space-between; }
         }
 
         /* Calendar Styles */
@@ -195,7 +224,7 @@
 
         .cal-header h3 {
             color: var(--accent-gold);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
         .cal-grid {
@@ -208,7 +237,7 @@
         .cal-day-name {
             font-weight: 600;
             color: var(--accent-gold);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             padding-bottom: 8px;
         }
 
@@ -273,7 +302,6 @@
 
         .gold-btn:hover {
             opacity: 0.9;
-            box-shadow: var(--shadow-glow);
         }
 
         /* Project Cards */
@@ -374,18 +402,28 @@
                 <img src="logo-web.png" alt="Logo" class="logo-img">
                 <span class="brand-text">ชิงหลงเซิฟ (Ching Long Server)</span>
             </a>
-            <ul class="nav-menu">
-                <li><button class="nav-btn active" id="btn-home" onclick="showPage('home')">หน้าหลัก</button></li>
-                <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')">เว็บหุ่นยนต์</button></li>
-                <li><button class="nav-btn" id="btn-others" onclick="showPage('others')">เว็บอื่นๆ</button></li>
-            </ul>
+            
+            <div class="nav-right">
+                <ul class="nav-menu">
+                    <li><button class="nav-btn active" id="btn-home" onclick="showPage('home')" data-i18n="navHome">หน้าหลัก</button></li>
+                    <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')" data-i18n="navRobots">เว็บหุ่นยนต์</button></li>
+                    <li><button class="nav-btn" id="btn-others" onclick="showPage('others')" data-i18n="navOthers">เว็บอื่นๆ</button></li>
+                </ul>
+                
+                <!-- ตัวเลือกเปลี่ยนภาษา (3 ภาษา) -->
+                <select id="langSwitch" class="lang-selector" onchange="changeLanguage(this.value)">
+                    <option value="th">🇹🇭 ไทย</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="zh">🇨🇳 中文</option>
+                </select>
+            </div>
         </nav>
     </header>
 
     <!-- Hero Banner -->
     <div class="hero">
-        <h1>ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</h1>
-        <p>ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ</p>
+        <h1 data-i18n="heroTitle">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</h1>
+        <p data-i18n="heroSubtitle">ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ</p>
     </div>
 
     <div class="container">
@@ -395,13 +433,13 @@
             <div class="grid-2">
                 <!-- ข้อมูลต้อนรับและความรู้ -->
                 <div class="card" style="margin-bottom: 0;">
-                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;">ยินดีต้อนรับสู่ชิงหลงเซิฟ</h2>
-                    <p style="color: #d1c7bd; margin-bottom: 1rem;">
+                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="welcomeTitle">ยินดีต้อนรับสู่ชิงหลงเซิฟ</h2>
+                    <p style="color: #d1c7bd; margin-bottom: 1rem;" data-i18n="welcomeDesc">
                         เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก
                     </p>
                     <div style="background: rgba(212, 175, 55, 0.05); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 0 8px 8px 0;">
-                        <strong style="color: var(--accent-gold);">วัตถุประสงค์ระบบ:</strong>
-                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น</p>
+                        <strong style="color: var(--accent-gold);" data-i18n="objTitle">วัตถุประสงค์ระบบ:</strong>
+                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;" data-i18n="objDesc">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น</p>
                     </div>
                 </div>
 
@@ -409,52 +447,50 @@
                 <div class="calendar-wrapper">
                     <div class="cal-header">
                         <h3 id="cal-month-year">เดือนกันยายน 2569</h3>
-                        <span style="font-size: 0.8rem; color: var(--accent-gold); border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 4px;">ปฏิทินส่วนตัว</span>
+                        <span style="font-size: 0.8rem; color: var(--accent-gold); border: 1px solid var(--border-gold); padding: 2px 8px; border-radius: 4px;" data-i18n="calBadge">ปฏิทินส่วนตัว</span>
                     </div>
                     <div class="cal-grid" id="cal-days-name">
-                        <div class="cal-day-name">อา</div>
-                        <div class="cal-day-name">จ</div>
-                        <div class="cal-day-name">อ</div>
-                        <div class="cal-day-name">พ</div>
-                        <div class="cal-day-name">พฤ</div>
-                        <div class="cal-day-name">ศ</div>
-                        <div class="cal-day-name">ส</div>
+                        <div class="cal-day-name" data-i18n="daySun">อา</div>
+                        <div class="cal-day-name" data-i18n="dayMon">จ</div>
+                        <div class="cal-day-name" data-i18n="dayTue">อ</div>
+                        <div class="cal-day-name" data-i18n="dayWed">พ</div>
+                        <div class="cal-day-name" data-i18n="dayThu">พฤ</div>
+                        <div class="cal-day-name" data-i18n="dayFri">ศ</div>
+                        <div class="cal-day-name" data-i18n="daySat">ส</div>
                     </div>
-                    <div class="cal-grid" id="cal-cells" style="margin-top: 8px;">
-                        <!-- วันที่ถูกสร้างด้วย JavaScript -->
-                    </div>
+                    <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
                     <!-- แผงควบคุมเพิ่มงาน (เฉพาะเจ้าของเว็บ) -->
                     <div class="admin-panel">
-                        <strong style="font-size: 0.9rem; color: var(--accent-gold);">⚙️ โหมดจัดการตารางงาน (เจ้าของเว็บ)</strong>
+                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เจ้าของเว็บ)</strong>
                         <input type="date" id="event-date">
                         <textarea id="event-desc" rows="2" placeholder="ระบุสิ่งที่ต้องทำ / นัดหมายในวันนี้..."></textarea>
-                        <button class="gold-btn" onclick="saveEvent()" style="width: 100%;">บันทึกตารางงาน</button>
+                        <button class="gold-btn" onclick="saveEvent()" style="width: 100%;" data-i18n="saveBtn">บันทึกตารางงาน</button>
                     </div>
                 </div>
             </div>
 
             <!-- แสดงรายละเอียดงานที่ถูกเลือกจากปฏิทิน -->
             <div class="card" style="margin-top: 2rem;">
-                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title">📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ</h3>
-                <p id="selected-date-desc" style="color: #b0a89c;">คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูบันทึกงานของวันนั้นๆ</p>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ</h3>
+                <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูบันทึกงานของวันนั้นๆ</p>
             </div>
         </div>
 
         <!-- ================= PAGE 2: ROBOT PROJECTS ================= -->
         <div id="page-robots" class="page-view">
             <div class="card">
-                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ</h2>
-                <p style="color: #b0a89c; margin-bottom: 2rem;">รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น</p>
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;" data-i18n="robotHeader">🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="robotSub">รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น</p>
 
                 <div class="project-grid">
                     <div class="project-card">
                         <div>
-                            <span class="project-tag">หุ่นยนต์ สพฐ. / อัตโนมัติ</span>
-                            <h3>การแข่งขันหุ่นยนต์ระดับสูง สพฐ.</h3>
-                            <p>เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์</p>
+                            <span class="project-tag" data-i18n="proj1Tag">หุ่นยนต์ สพฐ. / อัตโนมัติ</span>
+                            <h3 data-i18n="proj1Name">การแข่งขันหุ่นยนต์ระดับสูง สพฐ.</h3>
+                            <p data-i18n="proj1Desc">เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์</p>
                         </div>
-                        <a href="https://bb36177-rgb.github.io/Project1/" target="_blank" class="link-btn">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
+                        <a href="https://bb36177-rgb.github.io/Project1/" target="_blank" class="link-btn" data-i18n="openWebBtn">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
                     </div>
                 </div>
             </div>
@@ -463,17 +499,17 @@
         <!-- ================= PAGE 3: OTHER PROJECTS ================= -->
         <div id="page-others" class="page-view">
             <div class="card">
-                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ</h2>
-                <p style="color: #b0a89c; margin-bottom: 2rem;">พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต</p>
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;" data-i18n="otherHeader">📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="otherSub">พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต</p>
 
                 <div class="project-grid">
                     <div class="project-card">
                         <div>
-                            <span class="project-tag">อนาคต / Coming Soon</span>
-                            <h3>พื้นที่เตรียมบรรจุผลงานใหม่</h3>
-                            <p>เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้</p>
+                            <span class="project-tag" data-i18n="proj2Tag">อนาคต / Coming Soon</span>
+                            <h3 data-i18n="proj2Name">พื้นที่เตรียมบรรจุผลงานใหม่</h3>
+                            <p data-i18n="proj2Desc">เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้</p>
                         </div>
-                        <span class="link-btn" style="opacity: 0.5; border-color: #555; color: #777; cursor: not-allowed;">⏳ กำลังพัฒนา</span>
+                        <span class="link-btn" style="opacity: 0.5; border-color: #555; color: #777; cursor: not-allowed;" data-i18n="devBtn">⏳ กำลังพัฒนา</span>
                     </div>
                 </div>
             </div>
@@ -484,10 +520,131 @@
     <!-- Footer -->
     <footer>
         <p id="footer-time">กำลังโหลดเวลาอัปเดต...</p>
-        <p class="copyright">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
+        <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
     </footer>
 
     <script>
+        // ระบบแปลภาษา 3 ภาษา (ไทย, อังกฤษ, จีน)
+        const translations = {
+            th: {
+                title: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
+                navHome: "หน้าหลัก",
+                navRobots: "เว็บหุ่นยนต์",
+                navOthers: "เว็บอื่นๆ",
+                heroTitle: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
+                heroSubtitle: "ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ",
+                welcomeTitle: "ยินดีต้อนรับสู่ชิงหลงเซิฟ",
+                welcomeDesc: "เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก",
+                objTitle: "วัตถุประสงค์ระบบ:",
+                objDesc: "จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น",
+                calBadge: "ปฏิทินส่วนตัว",
+                daySun: "อา", dayMon: "จ", dayTue: "อ", dayWed: "พ", dayThu: "พฤ", dayFri: "ศ", daySat: "ส",
+                adminTitle: "⚙️ โหมดจัดการตารางงาน (เจ้าของเว็บ)",
+                saveBtn: "บันทึกตารางงาน",
+                selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
+                selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูบันทึกงานของวันนั้นๆ",
+                robotHeader: "🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ",
+                robotSub: "รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น",
+                proj1Tag: "หุ่นยนต์ สพฐ. / อัตโนมัติ",
+                proj1Name: "การแข่งขันหุ่นยนต์ระดับสูง สพฐ.",
+                proj1Desc: "เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์",
+                openWebBtn: "🔗 เปิดดูเว็บไซต์โปรเจกต์",
+                otherHeader: "📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ",
+                otherSub: "พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต",
+                proj2Tag: "อนาคต / Coming Soon",
+                proj2Name: "พื้นที่เตรียมบรรจุผลงานใหม่",
+                proj2Desc: "เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้",
+                devBtn: "⏳ กำลังพัฒนา",
+                copyrightText: "© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต"
+            },
+            en: {
+                title: "Ching Long Server - Archive Hub & Personal System",
+                navHome: "Home",
+                navRobots: "Robot Web",
+                navOthers: "Other Webs",
+                heroTitle: "Ching Long Server - Archive Hub & Personal System",
+                heroSubtitle: "A centralized hub for project links, codes, and smart schedule calendar.",
+                welcomeTitle: "Welcome to Ching Long Server",
+                welcomeDesc: "This website serves as a central database (Server Hub) to store project links and previously developed websites, such as advanced robotics competition systems and various coding projects for easy access and reviewing.",
+                objTitle: "System Objectives:",
+                objDesc: "Organize and preserve source codes and project links, featuring a modern-ancient Chinese themed personal scheduling calendar.",
+                calBadge: "Personal Calendar",
+                daySun: "Su", dayMon: "Mo", dayTue: "Tu", dayWed: "We", dayThu: "Th", dayFri: "Fr", daySat: "Sa",
+                adminTitle: "⚙️ Schedule Management (Owner Mode)",
+                saveBtn: "Save Schedule",
+                selTitle: "📌 Appointment Details / Tasks",
+                selDesc: "Click a date on the calendar above to view notes for that day.",
+                robotHeader: "🤖 Category: Robotics & Automation",
+                robotSub: "Collection of website links, codes, and rule documents for various robotics competitions.",
+                proj1Tag: "OBEC Robot / Automation",
+                proj1Name: "OBEC Advanced Robotics Competition",
+                proj1Desc: "Competition intro website, rules, rescue robot field missions, along with PID Controller technical manual and online evaluation form.",
+                openWebBtn: "🔗 Open Project Website",
+                otherHeader: "📂 Category: Other Websites & Projects",
+                otherSub: "Storage area for web application projects, information systems, and future works.",
+                proj2Tag: "Future / Coming Soon",
+                proj2Name: "New Project Preparation Area",
+                proj2Desc: "Stay tuned for upcoming web applications and creative projects to be stored on this server.",
+                devBtn: "⏳ In Development",
+                copyrightText: "© All Rights Reserved - Protected by copyright. Unauthorized copying or modification is prohibited."
+            },
+            zh: {
+                title: "青龙服务器 - 档案中心与个人系统",
+                navHome: "首页",
+                navRobots: "机器人网站",
+                navOthers: "其他网站",
+                heroTitle: "青龙服务器 - 档案中心与个人系统",
+                heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
+                welcomeTitle: "欢迎来到青龙服务器",
+                welcomeDesc: "本网站作为中央数据库（服务器中心），用于存储所有开发过的项目链接和网站，例如高级机器人竞赛系统及各种代码项目，以便于随时调用和查阅。",
+                objTitle: "系统目标：",
+                objDesc: "整理并保存源代码及项目链接，配备融合中国古风与现代风格的个人日程管理日历。",
+                calBadge: "个人日历",
+                daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
+                adminTitle: "⚙️ 日程管理模式（站长专属）",
+                saveBtn: "保存日程",
+                selTitle: "📌 预约详情 / 待办事项",
+                selDesc: "点击上方日历中的日期以查看当天的备忘录。",
+                robotHeader: "🤖 分类：机器人与自动化",
+                robotSub: "收集各类机器人竞赛的网站链接、代码及规则文件。",
+                proj1Tag: "基础教育委员会 机器人 / 自动化",
+                proj1Name: "OBEC 高级机器人竞赛",
+                proj1Desc: "竞赛介绍网站、规则、救援机器人任务，附带 PID 控制器技术手册与在线评估表。",
+                openWebBtn: "🔗 打开项目网站",
+                otherHeader: "📂 分类：其他网站与项目",
+                otherSub: "用于存放网络应用项目、信息系统及未来作品的空间。",
+                proj2Tag: "未来 / 敬请期待",
+                proj2Name: "新项目准备区",
+                proj2Desc: "敬请期待即将存放在该服务器上的网络应用及创意项目。",
+                devBtn: "⏳ 开发中",
+                copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。"
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('site_lang', lang);
+            const t = translations[lang];
+            
+            document.getElementById('i-title').innerText = t.title;
+            
+            // อัปเดตทุก Element ที่มี attribute data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[key]) {
+                    el.innerText = t[key];
+                }
+            });
+        }
+
+        // โหลดภาษาที่เคยเลือกไว้ล่าสุด (ถ้ามี)
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('site_lang') || 'th';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage(savedLang);
+            renderCalendar();
+            updateFooterTime();
+        });
+
         // เปลี่ยนหน้าเว็บแบบ SPA
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
@@ -576,11 +733,6 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
             document.getElementById('footer-time').innerText = `อัปเดตระบบเซิร์ฟเวอร์ล่าสุดเมื่อ: ${now.toLocaleDateString('th-TH', options)} น.`;
         }
-
-        window.onload = () => {
-            renderCalendar();
-            updateFooterTime();
-        };
     </script>
 </body>
 </html>
