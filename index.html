@@ -293,7 +293,7 @@
             background: linear-gradient(135deg, var(--accent-gold), #aa771c);
             color: #000;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 16px;
             font-weight: 700;
             border-radius: 6px;
             cursor: pointer;
@@ -302,6 +302,36 @@
 
         .gold-btn:hover {
             opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border-gold);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
         }
 
         /* Project Cards */
@@ -408,6 +438,7 @@
                     <li><button class="nav-btn active" id="btn-home" onclick="showPage('home')" data-i18n="navHome">หน้าหลัก</button></li>
                     <li><button class="nav-btn" id="btn-robots" onclick="showPage('robots')" data-i18n="navRobots">เว็บหุ่นยนต์</button></li>
                     <li><button class="nav-btn" id="btn-others" onclick="showPage('others')" data-i18n="navOthers">เว็บอื่นๆ</button></li>
+                    <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อ / แบบประเมิน</button></li>
                 </ul>
                 
                 <!-- ตัวเลือกเปลี่ยนภาษา (3 ภาษา) -->
@@ -460,7 +491,7 @@
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
-                    <!-- แผงควบคุมเพิ่ม/แก้ไขงาน (เฉพาะเจ้าของเว็บ) -->
+                    <!-- แผงควบคุมเพิ่ม/แก้ไขงาน -->
                     <div class="admin-panel">
                         <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่ม/แก้ไข/ลบ)</strong>
                         <input type="date" id="event-date" onchange="onDateInputChange()">
@@ -515,6 +546,72 @@
             </div>
         </div>
 
+        <!-- ================= PAGE 4: CONTACT & EVALUATION ================= -->
+        <div id="page-contact" class="page-view">
+            <div class="grid-2">
+                <!-- ข้อมูลติดต่อผู้พัฒนา -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="contactHeader">📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์</h2>
+                    <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="contactSub">หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 15px; border-radius: 10px;">
+                            <strong style="color: var(--accent-gold);" data-i18n="devNameTitle">👤 ผู้พัฒนาหลัก:</strong>
+                            <p style="color: #fff; font-size: 0.95rem; margin-top: 4px;">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</p>
+                        </div>
+                        <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 15px; border-radius: 10px;">
+                            <strong style="color: var(--accent-gold);" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
+                            <p style="color: #fff; font-size: 0.95rem; margin-top: 4px;">bb36177-rgb/srver</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- แบบประเมินและแจ้งปัญหา (สร้างขึ้นเอง ไม่ใช้ Google Forms) -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมินความพึงพอใจและแจ้งปัญหา</h2>
+                    <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="formSub">ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป</p>
+                    
+                    <form onsubmit="submitFeedback(event)">
+                        <div class="form-group">
+                            <label data-i18n="lblName">ชื่อผู้ใช้งาน / ผู้ติดต่อ:</label>
+                            <input type="text" id="fb-name" required placeholder="กรอกชื่อของคุณ...">
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lblType">ประเภทการส่งข้อมูล:</label>
+                            <select id="fb-type">
+                                <option value="evaluation" data-i18n="optEval">⭐ แบบประเมินความพึงพอใจเว็บไซต์</option>
+                                <option value="issue" data-i18n="optIssue">🛠️ แจ้งปัญหา / บั๊กในระบบ</option>
+                                <option value="suggestion" data-i18n="optSugg">💡 เสนอแนะฟีเจอร์ใหม่</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lblScore">ระดับความพึงพอใจ:</label>
+                            <select id="fb-score">
+                                <option value="5" data-i18n="score5">⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)</option>
+                                <option value="4" data-i18n="score4">⭐⭐⭐⭐ ดีมาก (4 ดาว)</option>
+                                <option value="3" data-i18n="score3">⭐⭐ปานกลาง (3 ดาว)</option>
+                                <option value="2" data-i18n="score2">⭐ ควรปรับปรุง (2 ดาว)</option>
+                                <option value="1" data-i18n="score1">❌ แย่มาก (1 ดาว)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label data-i18n="lblDetails">รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:</label>
+                            <textarea id="fb-details" rows="3" required placeholder="พิมพ์รายละเอียดของคุณที่นี่..."></textarea>
+                        </div>
+                        <button type="submit" class="gold-btn" style="width: 100%;" data-i18n="submitBtn">📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
+            <div class="card" style="margin-top: 2rem;">
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
+                <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- รายการจะถูกแสดงผลที่นี่ผ่าน JavaScript -->
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Footer -->
@@ -531,6 +628,7 @@
                 navHome: "หน้าหลัก",
                 navRobots: "เว็บหุ่นยนต์",
                 navOthers: "เว็บอื่นๆ",
+                navContact: "ติดต่อ / แบบประเมิน",
                 heroTitle: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
                 heroSubtitle: "ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ",
                 welcomeTitle: "ยินดีต้อนรับสู่ชิงหลงเซิฟ",
@@ -555,6 +653,26 @@
                 proj2Name: "พื้นที่เตรียมบรรจุผลงานใหม่",
                 proj2Desc: "เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้",
                 devBtn: "⏳ กำลังพัฒนา",
+                contactHeader: "📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์",
+                contactSub: "หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้",
+                devNameTitle: "👤 ผู้พัฒนาหลัก:",
+                gitRepoTitle: "💻 GitHub Repository:",
+                formHeader: "📝 แบบประเมินความพึงพอใจและแจ้งปัญหา",
+                formSub: "ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป",
+                lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:",
+                lblType: "ประเภทการส่งข้อมูล:",
+                optEval: "⭐ แบบประเมินความพึงพอใจเว็บไซต์",
+                optIssue: "🛠️ แจ้งปัญหา / บั๊กในระบบ",
+                optSugg: "💡 เสนอแนะฟีเจอร์ใหม่",
+                lblScore: "ระดับความพึงพอใจ:",
+                score5: "⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)",
+                score4: "⭐⭐⭐⭐ ดีมาก (4 ดาว)",
+                score3: "⭐⭐ปานกลาง (3 ดาว)",
+                score2: "⭐ ควรปรับปรุง (2 ดาว)",
+                score1: "❌ แย่มาก (1 ดาว)",
+                lblDetails: "รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:",
+                submitBtn: "📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา",
+                feedbackListTitle: "📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ",
                 copyrightText: "© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต"
             },
             en: {
@@ -562,6 +680,7 @@
                 navHome: "Home",
                 navRobots: "Robot Web",
                 navOthers: "Other Webs",
+                navContact: "Contact / Evaluation",
                 heroTitle: "Ching Long Server - Archive Hub & Personal System",
                 heroSubtitle: "A centralized hub for project links, codes, and smart schedule calendar.",
                 welcomeTitle: "Welcome to Ching Long Server",
@@ -586,6 +705,26 @@
                 proj2Name: "New Project Preparation Area",
                 proj2Desc: "Stay tuned for upcoming web applications and creative projects to be stored on this server.",
                 devBtn: "⏳ In Development",
+                contactHeader: "📞 Contact Developer",
+                contactSub: "If you have any questions, suggestions, or wish to inquire about the system, please contact us below.",
+                devNameTitle: "👤 Lead Developer:",
+                gitRepoTitle: "💻 GitHub Repository:",
+                formHeader: "📝 Evaluation & Issue Report Form",
+                formSub: "Evaluate our website usage or report any bugs/issues you encounter so we can improve.",
+                lblName: "Your Name / Contact:",
+                lblType: "Submission Type:",
+                optEval: "⭐ Website Satisfaction Evaluation",
+                optIssue: "🛠️ Report System Bug / Issue",
+                optSugg: "💡 Suggest New Feature",
+                lblScore: "Satisfaction Score:",
+                score5: "⭐⭐⭐⭐⭐ Excellent (5 Stars)",
+                score4: "⭐⭐⭐⭐ Very Good (4 Stars)",
+                score3: "⭐⭐ Moderate (3 Stars)",
+                score2: "⭐ Needs Improvement (2 Stars)",
+                score1: "❌ Very Poor (1 Star)",
+                lblDetails: "Details / Feedback:",
+                submitBtn: "📤 Submit Evaluation / Report",
+                feedbackListTitle: "📋 Feedback and Issues Logged in System",
                 copyrightText: "© All Rights Reserved - Protected by copyright. Unauthorized copying or modification is prohibited."
             },
             zh: {
@@ -593,6 +732,7 @@
                 navHome: "首页",
                 navRobots: "机器人网站",
                 navOthers: "其他网站",
+                navContact: "联系 / 评估表",
                 heroTitle: "青龙服务器 - 档案中心与个人系统",
                 heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
                 welcomeTitle: "欢迎来到青龙服务器",
@@ -617,6 +757,26 @@
                 proj2Name: "新项目准备区",
                 proj2Desc: "敬请期待即将存放在该服务器上的网络应用及创意项目。",
                 devBtn: "⏳ 开发中",
+                contactHeader: "📞 联系开发者",
+                contactSub: "如有任何疑问、建议或想了解系统信息，请通过以下方式联系我们。",
+                devNameTitle: "👤 首席开发者：",
+                gitRepoTitle: "💻 GitHub 代码库：",
+                formHeader: "📝 满意度评估与问题反馈表",
+                formSub: "对我们的网站使用情况进行评估或报告您遇到的错误/问题，以便我们改进。",
+                lblName: "您的姓名 / 联系方式：",
+                lblType: "提交类型：",
+                optEval: "⭐ 网站满意度评估",
+                optIssue: "🛠️ 报告系统错误 / 问题",
+                optSugg: "💡 建议新功能",
+                lblScore: "满意度评分：",
+                score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
+                score4: "⭐⭐⭐⭐ 很好 (4星)",
+                score3: "⭐⭐ 一般 (3星)",
+                score2: "⭐ 需要改进 (2星)",
+                score1: "❌ 非常差 (1星)",
+                lblDetails: "详情 / 反馈内容：",
+                submitBtn: "📤 提交评估 / 反馈",
+                feedbackListTitle: "📋 系统中记录的反馈与问题列表",
                 copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。"
             }
         };
@@ -678,6 +838,7 @@
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
             renderCalendar();
+            renderFeedbacks();
         });
 
         // เปลี่ยนหน้าเว็บแบบ SPA
@@ -691,6 +852,7 @@
             if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
             if(pageId === 'robots') document.getElementById('btn-robots').classList.add('active');
             if(pageId === 'others') document.getElementById('btn-others').classList.add('active');
+            if(pageId === 'contact') document.getElementById('btn-contact').classList.add('active');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -740,16 +902,14 @@
             }
         }
 
-        // ฟังก์ชันเมื่อคลิกวันที่ในปฏิทิน หรือเปลี่ยนช่องวันที่
         function selectDate(year, month, day, dateKey) {
             document.getElementById('selected-date-title').innerText = `📌 บันทึกประจำวันที่ ${day} กันยายน ${year + 543}`;
             const desc = eventsData[dateKey] || "";
             document.getElementById('selected-date-desc').innerText = desc || "ไม่มีบันทึกงานหรือนัดหมายในวันนี้ (คุณสามารถพิมพ์แก้ไขเพิ่มได้ที่ช่องด้านบน)";
             document.getElementById('event-date').value = dateKey;
-            document.getElementById('event-desc').value = desc; // ดึงข้อความเดิมมาใส่ช่องพิมพ์เพื่อให้แก้ไขได้ทันที
+            document.getElementById('event-desc').value = desc;
         }
 
-        // เมื่อเปลี่ยนวันที่ใน input ให้ดึงข้อความเดิมมาแสดงด้วย
         function onDateInputChange() {
             const dateVal = document.getElementById('event-date').value;
             if(dateVal) {
@@ -775,16 +935,72 @@
             }
 
             if(descVal.trim() === "") {
-                delete eventsData[dateVal]; // ถ้าเว้นว่างไว้ จะถือว่าเป็นการลบข้อมูลของวันนั้น
+                delete eventsData[dateVal];
                 alert('ลบข้อมูลบันทึกของวันที่เลือกเรียบร้อยแล้ว!');
             } else {
-                eventsData[dateVal] = descVal; // บันทึกข้อมูลใหม่หรือทับของเดิม (แก้ไข)
+                eventsData[dateVal] = descVal;
                 alert('บันทึกและอัปเดตตารางงานเรียบร้อยแล้ว!');
             }
 
             localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
             renderCalendar();
             onDateInputChange();
+        }
+
+        // ระบบแบบประเมินและแจ้งปัญหา (LocalStorage)
+        const feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks')) || [
+            { name: "คุณสมชาย", type: "evaluation", score: "5", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ", date: "2026-09-05 10:00" }
+        ];
+
+        function submitFeedback(event) {
+            event.preventDefault();
+            const name = document.getElementById('fb-name').value;
+            const type = document.getElementById('fb-type').value;
+            const score = document.getElementById('fb-score').value;
+            const details = document.getElementById('fb-details').value;
+
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            feedbackList.unshift({ name, type, score, details, date: dateStr });
+            localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
+
+            alert('ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!');
+            document.getElementById('fb-name').value = '';
+            document.getElementById('fb-details').value = '';
+            renderFeedbacks();
+        }
+
+        function renderFeedbacks() {
+            const container = document.getElementById('feedback-container');
+            container.innerHTML = '';
+
+            if (feedbackList.length === 0) {
+                container.innerHTML = `<p style="color: #888; font-size: 0.9rem;">ยังไม่มีรายการข้อเสนอแนะในระบบ</p>`;
+                return;
+            }
+
+            feedbackList.forEach(fb => {
+                const item = document.createElement('div');
+                item.style.background = 'rgba(0,0,0,0.4)';
+                item.style.border = '1px solid var(--border-gold)';
+                item.style.padding = '12px 15px';
+                item.style.borderRadius = '8px';
+
+                let typeLabel = "⭐ แบบประเมิน";
+                if(fb.type === 'issue') typeLabel = "🛠️ แจ้งปัญหา";
+                if(fb.type === 'suggestion') typeLabel = "💡 เสนอแนะ";
+
+                item.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
+                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${fb.name} (${typeLabel})</span>
+                        <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
+                    </div>
+                    <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${fb.details}</p>
+                    <div style="font-size: 0.8rem; color: #ffcc00;">คะแนนความพึงพอใจ: ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
+                `;
+                container.appendChild(item);
+            });
         }
     </script>
 </body>
