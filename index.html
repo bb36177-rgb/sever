@@ -624,16 +624,17 @@
                     <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
                         <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
-                        <input type="date" id="event-date" onchange="onDateInputChange()">
+                        <!-- เปลี่ยนเป็น input text เพื่อให้ Placeholder เปลี่ยนตามภาษาได้สมบูรณ์ -->
+                        <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
                     </div>
                 </div>
             </div>
 
-            <!-- แสดงรายการงานที่ถูกเลือกจากปฏิทิน (พร้อมปุ่มลบแต่ละงาน) -->
+            <!-- แสดงรายการงานที่ถูกเลือกจากปฏิทิน -->
             <div class="card" style="margin-top: 2rem;">
-                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 预约详情 / 待办事项</h3>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ</h3>
                 <div id="selected-date-tasks" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
                     <p id="selected-date-desc" style="color: #b0a89c;" data-i18n="selDesc">คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ</p>
                 </div>
@@ -908,7 +909,7 @@
                 adminTitle: "⚙️ 日程管理模式（每日添加多个任务）",
                 eventPlaceholder: "点击日历日期或在此输入新任务...",
                 saveBtn: "➕ 添加今日新任务",
-                datePlaceholderFormat: "年/月/日 (YYYY/MM/DD)",
+                datePlaceholderFormat: "YYYY/MM/DD (年/月/日)",
                 selTitle: "📌 预约详情 / 待办事项",
                 selDesc: "点击上方日历中的日期以查看或添加当天的任务。",
                 robotHeader: "🤖 分类：机器人与自动化",
@@ -973,13 +974,6 @@
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(t[key]) el.setAttribute('placeholder', t[key]);
             });
-
-            // อัปเดต Placeholder ของช่องเลือกวันที่ตามภาษา
-            const dateInputEl = document.getElementById('event-date');
-            if(dateInputEl && t.datePlaceholderFormat) {
-                // สำหรับ input type="date" การใส่ data attribute หรือ attr พิเศษช่วยสื่อความหมาย
-                dateInputEl.setAttribute('data-placeholder', t.datePlaceholderFormat);
-            }
 
             renderCalendar();
             renderFeedbacks();
@@ -1108,16 +1102,6 @@
             renderTasksList(dateKey);
         }
 
-        function onDateInputChange() {
-            const dateVal = document.getElementById('event-date').value;
-            if(dateVal) {
-                const parts = dateVal.split('-');
-                if(parts.length === 3) {
-                    selectDate(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), dateVal);
-                }
-            }
-        }
-
         function renderTasksList(dateKey) {
             const container = document.getElementById('selected-date-tasks');
             container.innerHTML = '';
@@ -1151,9 +1135,9 @@
             const currentLang = document.getElementById('langSwitch').value;
 
             let alertMsgs = {
-                th: { selectFirst: "กรุณาเลือกวันที่ก่อนเพิ่มงาน!", enterText: "กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!" },
-                en: { selectFirst: "Please select a date first!", enterText: "Please enter task details!" },
-                zh: { selectFirst: "请先选择日期！", enterText: "请输入任务详情！" }
+                th: { selectFirst: "กรุณาเลือกวันที่จากปฏิทินก่อนเพิ่มงาน!", enterText: "กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!" },
+                en: { selectFirst: "Please select a date from the calendar first!", enterText: "Please enter task details!" },
+                zh: { selectFirst: "请先从日历中选择一个日期！", enterText: "请输入任务详情！" }
             };
 
             if(!dateVal) {
