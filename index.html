@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="i-title">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</title>
+    <!-- นำเข้าฟอนต์ Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -40,6 +41,7 @@
             overflow-x: hidden;
         }
 
+        /* Header & Navigation */
         header {
             background: rgba(14, 4, 6, 0.9);
             backdrop-filter: blur(15px);
@@ -70,7 +72,9 @@
             transition: transform 0.3s ease;
         }
 
-        .brand-home:hover { transform: scale(1.02); }
+        .brand-home:hover {
+            transform: scale(1.02);
+        }
 
         .logo-img {
             width: 45px;
@@ -82,7 +86,9 @@
             transition: transform 0.5s ease;
         }
 
-        .brand-home:hover .logo-img { transform: rotate(360deg); }
+        .brand-home:hover .logo-img {
+            transform: rotate(360deg);
+        }
 
         .brand-text {
             font-size: 1.05rem;
@@ -128,6 +134,7 @@
             transform: translateY(-1px);
         }
 
+        /* Language Switcher */
         .lang-selector {
             background: var(--surface);
             border: 1px solid var(--border-gold);
@@ -141,9 +148,16 @@
             transition: 0.3s;
         }
 
-        .lang-selector:hover { background: rgba(212, 175, 55, 0.1); }
-        .lang-selector option { background: var(--bg-deep); color: var(--text-light); }
+        .lang-selector:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
 
+        .lang-selector option {
+            background: var(--bg-deep);
+            color: var(--text-light);
+        }
+
+        /* Hero Banner */
         .hero {
             text-align: center;
             padding: 3.5rem 1rem 2rem 1rem;
@@ -159,8 +173,12 @@
             margin-bottom: 0.5rem;
         }
 
-        .hero p { color: var(--text-muted); font-size: 1rem; }
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
 
+        /* Container & Views */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -193,6 +211,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Cards & Grid */
         .card {
             background: var(--surface-card);
             border: 1px solid var(--border-gold);
@@ -203,7 +222,9 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .card:hover { box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); }
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15);
+        }
 
         .grid-2 {
             display: grid;
@@ -217,7 +238,7 @@
             .nav-right { justify-content: space-between; }
         }
 
-        /* ================= 🌟 ปรับปรุงการแสดงผลปฏิทิน ไม่ให้ล้นขอบ ================= */
+        /* ================= 🌟 ปฏิทินและแผงควบคุม ================= */
         .calendar-wrapper {
             background: linear-gradient(145deg, #1f0b0e, #2b0c11);
             border: 2px solid var(--accent-gold);
@@ -234,7 +255,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .cal-header h3 {
@@ -273,69 +294,78 @@
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
+            gap: 6px;
             text-align: center;
         }
 
         .cal-day-name {
             font-weight: 700;
             color: var(--accent-gold);
-            font-size: 0.85rem;
-            padding-bottom: 6px;
+            font-size: 0.9rem;
+            padding-bottom: 8px;
         }
 
         .cal-cell {
-            min-height: 48px;
+            min-height: 52px;
             background: rgba(20, 7, 9, 0.85);
             border: 1px solid var(--border-gold);
-            border-radius: 6px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 2px;
+            padding: 4px 2px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .cal-cell:hover {
             border-color: #ffea79;
             background: rgba(212, 175, 55, 0.25);
+            transform: translateY(-2px);
         }
 
         .cal-cell.today {
             border: 2px solid #ffea79;
             background: rgba(212, 175, 55, 0.2);
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
         }
 
         .cal-cell .day-number {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 800;
             color: #ffffff;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
         }
 
-        .cal-cell.today .day-number { color: #ffea79; }
+        .cal-cell.today .day-number {
+            color: #ffea79;
+        }
 
         .cal-cell .event-preview {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             color: #ffea79;
             background: rgba(212, 175, 55, 0.25);
-            padding: 1px 2px;
+            padding: 1px 3px;
             border-radius: 3px;
-            width: 95%;
+            width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            margin-top: 1px;
+            margin-bottom: 2px;
+            text-align: center;
         }
 
         .admin-panel {
             background: linear-gradient(135deg, rgba(139, 0, 0, 0.25), rgba(31, 11, 14, 0.9));
             border: 2px dashed var(--accent-gold);
-            padding: 15px;
+            padding: 18px;
             border-radius: 14px;
-            margin-top: 1.2rem;
+            margin-top: 1.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
         .admin-panel input, .admin-panel textarea {
@@ -343,31 +373,44 @@
             background: #000;
             border: 1px solid var(--border-gold);
             color: #fff;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 8px;
             margin-top: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             outline: none;
+            transition: 0.3s;
+        }
+
+        .admin-panel input:focus, .admin-panel textarea:focus {
+            border-color: #ffea79;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
         .gold-btn {
             background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
             color: #000;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 20px;
             font-weight: 800;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .gold-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 0 25px var(--accent-gold);
             filter: brightness(1.1);
         }
 
-        .form-group { margin-bottom: 1.2rem; }
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
         .form-group label {
             display: block;
             color: var(--accent-gold);
@@ -384,31 +427,109 @@
             padding: 10px 14px;
             border-radius: 8px;
             outline: none;
+            transition: 0.3s;
         }
 
-        .feedback-item {
-            background: rgba(0, 0, 0, 0.5);
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Project Cards */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--surface-card);
             border: 1px solid var(--border-gold);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-        }
-
-        .feedback-meta {
-            display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            padding-bottom: 6px;
-            font-size: 0.85rem;
         }
 
-        .feedback-user { color: var(--accent-gold); font-weight: 700; }
-        .feedback-time { color: #888; font-size: 0.75rem; }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+            border-color: #fff;
+        }
 
+        .project-tag {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-gold);
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-gold);
+        }
+
+        .project-card h3 {
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .project-card p {
+            color: #b0a89c;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .link-btn {
+            display: inline-block;
+            text-align: center;
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .link-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        .contact-action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-chip {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .action-chip:hover {
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        /* Footer */
         footer {
             background: #040101;
             border-top: 1px solid var(--border-gold);
@@ -417,12 +538,23 @@
             margin-top: auto;
         }
 
-        footer p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 4px; }
-        .copyright { color: #ff6b6b; font-size: 0.8rem; font-weight: 600; }
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .copyright {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Header & Navigation -->
     <header>
         <nav>
             <a class="brand-home" onclick="showPage('home')">
@@ -439,6 +571,7 @@
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
+                <!-- ตัวเลือกเปลี่ยนภาษา -->
                 <select id="langSwitch" class="lang-selector" onchange="changeLanguage(this.value)">
                     <option value="th">🇹🇭 ไทย</option>
                     <option value="en">🇬🇧 English</option>
@@ -448,6 +581,7 @@
         </nav>
     </header>
 
+    <!-- Hero Banner -->
     <div class="hero">
         <h1 data-i18n="heroTitle">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</h1>
         <p data-i18n="heroSubtitle">ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ</p>
@@ -455,26 +589,27 @@
 
     <div class="container">
 
-        <!-- PAGE 1: HOME -->
+        <!-- ================= PAGE 1: HOME ================= -->
         <div id="page-home" class="page-view active">
             <div class="grid-2">
                 <div class="card" style="margin-bottom: 0;">
                     <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="welcomeTitle">ยินดีต้อนรับสู่ชิงหลงเซิฟ</h2>
                     <p style="color: #d1c7bd; margin-bottom: 1rem;" data-i18n="welcomeDesc">
-                        เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด
+                        เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก
                     </p>
                     <div style="background: rgba(212, 175, 55, 0.05); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 0 8px 8px 0;">
                         <strong style="color: var(--accent-gold);" data-i18n="objTitle">วัตถุประสงค์ระบบ:</strong>
-                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;" data-i18n="objDesc">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัว</p>
+                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;" data-i18n="objDesc">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น</p>
                     </div>
                 </div>
 
+                <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ -->
                 <div class="calendar-wrapper">
                     <div class="cal-header">
-                        <h3 id="cal-month-year">กันยายน 2569</h3>
+                        <h3 id="cal-month-year">September 2026</h3>
                         <div class="cal-nav-controls">
-                            <button class="cal-nav-btn" onclick="changeMonth(-1)">◀</button>
-                            <button class="cal-nav-btn" onclick="changeMonth(1)">▶</button>
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)" title="เดือนก่อนหน้า">◀</button>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)" title="เดือนถัดไป">▶</button>
                         </div>
                     </div>
                     <div class="cal-grid" id="cal-days-name">
@@ -486,17 +621,20 @@
                         <div class="cal-day-name" data-i18n="dayFri">ศ</div>
                         <div class="cal-day-name" data-i18n="daySat">ส</div>
                     </div>
-                    <div class="cal-grid" id="cal-cells" style="margin-top: 6px;"></div>
+                    <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
+                    <!-- แผงควบคุมเพิ่มงาน (รองรับหลายงานต่อวัน) -->
                     <div class="admin-panel">
-                        <strong style="font-size: 0.85rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
+                        <strong style="font-size: 0.9rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
+                        <!-- เปลี่ยนเป็น input text เพื่อให้ Placeholder เปลี่ยนตามภาษาได้สมบูรณ์ -->
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
-                        <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่..."></textarea>
+                        <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
                     </div>
                 </div>
             </div>
 
+            <!-- แสดงรายการงานที่ถูกเลือกจากปฏิทิน -->
             <div class="card" style="margin-top: 2rem;">
                 <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;" id="selected-date-title" data-i18n="selTitle">📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ</h3>
                 <div id="selected-date-tasks" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
@@ -505,10 +643,50 @@
             </div>
         </div>
 
-        <!-- PAGE 4: EVALUATION -->
+        <!-- ================= PAGE 2: ROBOT PROJECTS ================= -->
+        <div id="page-robots" class="page-view">
+            <div class="card">
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;" data-i18n="robotHeader">🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="robotSub">รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น</p>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div>
+                            <span class="project-tag" data-i18n="proj1Tag">หุ่นยนต์ สพฐ. / อัตโนมัติ</span>
+                            <h3 data-i18n="proj1Name">การแข่งขันหุ่นยนต์ระดับสูง สพฐ.</h3>
+                            <p data-i18n="proj1Desc">เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์</p>
+                        </div>
+                        <a href="https://bb36177-rgb.github.io/Project1/" target="_blank" class="link-btn" data-i18n="openWebBtn">🔗 เปิดดูเว็บไซต์โปรเจกต์</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 3: OTHER PROJECTS ================= -->
+        <div id="page-others" class="page-view">
+            <div class="card">
+                <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;" data-i18n="otherHeader">📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="otherSub">พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต</p>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div>
+                            <span class="project-tag" data-i18n="proj2Tag">อนาคต / Coming Soon</span>
+                            <h3 data-i18n="proj2Name">พื้นที่เตรียมบรรจุผลงานใหม่</h3>
+                            <p data-i18n="proj2Desc">เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้</p>
+                        </div>
+                        <span class="link-btn" style="opacity: 0.5; border-color: #555; color: #777; cursor: not-allowed;" data-i18n="devBtn">⏳ กำลังพัฒนา</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 4: EVALUATION & ISSUES ================= -->
         <div id="page-evaluation" class="page-view">
             <div class="card" style="max-width: 800px; margin: 0 auto 2rem auto;">
                 <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="formHeader">📝 แบบประเมินความพึงพอใจและแจ้งปัญหา</h2>
+                <p style="color: #b0a89c; margin-bottom: 1.5rem;" data-i18n="formSub">ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป</p>
+                
                 <form onsubmit="submitFeedback(event)">
                     <div class="form-group">
                         <label data-i18n="lblName">ชื่อผู้ใช้งาน / ผู้ติดต่อ:</label>
@@ -525,11 +703,11 @@
                     <div class="form-group">
                         <label data-i18n="lblScore">ระดับความพึงพอใจ:</label>
                         <select id="fb-score">
-                            <option value="5">⭐⭐⭐⭐⭐ 5/5</option>
-                            <option value="4">⭐⭐⭐⭐ 4/5</option>
-                            <option value="3">⭐⭐⭐ 3/5</option>
-                            <option value="2">⭐⭐ 2/5</option>
-                            <option value="1">⭐ 1/5</option>
+                            <option value="5" data-i18n="score5">⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)</option>
+                            <option value="4" data-i18n="score4">⭐⭐⭐⭐ ดีมาก (4 ดาว)</option>
+                            <option value="3" data-i18n="score3">⭐⭐ปานกลาง (3 ดาว)</option>
+                            <option value="2" data-i18n="score2">⭐ ควรปรับปรุง (2 ดาว)</option>
+                            <option value="1" data-i18n="score1">❌ แย่มาก (1 ดาว)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -539,16 +717,43 @@
                     <button type="submit" class="gold-btn" style="width: 100%;" data-i18n="submitBtn">📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา</button>
                 </form>
             </div>
-            
-            <!-- ส่วนแสดงรายชื่อคนตอบแบบประเมิน -->
+
+            <!-- แสดงรายการที่ผู้ใช้เคยส่งเข้ามา -->
             <div class="card" style="max-width: 800px; margin: 0 auto;">
-                <h3 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="feedbackListTitle">📋 รายการผู้ตอบแบบประเมินในระบบ</h3>
-                <div id="feedback-container"></div>
+                <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
+                <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 5: CONTACT DEVELOPER ================= -->
+        <div id="page-contact" class="page-view">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <h2 style="color: var(--accent-gold); margin-bottom: 1rem;" data-i18n="contactHeader">📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์</h2>
+                <p style="color: #b0a89c; margin-bottom: 2rem;" data-i18n="contactSub">หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
+                        <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="devNameTitle">👤 ผู้พัฒนาหลัก:</strong>
+                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;">
+                            <span data-i18n="devNameVal">ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)</span><br>
+                            Gmail: <a href="mailto:bb36177@banbung.ac.th" style="color: var(--accent-gold); text-decoration: none;">bb36177@banbung.ac.th</a>
+                        </p>
+                        <div class="contact-action-btns">
+                            <a href="mailto:bb36177@banbung.ac.th" class="action-chip" data-i18n="sendEmailBtn">✉️ ส่งอีเมล (Send Email)</a>
+                            <button class="action-chip" onclick="copyEmailToClipboard()" data-i18n="copyEmailBtn">📋 คัดลอก Gmail</button>
+                        </div>
+                    </div>
+                    <div style="background: rgba(212, 175, 55, 0.05); border: 1px solid var(--border-gold); padding: 20px; border-radius: 12px;">
+                        <strong style="color: var(--accent-gold); font-size: 1.05rem;" data-i18n="gitRepoTitle">💻 GitHub Repository:</strong>
+                        <p style="color: #fff; font-size: 1rem; margin-top: 6px;">bb36177-rgb/sever</p>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 
+    <!-- Footer -->
     <footer>
         <p id="last-update-text">กำลังโหลดเวลาอัปเดต...</p>
         <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
@@ -559,85 +764,263 @@
             th: {
                 title: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
                 brandTitle: "ชิงหลงเซิฟ (Ching Long Server)",
-                navHome: "หน้าหลัก", navRobots: "เว็บหุ่นยนต์", navOthers: "เว็บอื่นๆ", navEvaluation: "แบบประเมิน", navContact: "ติดต่อผู้พัฒนา",
-                heroTitle: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว", heroSubtitle: "ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ",
-                welcomeTitle: "ยินดีต้อนรับสู่ชิงหลงเซิฟ", welcomeDesc: "เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub)",
-                objTitle: "วัตถุประสงค์ระบบ:", objDesc: "จัดระเบียบและเก็บรักษาซอร์สโค้ด",
+                navHome: "หน้าหลัก",
+                navRobots: "เว็บหุ่นยนต์",
+                navOthers: "เว็บอื่นๆ",
+                navEvaluation: "แบบประเมิน",
+                navContact: "ติดต่อผู้พัฒนา",
+                heroTitle: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
+                heroSubtitle: "ศูนย์รวมลิงก์โปรเจกต์ โค้ด และบันทึกตารางนัดหมายกิจกรรมอัจฉริยะ",
+                welcomeTitle: "ยินดีต้อนรับสู่ชิงหลงเซิฟ",
+                welcomeDesc: "เว็บไซต์นี้ถูกสร้างขึ้นเพื่อใช้เป็นฐานข้อมูลส่วนกลาง (Server Hub) สำหรับจัดเก็บลิงก์ผลงาน เว็บไซต์ที่เคยพัฒนาขึ้นทั้งหมด เช่น ระบบแข่งขันหุ่นยนต์ระดับสูง และโปรเจกต์โค้ดดิ้งต่างๆ เพื่อให้สามารถเรียกใช้งานและตรวจสอบย้อนหลังได้อย่างสะดวก",
+                objTitle: "วัตถุประสงค์ระบบ:",
+                objDesc: "จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น",
                 daySun: "อา", dayMon: "จ", dayTue: "อ", dayWed: "พ", dayThu: "พฤ", dayFri: "ศ", daySat: "ส",
-                adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)", eventPlaceholder: "คลิกวันที่ในปฏิทิน...", saveBtn: "➕ เพิ่มงานใหม่ในวันนี้", datePlaceholderFormat: "วว/ดด/ปปปป",
-                selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ", selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบน...",
-                formHeader: "📝 แบบประเมินความพึงพอใจและแจ้งปัญหา", lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:", namePlaceholder: "กรอกชื่อของคุณ...",
-                lblType: "ประเภทการส่งข้อมูล:", optEval: "⭐ แบบประเมินความพึงพอใจ", optIssue: "🛠️ แจ้งปัญหา / บั๊กในระบบ", optSugg: "💡 เสนอแนะฟีเจอร์ใหม่",
-                lblScore: "ระดับความพึงพอใจ:", lblDetails: "รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:", detailsPlaceholder: "พิมพ์รายละเอียด...",
-                submitBtn: "📤 ส่งข้อมูลแบบประเมิน", feedbackListTitle: "📋 รายการผู้ตอบแบบประเมินในระบบ",
-                noFeedbackText: "ยังไม่มีผู้ตอบแบบประเมินในระบบ", scoreLabelText: "ให้คะแนน:", respondentLabel: "ผู้ตอบแบบประเมิน:",
-                copyrightText: "© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์", lastUpdatePrefix: "ปรับปรุงระบบล่าสุดเมื่อ วันที่ "
+                adminTitle: "⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)",
+                eventPlaceholder: "คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่...",
+                saveBtn: "➕ เพิ่มงานใหม่ในวันนี้",
+                datePlaceholderFormat: "วว/ดด/ปปปป",
+                selTitle: "📌 รายละเอียดนัดหมาย / สิ่งที่จะทำ",
+                selDesc: "คลิกเลือกวันที่ในปฏิทินด้านบนเพื่อดูหรือเพิ่มรายการงานในวันนั้นๆ",
+                robotHeader: "🤖 หมวดหมู่: เว็บหุ่นยนต์และระบบอัตโนมัติ",
+                robotSub: "รวบรวมลิงก์เว็บไซต์ โค้ด และเอกสารกติกาการแข่งขันหุ่นยนต์ระดับต่างๆ ที่เคยพัฒนาขึ้น",
+                proj1Tag: "หุ่นยนต์ สพฐ. / อัตโนมัติ",
+                proj1Name: "การแข่งขันหุ่นยนต์ระดับสูง สพฐ.",
+                proj1Desc: "เว็บไซต์แนะนำการแข่งขัน กติกา ภารกิจสนามหุ่นยนต์กู้ภัย พร้อมระบบคู่มือเทคนิค PID Controller และฟอร์มประเมินผลออนไลน์",
+                openWebBtn: "🔗 เปิดดูเว็บไซต์โปรเจกต์",
+                otherHeader: "📂 หมวดหมู่: เว็บไซต์และโปรเจกต์อื่นๆ",
+                otherSub: "พื้นที่เก็บโปรเจกต์เว็บแอปพลิเคชัน ระบบสารสนเทศ และผลงานอื่นๆ ที่จะเพิ่มขึ้นในอนาคต",
+                proj2Tag: "อนาคต / Coming Soon",
+                proj2Name: "พื้นที่เตรียมบรรจุผลงานใหม่",
+                proj2Desc: "เตรียมพบกับระบบเว็บแอปพลิเคชันและโปรเจกต์สร้างสรรค์อื่นๆ ที่จะนำมาเก็บไว้ในเซิร์ฟเวอร์นี้เร็วๆ นี้",
+                devBtn: "⏳ กำลังพัฒนา",
+                contactHeader: "📞 ติดต่อผู้พัฒนาเซิร์ฟเวอร์",
+                contactSub: "หากมีข้อสงสัย ข้อเสนอแนะ หรือต้องการสอบถามข้อมูลเกี่ยวกับระบบ สามารถติดต่อได้ผ่านช่องทางด้านล่างนี้",
+                devNameTitle: "👤 ผู้พัฒนาหลัก:",
+                devNameVal: "ทีมงานชิงหลงเซิฟ / (Ching Long Server Team)",
+                gitRepoTitle: "💻 GitHub Repository:",
+                sendEmailBtn: "✉️ ส่งอีเมล (Send Email)",
+                copyEmailBtn: "📋 คัดลอก Gmail",
+                emailCopiedAlert: "คัดลอกอีเมล bb36177@banbung.ac.th ไปยังคลิปบอร์ดแล้ว!",
+                formHeader: "📝 แบบประเมินความพึงพอใจและแจ้งปัญหา",
+                formSub: "ร่วมประเมินการใช้งานเว็บไซต์ หรือแจ้งข้อบกพร่อง/ปัญหาที่พบเพื่อให้เรานำไปปรับปรุงต่อไป",
+                lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:",
+                namePlaceholder: "กรอกชื่อของคุณ...",
+                lblType: "ประเภทการส่งข้อมูล:",
+                optEval: "⭐ แบบประเมินความพึงพอใจเว็บไซต์",
+                optIssue: "🛠️ แจ้งปัญหา / บั๊กในระบบ",
+                optSugg: "💡 เสนอแนะฟีเจอร์ใหม่",
+                lblScore: "ระดับความพึงพอใจ:",
+                score5: "⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)",
+                score4: "⭐⭐⭐⭐ ดีมาก (4 ดาว)",
+                score3: "⭐⭐ปานกลาง (3 ดาว)",
+                score2: "⭐ ควรปรับปรุง (2 ดาว)",
+                score1: "❌ แย่มาก (1 ดาว)",
+                lblDetails: "รายละเอียดข้อเสนอแนะ / ปัญหาที่พบ:",
+                detailsPlaceholder: "พิมพ์รายละเอียดของคุณที่นี่...",
+                submitBtn: "📤 ส่งข้อมูลแบบประเมิน / แจ้งปัญหา",
+                feedbackListTitle: "📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ",
+                noFeedbackText: "ยังไม่มีรายการข้อเสนอแนะในระบบ",
+                scoreLabelText: "คะแนนความพึงพอใจ:",
+                copyrightText: "© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต",
+                defaultAuthorName: "คุณสมชาย",
+                defaultReviewText: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ",
+                lastUpdatePrefix: "ปรับปรุงระบบล่าสุดเมื่อ วันที่ "
             },
             en: {
-                title: "Ching Long Server - Hub", brandTitle: "Ching Long Server",
-                navHome: "Home", navRobots: "Robots", navOthers: "Others", navEvaluation: "Evaluation", navContact: "Contact",
-                heroTitle: "Ching Long Server - Personal Archive Hub", heroSubtitle: "Centralized hub for projects and scheduling.",
-                welcomeTitle: "Welcome to Ching Long Server", welcomeDesc: "Central database server hub.",
-                objTitle: "Objective:", objDesc: "Organize codes & projects.",
+                title: "Ching Long Server - Archive Hub & Personal System",
+                brandTitle: "Ching Long Server",
+                navHome: "Home",
+                navRobots: "Robot Web",
+                navOthers: "Other Webs",
+                navEvaluation: "Evaluation",
+                navContact: "Contact",
+                heroTitle: "Ching Long Server - Archive Hub & Personal System",
+                heroSubtitle: "A centralized hub for project links, codes, and smart schedule calendar.",
+                welcomeTitle: "Welcome to Ching Long Server",
+                welcomeDesc: "This website serves as a central database (Server Hub) to store project links and previously developed websites, such as advanced robotics competition systems and various coding projects for easy access and reviewing.",
+                objTitle: "System Objectives:",
+                objDesc: "Organize and preserve source codes and project links, featuring a modern-ancient Chinese themed personal scheduling calendar.",
                 daySun: "Su", dayMon: "Mo", dayTue: "Tu", dayWed: "We", dayThu: "Th", dayFri: "Fr", daySat: "Sa",
-                adminTitle: "⚙️ Schedule Management", eventPlaceholder: "Click date to add task...", saveBtn: "➕ Add Task", datePlaceholderFormat: "DD/MM/YYYY",
-                selTitle: "📌 Tasks List", selDesc: "Click a date above...",
-                formHeader: "📝 Evaluation & Feedback", lblName: "Name / Contact:", namePlaceholder: "Enter name...",
-                lblType: "Submission Type:", optEval: "⭐ Satisfaction Rating", optIssue: "🛠️ Bug Report", optSugg: "💡 Feature Suggestion",
-                lblScore: "Satisfaction Level:", lblDetails: "Details:", detailsPlaceholder: "Type here...",
-                submitBtn: "📤 Submit Feedback", feedbackListTitle: "📋 Evaluation Responses",
-                noFeedbackText: "No evaluation submissions yet.", scoreLabelText: "Given Score:", respondentLabel: "Respondent:",
-                copyrightText: "© All Rights Reserved.", lastUpdatePrefix: "Last updated on "
+                adminTitle: "⚙️ Schedule Management (Add Multiple Tasks)",
+                eventPlaceholder: "Click calendar date or type new task here...",
+                saveBtn: "➕ Add New Task",
+                datePlaceholderFormat: "DD/MM/YYYY",
+                selTitle: "📌 Appointment Details / Tasks",
+                selDesc: "Click a date on the calendar above to view or add tasks for that day.",
+                robotHeader: "🤖 Category: Robotics & Automation",
+                robotSub: "Collection of website links, codes, and rule documents for various robotics competitions.",
+                proj1Tag: "OBEC Robot / Automation",
+                proj1Name: "OBEC Advanced Robotics Competition",
+                proj1Desc: "Competition intro website, rules, rescue robot field missions, along with PID Controller technical manual and online evaluation form.",
+                openWebBtn: "🔗 Open Project Website",
+                otherHeader: "📂 Category: Other Websites & Projects",
+                otherSub: "Storage area for web application projects, information systems, and future works.",
+                proj2Tag: "Future / Coming Soon",
+                proj2Name: "New Project Preparation Area",
+                proj2Desc: "Stay tuned for upcoming web applications and creative projects to be stored on this server.",
+                devBtn: "⏳ In Development",
+                contactHeader: "📞 Contact Developer",
+                contactSub: "If you have any questions, suggestions, or wish to inquire about the system, please contact us below.",
+                devNameTitle: "👤 Lead Developer:",
+                devNameVal: "Ching Long Server Team",
+                gitRepoTitle: "💻 GitHub Repository:",
+                sendEmailBtn: "✉️ Send Email",
+                copyEmailBtn: "📋 Copy Gmail",
+                emailCopiedAlert: "Copied email bb36177@banbung.ac.th to clipboard!",
+                formHeader: "📝 Evaluation & Issue Report Form",
+                formSub: "Evaluate our website usage or report any bugs/issues you encounter so we can improve.",
+                lblName: "Your Name / Contact:",
+                namePlaceholder: "Enter your name...",
+                lblType: "Submission Type:",
+                optEval: "⭐ Website Satisfaction Evaluation",
+                optIssue: "🛠️ Report System Bug / Issue",
+                optSugg: "💡 Suggest New Feature",
+                lblScore: "Satisfaction Score:",
+                score5: "⭐⭐⭐⭐⭐ Excellent (5 Stars)",
+                score4: "⭐⭐⭐⭐ Very Good (4 Stars)",
+                score3: "⭐⭐ Moderate (3 Stars)",
+                score2: "⭐ Needs Improvement (2 Stars)",
+                score1: "❌ Very Poor (1 Star)",
+                lblDetails: "Details / Feedback:",
+                detailsPlaceholder: "Type your details here...",
+                submitBtn: "📤 Submit Evaluation / Report",
+                feedbackListTitle: "📋 Feedback and Issues Logged in System",
+                noFeedbackText: "No feedback items in the system yet.",
+                scoreLabelText: "Satisfaction Score:",
+                copyrightText: "© All Rights Reserved - Protected by copyright. Unauthorized copying or modification is prohibited.",
+                defaultAuthorName: "Somchai",
+                defaultReviewText: "The system is easy to use and has a very beautiful design.",
+                lastUpdatePrefix: "Last updated on "
             },
             zh: {
-                title: "青龙服务器", brandTitle: "青龙服务器", navHome: "首页", navRobots: "机器人", navOthers: "其他", navEvaluation: "评估", navContact: "联系",
-                heroTitle: "青龙服务器 - 个人中心", heroSubtitle: "项目与日程中心", welcomeTitle: "欢迎", welcomeDesc: "中央数据库",
-                objTitle: "目标：", objDesc: "保存代码", daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
-                adminTitle: "⚙️ 日程管理", eventPlaceholder: "点击日期...", saveBtn: "➕ 添加", datePlaceholderFormat: "YYYY/MM/DD",
-                selTitle: "📌 待办事项", selDesc: "点击上方日期...", formHeader: "📝 评估表", lblName: "姓名：", namePlaceholder: "输入姓名...",
-                lblType: "类型：", optEval: "⭐ 满意度评估", optIssue: "🛠️ 错误报告", optSugg: "💡 功能建议",
-                lblScore: "评分：", lblDetails: "详情：", detailsPlaceholder: "输入内容...", submitBtn: "📤 提交",
-                feedbackListTitle: "📋 反馈列表", noFeedbackText: "暂无数据", scoreLabelText: "评分：", respondentLabel: "答题者：",
-                copyrightText: "© 版权所有", lastUpdatePrefix: "更新于 "
+                title: "青龙服务器 - 档案中心与个人系统",
+                brandTitle: "青龙服务器",
+                navHome: "首页",
+                navRobots: "机器人网站",
+                navOthers: "其他网站",
+                navEvaluation: "评估表",
+                navContact: "联系开发者",
+                heroTitle: "青龙服务器 - 档案中心与个人系统",
+                heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
+                welcomeTitle: "欢迎来到青龙服务器",
+                welcomeDesc: "本网站作为中央数据库（服务器中心），用于存储所有开发过的项目链接和网站，例如高级机器人竞赛系统及各种代码项目，以便于随时调用和查阅。",
+                objTitle: "系统目标：",
+                objDesc: "整理并保存源代码及项目链接，配备融合中国古风与现代风格的个人日程管理日历。",
+                daySun: "日", dayMon: "一", dayTue: "二", dayWed: "三", dayThu: "四", dayFri: "五", daySat: "六",
+                adminTitle: "⚙️ 日程管理模式（每日添加多个任务）",
+                eventPlaceholder: "点击日历日期或在此输入新任务...",
+                saveBtn: "➕ 添加今日新任务",
+                datePlaceholderFormat: "YYYY/MM/DD (年/月/日)",
+                selTitle: "📌 预约详情 / 待办事项",
+                selDesc: "点击上方日历中的日期以查看或添加当天的任务。",
+                robotHeader: "🤖 分类：机器人与自动化",
+                robotSub: "收集各类机器人竞赛的网站链接、代码及规则文件。",
+                proj1Tag: "基础教育委员会 机器人 / 自动化",
+                proj1Name: "OBEC 高级机器人竞赛",
+                proj1Desc: "竞赛介绍网站、规则、救援机器人任务，附带 PID 控制器技术手册与在线评估表。",
+                openWebBtn: "🔗 打开项目网站",
+                otherHeader: "📂 分类：其他网站与项目",
+                otherSub: "用于存放网络应用项目、信息系统及未来作品的空间。",
+                proj2Tag: "未来 / 敬请期待",
+                proj2Name: "新项目准备区",
+                proj2Desc: "敬请期待即将存放在该服务器上的网络应用及创意项目。",
+                devBtn: "⏳ 开发中",
+                contactHeader: "📞 联系开发者",
+                contactSub: "如有任何疑问、建议或想了解系统信息，请通过以下方式联系我们。",
+                devNameTitle: "👤 首席开发者：",
+                devNameVal: "青龙服务器团队",
+                gitRepoTitle: "💻 GitHub 代码库：",
+                sendEmailBtn: "✉️ 发送电子邮件",
+                copyEmailBtn: "📋 复制 Gmail",
+                emailCopiedAlert: "已将邮箱 bb36177@banbung.ac.th 复制到剪贴板！",
+                formHeader: "📝 满意度评估与问题反馈表",
+                formSub: "对我们的网站使用情况进行评估或报告您遇到的错误/问题，以便我们改进。",
+                lblName: "您的姓名 / 联系方式：",
+                namePlaceholder: "请输入您的姓名...",
+                lblType: "提交类型：",
+                optEval: "⭐ 网站满意度评估",
+                optIssue: "🛠️ 报告系统错误 / 问题",
+                optSugg: "💡 建议新功能",
+                lblScore: "满意度评分：",
+                score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
+                score4: "⭐⭐⭐⭐ 很好 (4星)",
+                score3: "⭐⭐ 一般 (3星)",
+                score2: "⭐ 需要改进 (2星)",
+                score1: "❌ 非常差 (1星)",
+                lblDetails: "详情 / 反馈内容：",
+                detailsPlaceholder: "在此输入您的详细信息...",
+                submitBtn: "📤 提交评估 /反馈",
+                feedbackListTitle: "📋 系统中记录的反馈与问题列表",
+                noFeedbackText: "系统中尚无反馈记录",
+                scoreLabelText: "满意度评分：",
+                copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。",
+                defaultAuthorName: "颂猜",
+                defaultReviewText: "系统非常易用，设计非常漂亮。",
+                lastUpdatePrefix: "系统最后更新于 "
             }
         };
-
-        let lastCommitDateString = "2026-09-05T22:40:00Z";
 
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
+            
             document.getElementById('i-title').innerText = t.title;
+            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if(t[key]) el.innerText = t[key];
             });
+
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if(t[key]) el.setAttribute('placeholder', t[key]);
             });
+
             renderCalendar();
             renderFeedbacks();
-            updateFooterTime(lastCommitDateString, lang); // ⭐ อัปเดตเวลาท้ายเว็บทันทีที่สลับภาษา
+            if(lastCommitDateString) {
+                updateFooterTime(lastCommitDateString, lang);
+            }
+        }
+
+        function copyEmailToClipboard() {
+            const email = "bb36177@banbung.ac.th";
+            navigator.clipboard.writeText(email).then(() => {
+                const currentLang = document.getElementById('langSwitch').value;
+                alert(translations[currentLang].emailCopiedAlert);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
+            renderCalendar();
+            renderFeedbacks();
         });
 
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
             const target = document.getElementById('page-' + pageId);
             if(target) target.classList.add('active');
-            if(document.getElementById('btn-' + pageId)) document.getElementById('btn-' + pageId).classList.add('active');
+
+            if(pageId === 'home') document.getElementById('btn-home').classList.add('active');
+            if(pageId === 'robots') document.getElementById('btn-robots').classList.add('active');
+            if(pageId === 'others') document.getElementById('btn-others').classList.add('active');
+            if(pageId === 'evaluation') document.getElementById('btn-evaluation').classList.add('active');
+            if(pageId === 'contact') document.getElementById('btn-contact').classList.add('active');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         let currentCalendarDate = new Date(2026, 8, 1);
-        const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {};
+        const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
+            "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
+            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
+        };
 
         function changeMonth(direction) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
@@ -647,6 +1030,7 @@
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
             cellsContainer.innerHTML = '';
+
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
             const currentLang = document.getElementById('langSwitch').value;
@@ -658,7 +1042,8 @@
             };
 
             let yearDisplay = (currentLang === 'th') ? (year + 543) : year;
-            document.getElementById('cal-month-year').innerText = `${monthNames[currentLang][month]} ${yearDisplay}`;
+            let monthYearText = (currentLang === 'zh') ? `${year}年 ${monthNames['zh'][month]}` : `${monthNames[currentLang][month]} ${yearDisplay}`;
+            document.getElementById('cal-month-year').innerText = monthYearText;
             
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
@@ -666,29 +1051,132 @@
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyCell = document.createElement('div');
                 emptyCell.className = 'cal-cell';
-                emptyCell.style.opacity = '0.1';
+                emptyCell.style.opacity = '0.15';
                 cellsContainer.appendChild(emptyCell);
             }
+
+            const todayObj = new Date();
+            const isCurrentMonthYear = (todayObj.getFullYear() === year && todayObj.getMonth() === month);
+            const todayDate = todayObj.getDate();
 
             for (let day = 1; day <= totalDays; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
-                const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                if (isCurrentMonthYear && day === todayDate) {
+                    cell.classList.add('today');
+                }
                 
+                const formattedMonth = String(month + 1).padStart(2, '0');
+                const formattedDay = String(day).padStart(2, '0');
+                const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
+
                 let cellHTML = `<span class="day-number">${day}</span>`;
-                if (eventsData[dateKey]) {
+                if (eventsData[dateKey] && eventsData[dateKey].length > 0) {
                     eventsData[dateKey].forEach(task => {
-                        cellHTML += `<div class="event-preview">${task}</div>`;
+                        cellHTML += `<div class="event-preview">• ${task}</div>`;
                     });
                 }
+
                 cell.innerHTML = cellHTML;
+                cell.onclick = () => { selectDate(year, month, day, dateKey); };
                 cellsContainer.appendChild(cell);
             }
         }
 
-        /* ================= 🌟 จัดการระบบบันทึกและแสดงคนตอบแบบสอบถาม ================= */
+        function selectDate(year, month, day, dateKey) {
+            const currentLang = document.getElementById('langSwitch').value;
+            const monthNames = {
+                th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            };
+
+            let yDisplay = (currentLang === 'th') ? (year + 543) : year;
+            let dateTitlePrefix = { 
+                th: `📌 บันทึกประจำวันที่ ${day} ${monthNames['th'][month]} ${yDisplay}`, 
+                en: `📌 Notes for ${monthNames['en'][month]} ${day}, ${yDisplay}`, 
+                zh: `📌 ${yDisplay}年${monthNames['zh'][month]}${day}日备忘录` 
+            };
+
+            document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
+            document.getElementById('event-date').value = dateKey;
+            document.getElementById('event-desc').value = "";
+            renderTasksList(dateKey);
+        }
+
+        function renderTasksList(dateKey) {
+            const container = document.getElementById('selected-date-tasks');
+            container.innerHTML = '';
+            const currentLang = document.getElementById('langSwitch').value;
+            let noDataText = { 
+                th: "ยังไม่มีรายการงานในวันนี้ สามารถพิมพ์เพิ่มด้านบนได้เลยครับ", 
+                en: "No tasks for today. You can add one above.", 
+                zh: "今天没有任务，可以在上方添加。" 
+            };
+
+            const tasks = eventsData[dateKey];
+            if(!tasks || tasks.length === 0) {
+                container.innerHTML = `<p style="color: #b0a89c; font-size: 0.9rem;">${noDataText[currentLang]}</p>`;
+                return;
+            }
+
+            tasks.forEach((task, index) => {
+                const taskRow = document.createElement('div');
+                taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
+                taskRow.innerHTML = `
+                    <span style="color: #fff; font-size: 0.9rem;">• ${task}</span>
+                    <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>
+                `;
+                container.appendChild(taskRow);
+            });
+        }
+
+        function addEvent() {
+            const dateVal = document.getElementById('event-date').value;
+            const descVal = document.getElementById('event-desc').value;
+            const currentLang = document.getElementById('langSwitch').value;
+
+            let alertMsgs = {
+                th: { selectFirst: "กรุณาเลือกวันที่จากปฏิทินก่อนเพิ่มงาน!", enterText: "กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!" },
+                en: { selectFirst: "Please select a date from the calendar first!", enterText: "Please enter task details!" },
+                zh: { selectFirst: "请先从日历中选择一个日期！", enterText: "请输入任务详情！" }
+            };
+
+            if(!dateVal) {
+                alert(alertMsgs[currentLang].selectFirst);
+                return;
+            }
+
+            if(descVal.trim() === "") {
+                alert(alertMsgs[currentLang].enterText);
+                return;
+            }
+
+            if(!eventsData[dateVal]) {
+                eventsData[dateVal] = [];
+            }
+            eventsData[dateVal].push(descVal.trim());
+
+            localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
+            document.getElementById('event-desc').value = "";
+            renderCalendar();
+            renderTasksList(dateVal);
+        }
+
+        function deleteTask(dateKey, index) {
+            if(eventsData[dateKey]) {
+                eventsData[dateKey].splice(index, 1);
+                if(eventsData[dateKey].length === 0) {
+                    delete eventsData[dateKey];
+                }
+                localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
+                renderCalendar();
+                renderTasksList(dateKey);
+            }
+        }
+
         const feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks')) || [
-            { name: "คุณสมชาย", type: "evaluation", score: "5", details: "ระบบใช้งานง่าย การออกแบบสวยงามมากครับ", date: "2026-09-05 22:30" }
+            { nameKey: "default", typeKey: "evaluation", score: "5", detailsKey: "defaultReview", date: "2026-09-05 10:00" }
         ];
 
         function submitFeedback(event) {
@@ -697,13 +1185,21 @@
             const type = document.getElementById('fb-type').value;
             const score = document.getElementById('fb-score').value;
             const details = document.getElementById('fb-details').value;
+            const currentLang = document.getElementById('langSwitch').value;
+
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
 
-            alert("ส่งแบบประเมินเรียบร้อยแล้ว!");
+            let successMsgs = {
+                th: "ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!",
+                en: "Evaluation/Issue report submitted successfully. Thank you for your feedback!",
+                zh: "评估/问题报告提交成功。感谢您的反馈！"
+            };
+
+            alert(successMsgs[currentLang]);
             document.getElementById('fb-name').value = '';
             document.getElementById('fb-details').value = '';
             renderFeedbacks();
@@ -712,40 +1208,81 @@
         function renderFeedbacks() {
             const container = document.getElementById('feedback-container');
             container.innerHTML = '';
-            const lang = document.getElementById('langSwitch').value;
-            const t = translations[lang];
+            const currentLang = document.getElementById('langSwitch').value;
+            const t = translations[currentLang];
 
             if (feedbackList.length === 0) {
-                container.innerHTML = `<p style="color: #888;">${t.noFeedbackText}</p>`;
+                container.innerHTML = `<p style="color: #888; font-size: 0.9rem;">${t.noFeedbackText}</p>`;
                 return;
             }
 
             feedbackList.forEach(fb => {
                 const item = document.createElement('div');
-                item.className = 'feedback-item';
+                item.style.background = 'rgba(0,0,0,0.4)';
+                item.style.border = '1px solid var(--border-gold)';
+                item.style.padding = '12px 15px';
+                item.style.borderRadius = '8px';
+
+                let displayName = fb.nameKey === "default" ? t.defaultAuthorName : fb.name;
+                let displayDetails = fb.detailsKey === "defaultReview" ? t.defaultReviewText : fb.details;
+
+                let typeLabel = t.optEval;
+                if(fb.type === 'issue' || fb.typeKey === 'issue') typeLabel = t.optIssue;
+                if(fb.type === 'suggestion' || fb.typeKey === 'suggestion') typeLabel = t.optSugg;
+
                 item.innerHTML = `
-                    <div class="feedback-meta">
-                        <span class="feedback-user">👤 ${t.respondentLabel} ${fb.name}</span>
-                        <span class="feedback-time">🕒 ตอบเมื่อ: ${fb.date}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
+                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${displayName} (${typeLabel})</span>
+                        <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
                     </div>
-                    <div style="font-size: 0.85rem; color: #ffea79;">
-                        ${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5 คะแนน)
-                    </div>
-                    <p style="color: #ddd; font-size: 0.9rem; margin-top: 4px;">💬 ${fb.details}</p>
+                    <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${displayDetails}</p>
+                    <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
                 `;
                 container.appendChild(item);
             });
         }
 
-        /* ================= 🌟 ฟังก์ชันแสดงเวลาเปลี่ยนภาษาแบบ Dynamic ================= */
+        let lastCommitDateString = "";
+        async function fetchGitHubLastUpdate() {
+            const repoOwner = 'bb36177-rgb';
+            const repoName = 'sever';
+            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    lastCommitDateString = data[0].commit.committer.date;
+                } else {
+                    lastCommitDateString = new Date().toISOString();
+                }
+            } catch (error) {
+                lastCommitDateString = new Date().toISOString();
+            }
+            const currentLang = document.getElementById('langSwitch').value;
+            updateFooterTime(lastCommitDateString, currentLang);
+        }
+
         function updateFooterTime(dateStr, lang) {
             const commitDate = new Date(dateStr);
             const t = translations[lang];
+            let formattedDate = "";
+
             const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
-            let formattedDate = new Intl.DateTimeFormat(lang === 'th' ? 'th-TH' : (lang === 'en' ? 'en-US' : 'zh-CN'), options).format(commitDate);
-            if (lang === 'th') formattedDate += " น.";
+            if (lang === 'th') {
+                formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
+            } else if (lang === 'en') {
+                formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
+            } else {
+                formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
+            }
+
             document.getElementById('last-update-text').innerText = `${t.lastUpdatePrefix}${formattedDate}`;
         }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchGitHubLastUpdate();
+        });
     </script>
 </body>
 </html>
