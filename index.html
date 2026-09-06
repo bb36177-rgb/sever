@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="i-title">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</title>
+    <!-- นำเข้าฟอนต์ Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -301,7 +302,7 @@
         }
 
         .cal-cell {
-            min-height: 48px;
+            min-height: 46px;
             background: rgba(20, 7, 9, 0.9);
             border: 1px solid var(--border-gold);
             border-radius: 6px;
@@ -309,7 +310,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 4px 2px;
+            padding: 3px 1px;
             cursor: pointer;
             transition: all 0.2s ease;
             overflow: hidden;
@@ -331,7 +332,11 @@
             font-size: 0.85rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 2px;
+            margin-bottom: 1px;
+        }
+
+        .cal-cell.today .day-number {
+            color: #ffea79;
         }
 
         .cal-cell .event-preview {
@@ -976,6 +981,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // 🌟 ตั้งค่าเริ่มต้นปฏิทินให้ล็อกอยู่ที่ เดือนกันยายน ปี 2026 (เดือน 8 คือกันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -993,7 +999,7 @@
 
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
-            const currentLang = document.getElementById('langSwitch')?.value || 'th';
+            const currentLang = document.getElementById('langSwitch').value;
 
             const monthNames = {
                 th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
@@ -1015,9 +1021,16 @@
                 cellsContainer.appendChild(emptyCell);
             }
 
+            const todayObj = new Date();
+            const isCurrentMonthYear = (todayObj.getFullYear() === year && todayObj.getMonth() === month);
+            const todayDate = todayObj.getDate();
+
             for (let day = 1; day <= totalDays; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
+                if (isCurrentMonthYear && day === todayDate) {
+                    cell.classList.add('today');
+                }
                 
                 const formattedMonth = String(month + 1).padStart(2, '0');
                 const formattedDay = String(day).padStart(2, '0');
@@ -1033,6 +1046,18 @@
                 cell.innerHTML = cellHTML;
                 cell.onclick = () => { selectDate(year, month, day, dateKey); };
                 cellsContainer.appendChild(cell);
+            }
+
+            // 🌟 [แก้ไข] เติมช่องว่างท้ายแถวให้ครบ 7 วันต่อสัปดาห์
+            // ปัญหาเดิม: ถ้าวันสุดท้ายของเดือนไม่ตรงกับวันเสาร์ แถวสุดท้ายจะมีแค่บางช่อง
+            // ทำให้ดูเหมือนปฏิทิน "แสดงวันไม่ครบ" ทั้งที่จริงๆ ครบ 30 วันแล้ว
+            const totalCellsSoFar = firstDayIndex + totalDays;
+            const trailingEmpty = (7 - (totalCellsSoFar % 7)) % 7;
+            for (let i = 0; i < trailingEmpty; i++) {
+                const trailingCell = document.createElement('div');
+                trailingCell.className = 'cal-cell';
+                trailingCell.style.opacity = '0.15';
+                cellsContainer.appendChild(trailingCell);
             }
         }
 
@@ -1195,33 +1220,58 @@
             });
         }
 
-        // ดึงเวลาโดยใช้เฉพาะ GitHub API 100%
+        // 🌟 [แก้ไข] ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API พร้อม timeout กันไม่ให้ค้าง
+        // ปัญหาเดิม: fetch() ไม่มี timeout ถ้าเน็ต (เช่น เน็ตโรงเรียน) บล็อก api.github.com แบบเงียบๆ
+        // (ไม่ปฏิเสธการเชื่อมต่อ แต่แค่ไม่ตอบกลับ) โค้ดจะรอ Promise ค้างตลอดไป
+        // ข้อความ "กำลังโหลดเวลาอัปเดต..." จึงไม่เปลี่ยนเป็นค่าสำรองเลย
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
+            
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
+            // ยกเลิกคำขอถ้าไม่ตอบกลับภายใน 6 วินาที แล้วใช้ค่าสำรองทันที
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
+
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(apiUrl, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await response.json();
                 
-                if (data && data.length > 0) {
-                    const commitDate = new Date(data[0].commit.committer.date);
+                if (Array.isArray(data) && data.length > 0) {
+                    const commitDateStr = data[0].commit.committer.date;
+                    const commitDate = new Date(commitDateStr);
                     
                     const options = { 
-                        year: 'numeric', month: 'long', day: 'numeric', 
-                        hour: '2-digit', minute: '2-digit', hour12: false,
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: false,
                         timeZone: 'Asia/Bangkok'
                     };
                     
-                    const currentLang = document.getElementById('langSwitch')?.value || 'th';
-                    let langCode = currentLang === 'th' ? 'th-TH' : (currentLang === 'en' ? 'en-US' : 'zh-CN');
-                    const dateStr = new Intl.DateTimeFormat(langCode, options).format(commitDate);
+                    const currentLang = document.getElementById('langSwitch').value;
+                    let thaiDateStr = "";
+                    if(currentLang === 'th') {
+                        thaiDateStr = new Intl.DateTimeFormat('th-TH', options).format(commitDate);
+                    } else if(currentLang === 'en') {
+                        thaiDateStr = new Intl.DateTimeFormat('en-US', options).format(commitDate);
+                    } else {
+                        thaiDateStr = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
+                    }
 
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${dateStr} น.`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
+                } else {
+                    document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่พบข้อมูล Commit";
                 }
             } catch (error) {
-                console.error("GitHub API Error:", error);
+                clearTimeout(timeoutId);
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${now.toLocaleDateString('th-TH', options)} น.`;
             }
         }
 
@@ -1229,7 +1279,8 @@
             const savedLang = localStorage.getItem('site_lang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
-            fetchGitHubLastUpdate();
+            // 🌟 [แก้ไข] ลบการเรียก fetchGitHubLastUpdate() ซ้ำตรงนี้ออก
+            // เพราะ changeLanguage(savedLang) ด้านบนเรียกให้แล้วอยู่แล้ว
             renderFeedbacks();
         });
     </script>
