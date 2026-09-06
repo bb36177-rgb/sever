@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="i-title">ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว</title>
-    <!-- นำเข้าฟอนต์ Prompt -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -739,7 +738,7 @@
     </div>
 
     <footer>
-        <p id="last-update-text">ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.</p>
+        <p id="last-update-text">กำลังเชื่อมต่อ GitHub API เพื่อดึงเวลาอัปเดต...</p>
         <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
     </footer>
 
@@ -932,7 +931,7 @@
                 score1: "❌ 非常差 (1星)",
                 lblDetails: "详情 / 反馈内容：",
                 detailsPlaceholder: "在此输入您的详细信息...",
-                submitBtn: "📤 提交评估 / 反馈",
+                submitBtn: "📤 提交评估 /反馈",
                 feedbackListTitle: "📋 系统中记录的反馈与问题列表",
                 noFeedbackText: "系统中尚无反馈记录",
                 scoreLabelText: "满意度评分：",
@@ -942,8 +941,7 @@
             }
         };
 
-        // กำหนดตัวแปรวันที่ปฏิทินเริ่มต้น (ตั้งค่าเป็น กันยายน 2026)
-        let currentCalendarDate = new Date(2026, 8, 1);
+        let currentCalendarDate = new Date();
         
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1023,7 +1021,7 @@
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
             const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // 1. ช่องเดือนก่อนหน้า
+            // 1. วันของเดือนก่อนหน้า (เติมช่องว่างหัวตาราง)
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const prevDayNum = prevMonthDays - i;
                 const cell = document.createElement('div');
@@ -1032,13 +1030,13 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. ช่องเดือนปัจจุบัน
+            // 2. วันของเดือนปัจจุบัน
+            const todayObj = new Date();
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
                 
-                // ตรวจสอบวันปัจจุบัน (กำหนดให้ตรงกับวันที่ 6 กันยายน 2026 ตามเนื้อหาเดิม)
-                if (year === 2026 && month === 8 && day === 6) {
+                if (year === todayObj.getFullYear() && month === todayObj.getMonth() && day === todayObj.getDate()) {
                     cell.classList.add('today');
                 }
                 
@@ -1058,7 +1056,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. ช่องเดือนถัดไป (เติมช่องตารางให้ครบแถว เช่น 35 หรือ 42 ช่อง)
+            // 3. วันของเดือนถัดไป (เติมช่องว่างท้ายตารางให้ครบแถวรวมเป็น 35 หรือ 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
@@ -1162,7 +1160,7 @@
         }
 
         const feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks')) || [
-            { nameKey: "default", typeKey: "evaluation", score: "5", detailsKey: "defaultReview", date: "2026-09-05 10:00" }
+            { nameKey: "default", typeKey: "evaluation", score: "5", detailsKey: "defaultReview", date: "2026-09-06 14:05" }
         ];
 
         async function submitFeedback(event) {
@@ -1173,7 +1171,9 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            let dateStr = "2026-09-06 14:05";
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
 
@@ -1231,15 +1231,9 @@
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
-            const GITHUB_TOKEN = ''; 
-
-            const headers = {};
-            if (GITHUB_TOKEN && GITHUB_TOKEN.trim() !== '') {
-                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
-            }
 
             try {
-                const response = await fetch(apiUrl, { headers });
+                const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error("Rate limit or network error");
 
                 const data = await response.json();
@@ -1256,15 +1250,17 @@
                     const currentLang = document.getElementById('langSwitch').value;
                     let thaiDateStr = new Intl.DateTimeFormat(currentLang === 'th' ? 'th-TH' : (currentLang === 'en' ? 'en-US' : 'zh-CN'), options).format(commitDate);
 
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ ${thaiDateStr} น.`;
                     return;
                 }
             } catch (error) {
-                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.";
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+                let dateStr = new Intl.DateTimeFormat('th-TH', options).format(now);
+                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${dateStr} น.`;
             }
         }
 
-        // เมื่อหน้าเว็บโหลดเสร็จสมบูรณ์ ให้เซ็ตค่าภาษาและสั่งเรนเดอร์ปฏิทินทันที
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
             const langSelect = document.getElementById('langSwitch');
