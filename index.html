@@ -981,7 +981,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🌟 ตั้งค่าเริ่มต้นปฏิทินให้ล็อกอยู่ที่ เดือนกันยายน ปี 2026 (เดือน 8 คือกันยายน)
+        // ตั้งค่าเริ่มต้นปฏิทินล็อกที่ เดือนกันยายน ปี 2026 (เดือน Index 8 = กันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1021,9 +1021,9 @@
                 cellsContainer.appendChild(emptyCell);
             }
 
-            const todayObj = new Date();
-            const isCurrentMonthYear = (todayObj.getFullYear() === year && todayObj.getMonth() === month);
-            const todayDate = todayObj.getDate();
+            // กำหนดวันที่ไฮไลท์ของปฏิทินให้เป็นวันที่ 6 ก.ย. 2026
+            const isCurrentMonthYear = (year === 2026 && month === 8);
+            const todayDate = 6;
 
             for (let day = 1; day <= totalDays; day++) {
                 const cell = document.createElement('div');
@@ -1048,9 +1048,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 🌟 [แก้ไข] เติมช่องว่างท้ายแถวให้ครบ 7 วันต่อสัปดาห์
-            // ปัญหาเดิม: ถ้าวันสุดท้ายของเดือนไม่ตรงกับวันเสาร์ แถวสุดท้ายจะมีแค่บางช่อง
-            // ทำให้ดูเหมือนปฏิทิน "แสดงวันไม่ครบ" ทั้งที่จริงๆ ครบ 30 วันแล้ว
+            // เติมช่องว่างท้ายแถวให้ครบ 7 วัน
             const totalCellsSoFar = firstDayIndex + totalDays;
             const trailingEmpty = (7 - (totalCellsSoFar % 7)) % 7;
             for (let i = 0; i < trailingEmpty; i++) {
@@ -1157,7 +1155,7 @@
             { nameKey: "default", typeKey: "evaluation", score: "5", detailsKey: "defaultReview", date: "2026-09-05 10:00" }
         ];
 
-        function submitFeedback(event) {
+        async function submitFeedback(event) {
             event.preventDefault();
             const name = document.getElementById('fb-name').value;
             const type = document.getElementById('fb-type').value;
@@ -1165,8 +1163,19 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            // ดึงเวลาการส่งแบบประเมินอิงจาก GitHub API commit ล่าสุด
+            let dateStr = "2026-09-06 13:44";
+            try {
+                const res = await fetch('https://api.github.com/repos/bb36177-rgb/sever/commits?per_page=1');
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    const commitDate = new Date(data[0].commit.committer.date);
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
+                    dateStr = new Intl.DateTimeFormat('sv-SE', options).format(commitDate).replace('T', ' ');
+                }
+            } catch (e) {
+                // หากดึงไม่ได้ ให้ใช้วันที่ของ GitHub API ล่าสุดแทน
+            }
 
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
@@ -1220,17 +1229,13 @@
             });
         }
 
-        // 🌟 [แก้ไข] ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API พร้อม timeout กันไม่ให้ค้าง
-        // ปัญหาเดิม: fetch() ไม่มี timeout ถ้าเน็ต (เช่น เน็ตโรงเรียน) บล็อก api.github.com แบบเงียบๆ
-        // (ไม่ปฏิเสธการเชื่อมต่อ แต่แค่ไม่ตอบกลับ) โค้ดจะรอ Promise ค้างตลอดไป
-        // ข้อความ "กำลังโหลดเวลาอัปเดต..." จึงไม่เปลี่ยนเป็นค่าสำรองเลย
+        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API โดยใช้อิงเวลาตาม GitHub API อย่างเดียว
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
             
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
-            // ยกเลิกคำขอถ้าไม่ตอบกลับภายใน 6 วินาที แล้วใช้ค่าสำรองทันที
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 6000);
 
@@ -1269,9 +1274,7 @@
                 }
             } catch (error) {
                 clearTimeout(timeoutId);
-                const now = new Date();
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
-                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${now.toLocaleDateString('th-TH', options)} น.`;
+                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่สามารถเชื่อมต่อ GitHub API ได้";
             }
         }
 
@@ -1279,8 +1282,6 @@
             const savedLang = localStorage.getItem('site_lang') || 'th';
             document.getElementById('langSwitch').value = savedLang;
             changeLanguage(savedLang);
-            // 🌟 [แก้ไข] ลบการเรียก fetchGitHubLastUpdate() ซ้ำตรงนี้ออก
-            // เพราะ changeLanguage(savedLang) ด้านบนเรียกให้แล้วอยู่แล้ว
             renderFeedbacks();
         });
     </script>
