@@ -939,10 +939,10 @@
                 lblName: "您的姓名 / 联系方式：",
                 namePlaceholder: "请输入您的姓名...",
                 lblType: "提交类型：",
-                optEval: "⭐ 网站满意度评估",
+                optEval: "⭐ 满意度评估",
                 optIssue: "🛠️ 报告系统错误 / 问题",
                 optSugg: "💡 建议新功能",
-                lblScore: "Satisfaction Score:",
+                lblScore: "评分：",
                 score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
                 score4: "⭐⭐⭐⭐ 很好 (4星)",
                 score3: "⭐⭐ 一般 (3星)",
@@ -1008,14 +1008,24 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        let currentCalendarDate = new Date(2026, 8, 1);
+        // ตั้งค่าตัวแปรปฏิทินเริ่มต้นให้ตรงกับปัจจุบัน (ปี 2026 เดือนกันยายน)
+        let currentCalendarYear = 2026;
+        let currentCalendarMonth = 8; // กันยายน (0 = มกราคม, 8 = กันยายน)
+        
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
         };
 
         function changeMonth(direction) {
-            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            currentCalendarMonth += direction;
+            if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            } else if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            }
             renderCalendar();
         }
 
@@ -1023,8 +1033,8 @@
             const cellsContainer = document.getElementById('cal-cells');
             cellsContainer.innerHTML = '';
 
-            const year = currentCalendarDate.getFullYear();
-            const month = currentCalendarDate.getMonth();
+            const year = currentCalendarYear;
+            const month = currentCalendarMonth;
             const currentLang = document.getElementById('langSwitch').value;
 
             const monthNames = {
@@ -1236,18 +1246,24 @@
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
+            let success = false;
             try {
                 const response = await fetch(apiUrl);
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.length > 0) {
                         lastCommitDateString = data[0].commit.committer.date;
+                        success = true;
                     }
                 }
             } catch (error) {
-                // ถ้าดึงผ่าน API ไม่ได้ (เช่นเปิดแบบ Local file://) จะใช้เวลาปัจจุบันแทนเพื่อไม่ให้ค้างคำว่ากำลังโหลด
+                // Ignore network error
+            }
+
+            if (!success) {
                 lastCommitDateString = new Date().toISOString();
             }
+
             const currentLang = document.getElementById('langSwitch').value;
             updateFooterTime(lastCommitDateString, currentLang);
         }
