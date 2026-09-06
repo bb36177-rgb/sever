@@ -1267,7 +1267,7 @@
                     const commitDate = new Date(data[0].commit.committer.date);
                     const formattedDate = commitDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                     const formattedTime = commitDate.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ ${formattedDate} เวลา ${formattedTime} น.`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${formattedDate} เวลา ${formattedTime} น.`;
                     return;
                 }
             } catch (error) {
