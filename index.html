@@ -327,7 +327,6 @@
             box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
         }
 
-        /* อนิเมชั่นและสไตล์เมื่อคลิกเลือกวันที่ */
         .cal-cell.selected-date {
             background: rgba(139, 0, 0, 0.4);
             border: 2px solid #ff4d4d;
@@ -811,9 +810,9 @@
                 lblName: "ชื่อผู้ใช้งาน / ผู้ติดต่อ:",
                 namePlaceholder: "กรอกชื่อของคุณ...",
                 lblType: "ประเภทการส่งข้อมูล:",
-                optEval: "⭐ แบบประเมินความพึงพอใจเว็บไซต์",
-                optIssue: "🛠️ แจ้งปัญหา / บั๊กในระบบ",
-                optSugg: "💡 เสนอแนะฟีเจอร์ใหม่",
+                optEval: "แบบประเมินความพึงพอใจเว็บไซต์",
+                optIssue: "แจ้งปัญหา / บั๊กในระบบ",
+                optSugg: "เสนอแนะฟีเจอร์ใหม่",
                 lblScore: "ระดับความพึงพอใจ:",
                 score5: "⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)",
                 score4: "⭐⭐⭐⭐ ดีมาก (4 ดาว)",
@@ -874,9 +873,9 @@
                 lblName: "Your Name / Contact:",
                 namePlaceholder: "Enter your name...",
                 lblType: "Submission Type:",
-                optEval: "⭐ Website Satisfaction Evaluation",
-                optIssue: "🛠️ Report System Bug / Issue",
-                optSugg: "💡 Suggest New Feature",
+                optEval: "Website Satisfaction Evaluation",
+                optIssue: "Report System Bug / Issue",
+                optSugg: "Suggest New Feature",
                 lblScore: "Satisfaction Score:",
                 score5: "⭐⭐⭐⭐⭐ Excellent (5 Stars)",
                 score4: "⭐⭐⭐⭐ Very Good (4 Stars)",
@@ -937,9 +936,9 @@
                 lblName: "您的姓名 / 联系方式：",
                 namePlaceholder: "请输入您的姓名...",
                 lblType: "提交类型：",
-                optEval: "⭐ 满意度评估",
-                optIssue: "🛠️ 报告系统错误 / 问题",
-                optSugg: "💡 建议新功能",
+                optEval: "网站满意度评估",
+                optIssue: "报告系统错误 / 问题",
+                optSugg: "建议新功能",
                 lblScore: "满意度评分：",
                 score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
                 score4: "⭐⭐⭐⭐ 很好 (4星)",
@@ -956,9 +955,9 @@
             }
         };
 
-        // ตั้งค่าวันที่ปฏิทินเริ่มต้นตามระบบปัจจุบันจริง (Real-time Date)
         let currentCalendarDate = new Date(); 
         let selectedDateKeyGlobal = null; 
+        let lastCommitDateObj = new Date("2026-09-06T21:20:00");
         
         let rawEvents = JSON.parse(localStorage.getItem('my_hub_events'));
         let eventsData = {};
@@ -980,9 +979,8 @@
             };
         }
 
-        // ล้างฟีดแบ็กเก่าที่ค้างในเครื่อง เพื่อให้ระบบแปลภาษาฟีดแบ็กได้สมบูรณ์ทันที
         let feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks'));
-        if (!feedbackList || feedbackList.length === 0 || feedbackList.some(f => f.details === '-' || f.name === 'ดึกควายทุย')) {
+        if (!feedbackList || feedbackList.length === 0) {
             feedbackList = [
                 { name: "สมชาย / Somchai", type: "evaluation", score: "5", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", date: "2026-09-06 15:00" }
             ];
@@ -1007,6 +1005,8 @@
 
             renderCalendar();
             renderFeedbacks();
+            renderLastUpdateText();
+
             if(selectedDateKeyGlobal) {
                 const parts = selectedDateKeyGlobal.split('-');
                 if(parts.length === 3) {
@@ -1085,7 +1085,6 @@
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 try {
                     const cell = document.createElement('div');
-                    
                     const isToday = (year === currentYear && month === currentMonth && day === currentDay);
                     let cellClass = isToday ? 'cal-cell today' : 'cal-cell';
                     
@@ -1098,7 +1097,6 @@
                     }
 
                     cell.className = cellClass;
-
                     let cellHTML = `<span class="day-number">${day}</span>`;
                     
                     if (eventsData[dateKey] && Array.isArray(eventsData[dateKey])) {
@@ -1127,10 +1125,8 @@
             }
         }
 
-        // ระบบคลิกซ้ำที่วันเดิม เพื่อยกเลิกการเลือก (Toggle Deselect)
         function selectDate(year, month, day, dateKey) {
             if (selectedDateKeyGlobal === dateKey) {
-                // ถ้าคลิกซ้ำวันเดิม ให้เคลียร์ค่าออก (Deselect)
                 selectedDateKeyGlobal = null;
                 renderCalendar();
                 resetSelectedDateUI();
@@ -1286,6 +1282,7 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
+                // แปลงประเภทตามภาษาปัจจุบันที่ผู้ใช้เลือก (ไม่สนใจว่าตอนพิมพ์จะเลือกภาษาอะไรมา)
                 let typeLabel = t.optEval;
                 if(fb.type === 'issue') typeLabel = t.optIssue;
                 if(fb.type === 'suggestion') typeLabel = t.optSugg;
@@ -1302,6 +1299,30 @@
             });
         }
 
+        function renderLastUpdateText() {
+            const currentLang = document.getElementById('langSwitch').value;
+            const year = lastCommitDateObj.getFullYear();
+            const month = lastCommitDateObj.getMonth();
+            const day = lastCommitDateObj.getDate();
+            const hours = String(lastCommitDateObj.getHours()).padStart(2, '0');
+            const minutes = String(lastCommitDateObj.getMinutes()).padStart(2, '0');
+
+            const monthNames = {
+                th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                zh: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            };
+
+            if (currentLang === 'th') {
+                const thaiYear = year + 543;
+                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${day} ${monthNames['th'][month]} ${thaiYear} เวลา ${hours}:${minutes} น.`;
+            } else if (currentLang === 'en') {
+                document.getElementById('last-update-text').innerText = `Last updated on ${monthNames['en'][month]} ${day}, ${year} at ${hours}:${minutes}`;
+            } else if (currentLang === 'zh') {
+                document.getElementById('last-update-text').innerText = `最近更新时间：${year}年${monthNames['zh'][month]}${day}日 ${hours}:${minutes}`;
+            }
+        }
+
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
@@ -1313,15 +1334,12 @@
 
                 const data = await response.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    const commitDate = new Date(data[0].commit.committer.date);
-                    const formattedDate = commitDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
-                    const formattedTime = commitDate.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${formattedDate} เวลา ${formattedTime} น.`;
-                    return;
+                    lastCommitDateObj = new Date(data[0].commit.committer.date);
                 }
             } catch (error) {
-                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 เวลา 21:19 น.`;
+                // ใช้ค่าสำรองเริ่มต้น
             }
+            renderLastUpdateText();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
