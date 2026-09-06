@@ -323,9 +323,9 @@
         }
 
         .cal-cell.disabled {
-            opacity: 0.25;
+            opacity: 0.2;
             cursor: not-allowed;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.3);
         }
 
         .cal-cell.today {
@@ -739,7 +739,7 @@
     </div>
 
     <footer>
-        <p id="last-update-text">ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.</p>
+        <p id="last-update-text">กำลังโหลดเวลาจาก GitHub API...</p>
         <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
     </footer>
 
@@ -987,7 +987,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ล็อกค่าตั้งต้นเป็นเดือนกันยายน 2026 (ปี 2026, เดือน 8 คือ กันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
@@ -1021,18 +1020,16 @@
             
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
-            const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // 1. ช่องเดือนก่อนหน้า
-            for (let i = firstDayIndex - 1; i >= 0; i--) {
-                const prevDayNum = prevMonthDays - i;
+            // 1. ช่องว่างของเดือนก่อนหน้า (ไม่แสดงตัวเลขเดือนก่อนให้สับสน ปล่อยเป็นช่องว่าง disable)
+            for (let i = 0; i < firstDayIndex; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
-                cell.innerHTML = `<span class="day-number" style="color: #666;">${prevDayNum}</span>`;
+                cell.innerHTML = `<span class="day-number" style="color: transparent;">-</span>`;
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. ช่องเดือนปัจจุบัน
+            // 2. ช่องวันของเดือนปัจจุบัน
             const isCurrentMonthYear = (year === 2026 && month === 8);
             const todayDate = 6;
 
@@ -1059,13 +1056,13 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. ช่องเดือนถัดไป (เติมช่องตารางให้ครบ 42 ช่อง)
+            // 3. ช่องเติมให้ครบตาราง (35 หรือ 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
-                cell.innerHTML = `<span class="day-number" style="color: #666;">${day}</span>`;
+                cell.innerHTML = `<span class="day-number" style="color: transparent;">-</span>`;
                 cellsContainer.appendChild(cell);
             }
         }
@@ -1227,13 +1224,10 @@
             });
         }
 
-        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API (พร้อมช่องใส่ Token)
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
-
-            // 💡 หากต้องการใช้ข้อมูลจาก GitHub จริง ให้สร้าง Token แล้วมาใส่ในเครื่องหมายคำพูดนี้
             const GITHUB_TOKEN = ''; 
 
             const headers = {};
@@ -1245,7 +1239,7 @@
                 const response = await fetch(apiUrl, { headers });
                 
                 if (!response.ok) {
-                    throw new Error("Rate limit or network error");
+                    throw new Error("GitHub API Error: " + response.status);
                 }
 
                 const data = await response.json();
@@ -1263,12 +1257,11 @@
                     const currentLang = document.getElementById('langSwitch').value;
                     let thaiDateStr = new Intl.DateTimeFormat(currentLang === 'th' ? 'th-TH' : (currentLang === 'en' ? 'en-US' : 'zh-CN'), options).format(commitDate);
 
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น. (จาก GitHub)`;
                     return;
                 }
             } catch (error) {
-                // หากติดบล็อก GitHub API จะแสดงผลเวลาล่าสุดแบบปลอดภัยทันทีโดยไม่พัง
-                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.";
+                document.getElementById('last-update-text').innerText = "ไม่สามารถเชื่อมต่อเวลาจาก GitHub API ได้ (กรุณาใส่ Token หรือตรวจสอบโควตา)";
             }
         }
 
