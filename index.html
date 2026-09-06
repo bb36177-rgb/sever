@@ -987,7 +987,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ตั้งค่าเริ่มต้นปฏิทินล็อกที่ เดือนกันยายน ปี 2026 (Month Index 8 = กันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1018,12 +1017,11 @@
             let monthYearText = (currentLang === 'zh') ? `${year}年 ${monthNames['zh'][month]}` : `${monthNames[currentLang][month]} ${yearDisplay}`;
             document.getElementById('cal-month-year').innerText = monthYearText;
             
-            // คำนวณวันแรกของเดือนและจำนวนวันทั้งหมดของเดือนปัจจุบัน
-            const firstDayIndex = new Date(year, month, 1).getDay(); // วันในสัปดาห์ (0 = อาทิตย์, 2 = อังคาร สำหรับ ก.ย. 2026)
-            const totalDaysInMonth = new Date(year, month + 1, 0).getDate(); // 30 วัน สำหรับ กันยายน
-            const prevMonthDays = new Date(year, month, 0).getDate(); // จำนวนวันของเดือนก่อนหน้า
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // 1. สร้างช่องวันของเดือนก่อนหน้า (Disabled)
+            // 1. ช่องเดือนก่อนหน้า
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const prevDayNum = prevMonthDays - i;
                 const cell = document.createElement('div');
@@ -1032,9 +1030,9 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. สร้างช่องวันของเดือนปัจจุบัน (1 ถึง 30 สม่ำเสมอ)
+            // 2. ช่องเดือนปัจจุบัน (ครบถ้วนสมบูรณ์)
             const isCurrentMonthYear = (year === 2026 && month === 8);
-            const todayDate = 6; // ล็อกวันที่ปัจจุบันเป็น 6 กันยายน 2026
+            const todayDate = 6;
 
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
@@ -1059,7 +1057,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. สร้างช่องวันของเดือนถัดไปเพื่อเติมให้ครบ 42 ช่อง (ตาราง 6 แถว)
+            // 3. ช่องเดือนถัดไป (เติมให้เต็มตาราง 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = 42 - totalCellsSoFar;
             for (let day = 1; day <= remainingCells; day++) {
@@ -1174,7 +1172,6 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            // ดึงเวลาการส่งแบบประเมินอิงจาก GitHub API commit ล่าสุด
             let dateStr = "2026-09-06 13:44";
             try {
                 const res = await fetch('https://api.github.com/repos/bb36177-rgb/sever/commits?per_page=1');
@@ -1184,9 +1181,7 @@
                     const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
                     dateStr = new Intl.DateTimeFormat('sv-SE', options).format(commitDate).replace('T', ' ');
                 }
-            } catch (e) {
-                // หากดึงไม่ได้ ให้ใช้วันที่ของ GitHub API ล่าสุดแทน
-            }
+            } catch (e) {}
 
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
@@ -1240,19 +1235,28 @@
             });
         }
 
-        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API
+        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API (พร้อมรองรับการใส่ Token เพื่อเลิกบล็อก Rate Limit)
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
-            
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 6000);
+            // 💡 ช่องใส่ GitHub Personal Access Token เพื่อปลดล็อก Rate Limit (ขยายจาก 60 เป็น 5,000 ครั้ง/ชม.)
+            const GITHUB_TOKEN = ''; // นำ Token ของคุณมาใส่ในเครื่องหมายคำพูดนี้หากต้องการใช้งาน
+
+            const headers = {};
+            if (GITHUB_TOKEN && GITHUB_TOKEN.trim() !== '') {
+                headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+            }
 
             try {
-                const response = await fetch(apiUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
+                const response = await fetch(apiUrl, { headers });
+                
+                if (response.status === 403 || response.status === 429) {
+                    document.getElementById('last-update-text').innerText = "GitHub API โควตาเต็ม (กรุณาใส่ GitHub Token เพื่อปลดล็อก)";
+                    return;
+                }
+
                 const data = await response.json();
                 
                 if (Array.isArray(data) && data.length > 0) {
@@ -1284,7 +1288,6 @@
                     document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่พบข้อมูล Commit";
                 }
             } catch (error) {
-                clearTimeout(timeoutId);
                 document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่สามารถเชื่อมต่อ GitHub API ได้";
             }
         }
