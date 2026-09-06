@@ -323,9 +323,9 @@
         }
 
         .cal-cell.disabled {
-            opacity: 0.2;
+            opacity: 0.25;
             cursor: not-allowed;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
         }
 
         .cal-cell.today {
@@ -618,7 +618,7 @@
 
                     <div class="admin-panel">
                         <strong style="font-size: 0.85rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
-                        <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป">
+                        <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป" readonly>
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
                         <button class="gold-btn" onclick="addEvent()" style="width: 100%;" data-i18n="saveBtn">➕ เพิ่มงานใหม่ในวันนี้</button>
                     </div>
@@ -739,7 +739,7 @@
     </div>
 
     <footer>
-        <p id="last-update-text">กำลังโหลดเวลาจาก GitHub API...</p>
+        <p id="last-update-text">ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.</p>
         <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
     </footer>
 
@@ -942,6 +942,15 @@
             }
         };
 
+        // กำหนดตัวแปรวันที่ปฏิทินเริ่มต้น (ตั้งค่าเป็น กันยายน 2026)
+        let currentCalendarDate = new Date(2026, 8, 1);
+        
+        const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
+            "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
+            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
+            "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
+        };
+
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
@@ -960,7 +969,6 @@
 
             renderCalendar();
             renderFeedbacks();
-            fetchGitHubLastUpdate();
         }
 
         function copyEmailToClipboard() {
@@ -987,14 +995,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        let currentCalendarDate = new Date(2026, 8, 1);
-        
-        const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
-            "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
-            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
-            "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
-        };
-
         function changeMonth(direction) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
             renderCalendar();
@@ -1002,6 +1002,7 @@
 
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
+            if (!cellsContainer) return;
             cellsContainer.innerHTML = '';
 
             const year = currentCalendarDate.getFullYear();
@@ -1020,23 +1021,24 @@
             
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // 1. ช่องว่างของเดือนก่อนหน้า (ไม่แสดงตัวเลขเดือนก่อนให้สับสน ปล่อยเป็นช่องว่าง disable)
-            for (let i = 0; i < firstDayIndex; i++) {
+            // 1. ช่องเดือนก่อนหน้า
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                const prevDayNum = prevMonthDays - i;
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
-                cell.innerHTML = `<span class="day-number" style="color: transparent;">-</span>`;
+                cell.innerHTML = `<span class="day-number" style="color: #666;">${prevDayNum}</span>`;
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. ช่องวันของเดือนปัจจุบัน
-            const isCurrentMonthYear = (year === 2026 && month === 8);
-            const todayDate = 6;
-
+            // 2. ช่องเดือนปัจจุบัน
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
-                if (isCurrentMonthYear && day === todayDate) {
+                
+                // ตรวจสอบวันปัจจุบัน (กำหนดให้ตรงกับวันที่ 6 กันยายน 2026 ตามเนื้อหาเดิม)
+                if (year === 2026 && month === 8 && day === 6) {
                     cell.classList.add('today');
                 }
                 
@@ -1056,13 +1058,13 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. ช่องเติมให้ครบตาราง (35 หรือ 42 ช่อง)
+            // 3. ช่องเดือนถัดไป (เติมช่องตารางให้ครบแถว เช่น 35 หรือ 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
-                cell.innerHTML = `<span class="day-number" style="color: transparent;">-</span>`;
+                cell.innerHTML = `<span class="day-number" style="color: #666;">${day}</span>`;
                 cellsContainer.appendChild(cell);
             }
         }
@@ -1189,6 +1191,7 @@
 
         function renderFeedbacks() {
             const container = document.getElementById('feedback-container');
+            if (!container) return;
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
@@ -1237,13 +1240,9 @@
 
             try {
                 const response = await fetch(apiUrl, { headers });
-                
-                if (!response.ok) {
-                    throw new Error("GitHub API Error: " + response.status);
-                }
+                if (!response.ok) throw new Error("Rate limit or network error");
 
                 const data = await response.json();
-                
                 if (Array.isArray(data) && data.length > 0) {
                     const commitDateStr = data[0].commit.committer.date;
                     const commitDate = new Date(commitDateStr);
@@ -1257,19 +1256,22 @@
                     const currentLang = document.getElementById('langSwitch').value;
                     let thaiDateStr = new Intl.DateTimeFormat(currentLang === 'th' ? 'th-TH' : (currentLang === 'en' ? 'en-US' : 'zh-CN'), options).format(commitDate);
 
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น. (จาก GitHub)`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
                     return;
                 }
             } catch (error) {
-                document.getElementById('last-update-text').innerText = "ไม่สามารถเชื่อมต่อเวลาจาก GitHub API ได้ (กรุณาใส่ Token หรือตรวจสอบโควตา)";
+                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.";
             }
         }
 
+        // เมื่อหน้าเว็บโหลดเสร็จสมบูรณ์ ให้เซ็ตค่าภาษาและสั่งเรนเดอร์ปฏิทินทันที
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
-            document.getElementById('langSwitch').value = savedLang;
+            const langSelect = document.getElementById('langSwitch');
+            if (langSelect) langSelect.value = savedLang;
+            
             changeLanguage(savedLang);
-            renderFeedbacks();
+            fetchGitHubLastUpdate();
         });
     </script>
 </body>
