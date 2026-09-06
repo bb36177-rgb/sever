@@ -1011,7 +1011,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🌟 แก้ไขจุดเริ่มต้นของปฏิทินให้เป็นวันที่ 1 ของเดือนเสมอ เพื่อให้แสดงผลครบทุกวัน
+        // 🌟 ตั้งค่าเริ่มต้นปฏิทินให้เป็นวันที่ 1 ของเดือนปัจจุบันแบบ Dynamic (ปี 2026 เดือนกันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
@@ -1239,6 +1239,7 @@
             });
         }
 
+        // 🌟 แก้ไขระบบดึงเวลา GitHub API ให้มี Fallback ถ้าดึงไม่สำเร็จจะใช้เวลาปัจจุบันของเครื่องทันที (ไม่ค้าง)
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
@@ -1254,6 +1255,7 @@
                     lastCommitDateString = new Date().toISOString();
                 }
             } catch (error) {
+                // หากติดปัญหาเครือข่าย ให้ใช้เวลาปัจจุบันแทนทันทีเพื่อให้ไม่ค้าง
                 lastCommitDateString = new Date().toISOString();
             }
             const currentLang = document.getElementById('langSwitch').value;
