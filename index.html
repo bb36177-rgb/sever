@@ -761,6 +761,7 @@
     </footer>
 
     <script>
+        // โครงสร้างคำแปลรองรับเฉพาะ 3 ภาษา (ไทย, อังกฤษ, จีน)
         const translations = {
             th: {
                 title: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
@@ -947,20 +948,19 @@
             }
         };
 
-        // พจนานุกรมสำหรับแปลงชื่อข้ามภาษา (รองรับตัวอย่าง Ken / somchai ฯลฯ)
+        // พจนานุกรมสำหรับแปลงชื่อข้ามภาษา (ไทย, อังกฤษ, จีน)
         const nameDictionary = {
             "ken": { th: "เคน", en: "Ken", zh: "肯" },
             "somchai": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
             "somying": { th: "สมหญิง", en: "Somying", zh: "颂英" },
             "admin": { th: "แอดมิน", en: "Admin", zh: "管理员" },
-            // ชื่อภาษาไทยพื้นฐาน
             "เคน": { th: "เคน", en: "Ken", zh: "肯" },
             "สมชาย": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
             "สมหญิง": { th: "สมหญิง", en: "Somying", zh: "颂英" },
             "แอดมิน": { th: "แอดมิน", en: "Admin", zh: "管理员" },
-            // ชื่อภาษาจีนพื้นฐาน
             "肯": { th: "เคน", en: "Ken", zh: "肯" },
-            "颂猜": { th: "สมชาย", en: "Somchai", zh: "颂猜" }
+            "颂猜": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
+            "管理员": { th: "แอดมิน", en: "Admin", zh: "管理员" }
         };
 
         function translateName(nameStr, targetLang) {
@@ -969,7 +969,7 @@
             if (nameDictionary[cleanKey]) {
                 return nameDictionary[cleanKey][targetLang] || nameStr;
             }
-            return nameStr; // หากไม่พบในคลังคำศัพท์ ให้คงค่าเดิมไว้
+            return nameStr;
         }
 
         let currentCalendarDate = new Date(); 
@@ -1006,6 +1006,9 @@
         }
 
         function changeLanguage(lang) {
+            // บังคับจำกัดเฉพาะ 3 ภาษาที่รองรับ (th, en, zh) หากเลือกนอกเหนือจากนี้ให้fallback เป็นไทย
+            if (!translations[lang]) lang = 'th';
+
             localStorage.setItem('site_lang', lang);
             const t = translations[lang];
             
@@ -1299,7 +1302,7 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
-                // แปลงชื่อผู้ใช้งานตามภาษาปัจจุบันที่เปลี่ยน
+                // แปลงชื่อผู้ใช้งานตามภาษาปัจจุบันที่เลือกทันที
                 const translatedName = translateName(fb.name, currentLang);
 
                 item.innerHTML = `
