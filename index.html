@@ -176,7 +176,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 2.5rem 1.5rem;
             flex: 1;
@@ -302,7 +302,7 @@
         }
 
         .cal-cell {
-            min-height: 46px;
+            min-height: 48px;
             background: rgba(20, 7, 9, 0.9);
             border: 1px solid var(--border-gold);
             border-radius: 6px;
@@ -320,6 +320,12 @@
             border-color: #ffea79;
             background: rgba(212, 175, 55, 0.25);
             transform: translateY(-2px);
+        }
+
+        .cal-cell.disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            background: rgba(0,0,0,0.4);
         }
 
         .cal-cell.today {
@@ -981,11 +987,12 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ตั้งค่าเริ่มต้นปฏิทินล็อกที่ เดือนกันยายน ปี 2026 (เดือน Index 8 = กันยายน)
+        // ตั้งค่าเริ่มต้นปฏิทินล็อกที่ เดือนกันยายน ปี 2026 (Month Index 8 = กันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
-            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
+            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
+            "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
         };
 
         function changeMonth(direction) {
@@ -1011,21 +1018,25 @@
             let monthYearText = (currentLang === 'zh') ? `${year}年 ${monthNames['zh'][month]}` : `${monthNames[currentLang][month]} ${yearDisplay}`;
             document.getElementById('cal-month-year').innerText = monthYearText;
             
-            const firstDayIndex = new Date(year, month, 1).getDay();
-            const totalDays = new Date(year, month + 1, 0).getDate();
+            // คำนวณวันแรกของเดือนและจำนวนวันทั้งหมดของเดือนปัจจุบัน
+            const firstDayIndex = new Date(year, month, 1).getDay(); // วันในสัปดาห์ (0 = อาทิตย์, 2 = อังคาร สำหรับ ก.ย. 2026)
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate(); // 30 วัน สำหรับ กันยายน
+            const prevMonthDays = new Date(year, month, 0).getDate(); // จำนวนวันของเดือนก่อนหน้า
 
-            for (let i = 0; i < firstDayIndex; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.className = 'cal-cell';
-                emptyCell.style.opacity = '0.15';
-                cellsContainer.appendChild(emptyCell);
+            // 1. สร้างช่องวันของเดือนก่อนหน้า (Disabled)
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                const prevDayNum = prevMonthDays - i;
+                const cell = document.createElement('div');
+                cell.className = 'cal-cell disabled';
+                cell.innerHTML = `<span class="day-number" style="color: #666;">${prevDayNum}</span>`;
+                cellsContainer.appendChild(cell);
             }
 
-            // กำหนดวันที่ไฮไลท์ของปฏิทินให้เป็นวันที่ 6 ก.ย. 2026
+            // 2. สร้างช่องวันของเดือนปัจจุบัน (1 ถึง 30 สม่ำเสมอ)
             const isCurrentMonthYear = (year === 2026 && month === 8);
-            const todayDate = 6;
+            const todayDate = 6; // ล็อกวันที่ปัจจุบันเป็น 6 กันยายน 2026
 
-            for (let day = 1; day <= totalDays; day++) {
+            for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
                 if (isCurrentMonthYear && day === todayDate) {
@@ -1048,14 +1059,14 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // เติมช่องว่างท้ายแถวให้ครบ 7 วัน
-            const totalCellsSoFar = firstDayIndex + totalDays;
-            const trailingEmpty = (7 - (totalCellsSoFar % 7)) % 7;
-            for (let i = 0; i < trailingEmpty; i++) {
-                const trailingCell = document.createElement('div');
-                trailingCell.className = 'cal-cell';
-                trailingCell.style.opacity = '0.15';
-                cellsContainer.appendChild(trailingCell);
+            // 3. สร้างช่องวันของเดือนถัดไปเพื่อเติมให้ครบ 42 ช่อง (ตาราง 6 แถว)
+            const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
+            const remainingCells = 42 - totalCellsSoFar;
+            for (let day = 1; day <= remainingCells; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'cal-cell disabled';
+                cell.innerHTML = `<span class="day-number" style="color: #666;">${day}</span>`;
+                cellsContainer.appendChild(cell);
             }
         }
 
@@ -1229,7 +1240,7 @@
             });
         }
 
-        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API โดยใช้อิงเวลาตาม GitHub API อย่างเดียว
+        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
