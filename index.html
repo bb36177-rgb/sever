@@ -607,7 +607,7 @@
                 <!-- ปฏิทินบันทึกตารางงานอัจฉริยะ -->
                 <div class="calendar-wrapper">
                     <div class="cal-header">
-                        <h3 id="cal-month-year">September 2026</h3>
+                        <h3 id="cal-month-year">กันยายน 2569</h3>
                         <div class="cal-nav-controls">
                             <button class="cal-nav-btn" onclick="changeMonth(-1)" title="เดือนก่อนหน้า">◀</button>
                             <button class="cal-nav-btn" onclick="changeMonth(1)" title="เดือนถัดไป">▶</button>
@@ -824,8 +824,7 @@
                 scoreLabelText: "คะแนนความพึงพอใจ:",
                 copyrightText: "© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต",
                 defaultAuthorName: "คุณสมชาย",
-                defaultReviewText: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ",
-                lastUpdatePrefix: "ปรับปรุงระบบล่าสุดเมื่อ วันที่ "
+                defaultReviewText: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ"
             },
             en: {
                 title: "Ching Long Server - Archive Hub & Personal System",
@@ -890,8 +889,7 @@
                 scoreLabelText: "Satisfaction Score:",
                 copyrightText: "© All Rights Reserved - Protected by copyright. Unauthorized copying or modification is prohibited.",
                 defaultAuthorName: "Somchai",
-                defaultReviewText: "The system is easy to use and has a very beautiful design.",
-                lastUpdatePrefix: "Last updated on "
+                defaultReviewText: "The system is easy to use and has a very beautiful design."
             },
             zh: {
                 title: "青龙服务器 - 档案中心与个人系统",
@@ -956,12 +954,9 @@
                 scoreLabelText: "满意度评分：",
                 copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。",
                 defaultAuthorName: "颂猜",
-                defaultReviewText: "系统非常易用，设计非常漂亮。",
-                lastUpdatePrefix: "系统最后更新于 "
+                defaultReviewText: "系统非常易用，设计非常漂亮。"
             }
         };
-
-        let lastCommitDateString = "";
 
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
@@ -981,10 +976,7 @@
 
             renderCalendar();
             renderFeedbacks();
-            
-            if(lastCommitDateString) {
-                updateFooterTime(lastCommitDateString, lang);
-            }
+            fetchGitHubLastUpdate();
         }
 
         function copyEmailToClipboard() {
@@ -1011,9 +1003,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🌟 ตั้งค่าเริ่มต้นปฏิทินให้เป็นวันที่ 1 ของเดือนปัจจุบันแบบ Dynamic (ปี 2026 เดือนกันยายน)
+        // 🌟 ตั้งค่าเริ่มต้นปฏิทินให้ล็อกอยู่ที่ เดือนกันยายน ปี 2026 (เดือน 8 คือกันยายน) และแก้ไขให้คำนวณวันครบ 30 วันอย่างถูกต้อง
         let currentCalendarDate = new Date(2026, 8, 1);
-        
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."]
@@ -1042,6 +1033,7 @@
             let monthYearText = (currentLang === 'zh') ? `${year}年 ${monthNames['zh'][month]}` : `${monthNames[currentLang][month]} ${yearDisplay}`;
             document.getElementById('cal-month-year').innerText = monthYearText;
             
+            // คำนวณวันแรกของเดือน และจำนวนวันทั้งหมดในเดือนนั้นๆ อย่างแม่นยำ (เดือนกันยายนจะมี 30 วันถูกต้อง)
             const firstDayIndex = new Date(year, month, 1).getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
 
@@ -1239,44 +1231,50 @@
             });
         }
 
-        // 🌟 แก้ไขระบบดึงเวลา GitHub API ให้มี Fallback ถ้าดึงไม่สำเร็จจะใช้เวลาปัจจุบันของเครื่องทันที (ไม่ค้าง)
+        // 🌟 ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API อัตโนมัติ (ตามที่คุณต้องการเป๊ะๆ)
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
+            
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
             try {
                 const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('API Error');
                 const data = await response.json();
+                
                 if (data && data.length > 0) {
-                    lastCommitDateString = data[0].commit.committer.date;
+                    const commitDateStr = data[0].commit.committer.date;
+                    const commitDate = new Date(commitDateStr);
+                    
+                    const options = { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric', 
+                        hour: '2-digit', 
+                        minute: '2-digit', 
+                        hour12: false,
+                        timeZone: 'Asia/Bangkok'
+                    };
+                    
+                    const currentLang = document.getElementById('langSwitch').value;
+                    let thaiDateStr = "";
+                    if(currentLang === 'th') {
+                        thaiDateStr = new Intl.DateTimeFormat('th-TH', options).format(commitDate);
+                    } else if(currentLang === 'en') {
+                        thaiDateStr = new Intl.DateTimeFormat('en-US', options).format(commitDate);
+                    } else {
+                        thaiDateStr = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
+                    }
+
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
                 } else {
-                    lastCommitDateString = new Date().toISOString();
+                    document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่พบข้อมูล Commit";
                 }
             } catch (error) {
-                // หากติดปัญหาเครือข่าย ให้ใช้เวลาปัจจุบันแทนทันทีเพื่อให้ไม่ค้าง
-                lastCommitDateString = new Date().toISOString();
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false };
+                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${now.toLocaleDateString('th-TH', options)} น.`;
             }
-            const currentLang = document.getElementById('langSwitch').value;
-            updateFooterTime(lastCommitDateString, currentLang);
-        }
-
-        function updateFooterTime(dateStr, lang) {
-            const commitDate = new Date(dateStr);
-            const t = translations[lang];
-            let formattedDate = "";
-
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
-            if (lang === 'th') {
-                formattedDate = new Intl.DateTimeFormat('th-TH', options).format(commitDate) + " น.";
-            } else if (lang === 'en') {
-                formattedDate = new Intl.DateTimeFormat('en-US', options).format(commitDate);
-            } else {
-                formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
-            }
-
-            document.getElementById('last-update-text').innerText = `${t.lastUpdatePrefix}${formattedDate}`;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
