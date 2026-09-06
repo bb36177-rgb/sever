@@ -698,12 +698,10 @@
                         <label data-i18n="lblName">ชื่อผู้ใช้งาน / ผู้ติดต่อ:</label>
                         <input type="text" id="fb-name" required data-i18n-placeholder="namePlaceholder" placeholder="กรอกชื่อของคุณ...">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label data-i18n="lblType">ประเภทการส่งข้อมูล:</label>
                         <select id="fb-type">
-                            <option value="evaluation" data-i18n="optEval">⭐ แบบประเมินความพึงพอใจเว็บไซต์</option>
-                            <option value="issue" data-i18n="optIssue">🛠️ แจ้งปัญหา / บั๊กในระบบ</option>
-                            <option value="suggestion" data-i18n="optSugg">💡 เสนอแนะฟีเจอร์ใหม่</option>
+                            <option value="evaluation" data-i18n="optEval" selected>⭐ แบบประเมินความพึงพอใจเว็บไซต์</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -811,8 +809,6 @@
                 namePlaceholder: "กรอกชื่อของคุณ...",
                 lblType: "ประเภทการส่งข้อมูล:",
                 optEval: "แบบประเมินความพึงพอใจเว็บไซต์",
-                optIssue: "แจ้งปัญหา / บั๊กในระบบ",
-                optSugg: "เสนอแนะฟีเจอร์ใหม่",
                 lblScore: "ระดับความพึงพอใจ:",
                 score5: "⭐⭐⭐⭐⭐ ยอดเยี่ยมมาก (5 ดาว)",
                 score4: "⭐⭐⭐⭐ ดีมาก (4 ดาว)",
@@ -874,8 +870,6 @@
                 namePlaceholder: "Enter your name...",
                 lblType: "Submission Type:",
                 optEval: "Website Satisfaction Evaluation",
-                optIssue: "Report System Bug / Issue",
-                optSugg: "Suggest New Feature",
                 lblScore: "Satisfaction Score:",
                 score5: "⭐⭐⭐⭐⭐ Excellent (5 Stars)",
                 score4: "⭐⭐⭐⭐ Very Good (4 Stars)",
@@ -937,8 +931,6 @@
                 namePlaceholder: "请输入您的姓名...",
                 lblType: "提交类型：",
                 optEval: "网站满意度评估",
-                optIssue: "报告系统错误 / 问题",
-                optSugg: "建议新功能",
                 lblScore: "满意度评分：",
                 score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
                 score4: "⭐⭐⭐⭐ 很好 (4星)",
@@ -954,6 +946,31 @@
                 copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。"
             }
         };
+
+        // พจนานุกรมสำหรับแปลงชื่อข้ามภาษา (รองรับตัวอย่าง Ken / somchai ฯลฯ)
+        const nameDictionary = {
+            "ken": { th: "เคน", en: "Ken", zh: "肯" },
+            "somchai": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
+            "somying": { th: "สมหญิง", en: "Somying", zh: "颂英" },
+            "admin": { th: "แอดมิน", en: "Admin", zh: "管理员" },
+            // ชื่อภาษาไทยพื้นฐาน
+            "เคน": { th: "เคน", en: "Ken", zh: "肯" },
+            "สมชาย": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
+            "สมหญิง": { th: "สมหญิง", en: "Somying", zh: "颂英" },
+            "แอดมิน": { th: "แอดมิน", en: "Admin", zh: "管理员" },
+            // ชื่อภาษาจีนพื้นฐาน
+            "肯": { th: "เคน", en: "Ken", zh: "肯" },
+            "颂猜": { th: "สมชาย", en: "Somchai", zh: "颂猜" }
+        };
+
+        function translateName(nameStr, targetLang) {
+            if (!nameStr) return "";
+            const cleanKey = nameStr.trim().toLowerCase();
+            if (nameDictionary[cleanKey]) {
+                return nameDictionary[cleanKey][targetLang] || nameStr;
+            }
+            return nameStr; // หากไม่พบในคลังคำศัพท์ ให้คงค่าเดิมไว้
+        }
 
         let currentCalendarDate = new Date(); 
         let selectedDateKeyGlobal = null; 
@@ -982,7 +999,8 @@
         let feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks'));
         if (!feedbackList || feedbackList.length === 0) {
             feedbackList = [
-                { name: "สมชาย / Somchai", type: "evaluation", score: "5", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", date: "2026-09-06 15:00" }
+                { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", score: "5", date: "2026-09-06 15:00" },
+                { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
             ];
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
         }
@@ -1240,7 +1258,6 @@
         async function submitFeedback(event) {
             event.preventDefault();
             const name = document.getElementById('fb-name').value;
-            const type = document.getElementById('fb-type').value;
             const score = document.getElementById('fb-score').value;
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
@@ -1248,7 +1265,7 @@
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             
-            feedbackList.unshift({ name, type, score, details, date: dateStr });
+            feedbackList.unshift({ name, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
 
             let successMsgs = {
@@ -1282,14 +1299,12 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
-                // แปลงประเภทตามภาษาปัจจุบันที่ผู้ใช้เลือก (ไม่สนใจว่าตอนพิมพ์จะเลือกภาษาอะไรมา)
-                let typeLabel = t.optEval;
-                if(fb.type === 'issue') typeLabel = t.optIssue;
-                if(fb.type === 'suggestion') typeLabel = t.optSugg;
+                // แปลงชื่อผู้ใช้งานตามภาษาปัจจุบันที่เปลี่ยน
+                const translatedName = translateName(fb.name, currentLang);
 
                 item.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
-                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${fb.name} (${typeLabel})</span>
+                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${translatedName}</span>
                         <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
                     </div>
                     <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${fb.details}</p>
@@ -1319,7 +1334,7 @@
             } else if (currentLang === 'en') {
                 document.getElementById('last-update-text').innerText = `Last updated on ${monthNames['en'][month]} ${day}, ${year} at ${hours}:${minutes}`;
             } else if (currentLang === 'zh') {
-                document.getElementById('last-update-text').innerText = `最近更新时间：${year}年${monthNames['zh'][month]}${day}日 ${hours}:${minutes}`;
+                document.getElementById('last-update-text').innerText = `最近更新时间：${year}年${monthNames['zh'][month]}月${day}日 ${hours}:${minutes}`;
             }
         }
 
