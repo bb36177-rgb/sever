@@ -258,6 +258,34 @@
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
 
+        .cal-nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .cal-nav-btn {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(170, 119, 28, 0.3));
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cal-nav-btn:hover {
+            background: var(--accent-gold);
+            color: #000;
+            transform: scale(1.1);
+        }
+
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -571,6 +599,10 @@
                 <div class="calendar-wrapper">
                     <div class="cal-header">
                         <h3 id="cal-month-year">กันยายน 2569</h3>
+                        <div class="cal-nav-controls">
+                            <button class="cal-nav-btn" onclick="changeMonth(-1)" title="เดือนก่อนหน้า">◀</button>
+                            <button class="cal-nav-btn" onclick="changeMonth(1)" title="เดือนถัดไป">▶</button>
+                        </div>
                     </div>
                     <div class="cal-grid" id="cal-days-name">
                         <div class="cal-day-name" data-i18n="daySun">อา</div>
@@ -905,10 +937,13 @@
                 scoreLabelText: "满意度评分：",
                 copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。",
                 defaultAuthorName: "颂猜",
-                defaultReviewText: "系统非常易用，设计非常漂亮。"
+                defaultReviewText: "ระบบ非常易用，设计非常漂亮。"
             }
         };
 
+        // ล็อกเวลาตายตัวไว้ที่ 15:00 น. ของวันนี้ (6 กันยายน 2569)
+        let currentCalendarDate = new Date(2026, 8, 6, 15, 0, 0);
+        
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
@@ -959,14 +994,18 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ล็อกปฏิทินให้แสดงเฉพาะเดือนกันยายน 2569 (เดือน 8 แบบ JavaScript Index คือเดือนกันยายน)
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const cellsContainer = document.getElementById('cal-cells');
             if (!cellsContainer) return;
             cellsContainer.innerHTML = '';
 
-            const year = 2026;
-            const month = 8; // กันยายน
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
             const currentLang = document.getElementById('langSwitch').value;
 
             const monthNames = {
@@ -993,12 +1032,12 @@
             }
 
             // วันในเดือนปัจจุบันทั้งหมด
-            const todayObj = new Date(2026, 8, 6); // ล็อกวันที่ปัจจุบันเป็น 6 กันยายน 2569
+            const todayObj = new Date(2026, 8, 6); // ล็อกวันที่ปัจจุบันเป็น 6 ก.ย. 2569
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
                 
-                if (day === todayObj.getDate()) {
+                if (year === todayObj.getFullYear() && month === todayObj.getMonth() && day === todayObj.getDate()) {
                     cell.classList.add('today');
                 }
                 
@@ -1133,8 +1172,8 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            // ล็อกเวลาบันทึกฟอร์มเป็น 15:00 น.
+            const dateStr = `2026-09-06 15:00`;
             
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
@@ -1189,7 +1228,6 @@
             });
         }
 
-        // ดึงเวลาอัปเดตล่าสุดจาก GitHub API จริงๆ โดยตัดโค้ดเวลาสำรองออก
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
@@ -1197,24 +1235,16 @@
 
             try {
                 const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error("API Limit reached");
+                if (!response.ok) throw new Error("Rate limit or network error");
 
                 const data = await response.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    const commitDateStr = data[0].commit.committer.date;
-                    const commitDate = new Date(commitDateStr);
-                    
-                    const options = { 
-                        year: 'numeric', month: 'long', day: 'numeric', 
-                        hour: '2-digit', minute: '2-digit', hour12: false,
-                        timeZone: 'Asia/Bangkok'
-                    };
-                    
-                    const dateStr = new Intl.DateTimeFormat('th-TH', options).format(commitDate);
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ ${dateStr} น.`;
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ 6 กันยายน 2569 เวลา 15:00 น.`;
+                    return;
                 }
             } catch (error) {
-                document.getElementById('last-update-text').innerText = `ไม่สามารถดึงข้อมูลเวลาจาก GitHub API ได้ในขณะนี้`;
+                // ล็อกเวลาอัปเดตเป็น 15:00 น. ทันทีเมื่อดึง API ไม่สำเร็จ
+                document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 เวลา 15:00 น.`;
             }
         }
 
