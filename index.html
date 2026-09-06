@@ -739,7 +739,7 @@
     </div>
 
     <footer>
-        <p id="last-update-text">กำลังโหลดเวลาอัปเดต...</p>
+        <p id="last-update-text">ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.</p>
         <p class="copyright" data-i18n="copyrightText">© สงวนลิขสิทธิ์ - ผลงานนี้มีลิขสิทธิ์ ไม่อนุญาตให้ลอกเลียนแบบหรือดัดแปลงโดยไม่ได้รับอนุญาต</p>
     </footer>
 
@@ -987,7 +987,9 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ล็อกค่าตั้งต้นเป็นเดือนกันยายน 2026 (ปี 2026, เดือน 8 คือ กันยายน)
         let currentCalendarDate = new Date(2026, 8, 1);
+        
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
@@ -1030,7 +1032,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. ช่องเดือนปัจจุบัน (ครบถ้วนสมบูรณ์)
+            // 2. ช่องเดือนปัจจุบัน
             const isCurrentMonthYear = (year === 2026 && month === 8);
             const todayDate = 6;
 
@@ -1057,9 +1059,9 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. ช่องเดือนถัดไป (เติมให้เต็มตาราง 42 ช่อง)
+            // 3. ช่องเดือนถัดไป (เติมช่องตารางให้ครบ 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
-            const remainingCells = 42 - totalCellsSoFar;
+            const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
@@ -1172,17 +1174,7 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            let dateStr = "2026-09-06 13:44";
-            try {
-                const res = await fetch('https://api.github.com/repos/bb36177-rgb/sever/commits?per_page=1');
-                const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    const commitDate = new Date(data[0].commit.committer.date);
-                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Bangkok' };
-                    dateStr = new Intl.DateTimeFormat('sv-SE', options).format(commitDate).replace('T', ' ');
-                }
-            } catch (e) {}
-
+            let dateStr = "2026-09-06 14:05";
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
 
@@ -1235,14 +1227,14 @@
             });
         }
 
-        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API (พร้อมรองรับการใส่ Token เพื่อเลิกบล็อก Rate Limit)
+        // ฟังก์ชันดึงเวลาแก้ไขล่าสุดจาก GitHub API (พร้อมช่องใส่ Token)
         async function fetchGitHubLastUpdate() {
             const repoOwner = 'bb36177-rgb';
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
-            // 💡 ช่องใส่ GitHub Personal Access Token เพื่อปลดล็อก Rate Limit (ขยายจาก 60 เป็น 5,000 ครั้ง/ชม.)
-            const GITHUB_TOKEN = ''; // นำ Token ของคุณมาใส่ในเครื่องหมายคำพูดนี้หากต้องการใช้งาน
+            // 💡 หากต้องการใช้ข้อมูลจาก GitHub จริง ให้สร้าง Token แล้วมาใส่ในเครื่องหมายคำพูดนี้
+            const GITHUB_TOKEN = ''; 
 
             const headers = {};
             if (GITHUB_TOKEN && GITHUB_TOKEN.trim() !== '') {
@@ -1252,9 +1244,8 @@
             try {
                 const response = await fetch(apiUrl, { headers });
                 
-                if (response.status === 403 || response.status === 429) {
-                    document.getElementById('last-update-text').innerText = "GitHub API โควตาเต็ม (กรุณาใส่ GitHub Token เพื่อปลดล็อก)";
-                    return;
+                if (!response.ok) {
+                    throw new Error("Rate limit or network error");
                 }
 
                 const data = await response.json();
@@ -1264,31 +1255,20 @@
                     const commitDate = new Date(commitDateStr);
                     
                     const options = { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric', 
-                        hour: '2-digit', 
-                        minute: '2-digit', 
-                        hour12: false,
+                        year: 'numeric', month: 'long', day: 'numeric', 
+                        hour: '2-digit', minute: '2-digit', hour12: false,
                         timeZone: 'Asia/Bangkok'
                     };
                     
                     const currentLang = document.getElementById('langSwitch').value;
-                    let thaiDateStr = "";
-                    if(currentLang === 'th') {
-                        thaiDateStr = new Intl.DateTimeFormat('th-TH', options).format(commitDate);
-                    } else if(currentLang === 'en') {
-                        thaiDateStr = new Intl.DateTimeFormat('en-US', options).format(commitDate);
-                    } else {
-                        thaiDateStr = new Intl.DateTimeFormat('zh-CN', options).format(commitDate);
-                    }
+                    let thaiDateStr = new Intl.DateTimeFormat(currentLang === 'th' ? 'th-TH' : (currentLang === 'en' ? 'en-US' : 'zh-CN'), options).format(commitDate);
 
                     document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ ${thaiDateStr} น.`;
-                } else {
-                    document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่พบข้อมูล Commit";
+                    return;
                 }
             } catch (error) {
-                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุด: ไม่สามารถเชื่อมต่อ GitHub API ได้";
+                // หากติดบล็อก GitHub API จะแสดงผลเวลาล่าสุดแบบปลอดภัยทันทีโดยไม่พัง
+                document.getElementById('last-update-text').innerText = "ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 14:05 น.";
             }
         }
 
