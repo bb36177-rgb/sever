@@ -327,6 +327,25 @@
             box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
         }
 
+        /* อนิเมชั่นและสไตล์เมื่อคลิกเลือกวันที่ (ไม่ซ้ำกับวันปัจจุบัน) */
+        .cal-cell.selected-date {
+            background: rgba(139, 0, 0, 0.4);
+            border: 2px solid #ff4d4d;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6);
+            animation: pulseSelected 1.5s infinite;
+        }
+
+        @keyframes pulseSelected {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
+            50% { transform: scale(1.04); box-shadow: 0 0 20px rgba(255, 77, 77, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 10px rgba(255, 77, 77, 0.4); }
+        }
+
+        .cal-cell.selected-date .day-number {
+            color: #ff8080;
+            text-shadow: 0 0 8px rgba(255, 128, 128, 0.8);
+        }
+
         .cal-cell.disabled {
             opacity: 0.35;
             cursor: pointer;
@@ -943,9 +962,10 @@
             }
         };
 
-        let currentCalendarDate = new Date(2026, 8, 1); 
+        // ตั้งค่าวันที่ปฏิทินเริ่มต้นตามระบบปัจจุบันจริง (Real-time Date)
+        let currentCalendarDate = new Date(); 
+        let selectedDateKeyGlobal = null; // เก็บวันที่ที่กำลังถูกเลือกอยู่ปัจจุบัน
         
-        // โหลดและ Sanitize ข้อมูลจาก localStorage ให้ปลอดภัยเสมอ ป้องกันข้อมูลเพี้ยนทำลูปพัง
         let rawEvents = JSON.parse(localStorage.getItem('my_hub_events'));
         let eventsData = {};
         if (rawEvents && typeof rawEvents === 'object') {
@@ -953,7 +973,7 @@
                 if (Array.isArray(rawEvents[key])) {
                     eventsData[key] = rawEvents[key];
                 } else if (typeof rawEvents[key] === 'string') {
-                    eventsData[key] = [rawEvents[key]]; // แปลง string เดี่ยวให้เป็น array
+                    eventsData[key] = [rawEvents[key]];
                 } else {
                     eventsData[key] = [];
                 }
@@ -984,6 +1004,13 @@
 
             renderCalendar();
             renderFeedbacks();
+            if(selectedDateKeyGlobal) {
+                // อัปเดตหัวข้อรายละเอียดวันที่เลือกตามภาษาใหม่
+                const parts = selectedDateKeyGlobal.split('-');
+                if(parts.length === 3) {
+                    selectDate(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), selectedDateKeyGlobal);
+                }
+            }
         }
 
         function copyEmailToClipboard() {
@@ -1043,7 +1070,7 @@
             const currentMonth = today.getMonth();
             const currentDay = today.getDate();
 
-            // 1. เติมช่องว่างวันปลายเดือนก่อนหน้า
+            // 1. ช่องว่างวันปลายเดือนก่อนหน้า
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const prevDayNum = prevMonthLastDay - i;
                 const cell = document.createElement('div');
@@ -1052,21 +1079,27 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. เติมวันที่ในเดือนปัจจุบันจนครบทุกวัน (ถึงวันที่ 30) พร้อม Try-Catch ป้องกัน Loop พัง
+            // 2. วันในเดือนปัจจุบัน
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 try {
                     const cell = document.createElement('div');
                     
                     const isToday = (year === currentYear && month === currentMonth && day === currentDay);
-                    cell.className = isToday ? 'cal-cell today' : 'cal-cell';
+                    let cellClass = isToday ? 'cal-cell today' : 'cal-cell';
                     
                     const formattedMonth = String(month + 1).padStart(2, '0');
                     const formattedDay = String(day).padStart(2, '0');
                     const dateKey = `${year}-${formattedMonth}-${formattedDay}`;
 
+                    // เช็คว่าเป็นวันที่กำลังเลือกอยู่หรือไม่ เพื่อใส่คลาสอนิเมชั่นพิเศษ
+                    if (selectedDateKeyGlobal === dateKey) {
+                        cellClass += ' selected-date';
+                    }
+
+                    cell.className = cellClass;
+
                     let cellHTML = `<span class="day-number">${day}</span>`;
                     
-                    // ป้องกันความผิดพลาดด้วยการตรวจสอบ Array
                     if (eventsData[dateKey] && Array.isArray(eventsData[dateKey])) {
                         eventsData[dateKey].forEach(task => {
                             cellHTML += `<div class="event-preview">• ${task}</div>`;
@@ -1081,7 +1114,7 @@
                 }
             }
 
-            // 3. เติมช่องว่างวันต้นเดือนถัดไป บังคับแสดงผลแถวตารางให้ครบเต็มรูปแบบ (รวมเป็น 42 ช่อง)
+            // 3. ช่องว่างวันต้นเดือนถัดไป
             const totalCellsRendered = firstDayIndex + totalDaysInMonth;
             const targetTotalCells = 42; 
             const nextMonthDaysCount = targetTotalCells - totalCellsRendered;
@@ -1095,6 +1128,9 @@
         }
 
         function selectDate(year, month, day, dateKey) {
+            selectedDateKeyGlobal = dateKey; // บันทึกวันที่เลือกปัจจุบัน
+            renderCalendar(); // เรนเดอร์ใหม่เพื่อให้แอนิเมชั่นติดที่ช่องที่เลือก
+
             const currentLang = document.getElementById('langSwitch').value;
             const monthNames = {
                 th: ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
@@ -1136,7 +1172,7 @@
                 taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
                 taskRow.innerHTML = `
                     <span style="color: #fff; font-size: 0.9rem;">• ${task}</span>
-                    <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>
+                    <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;" data-i18n="delBtn">❌ ลบ</button>
                 `;
                 container.appendChild(taskRow);
             });
@@ -1198,7 +1234,8 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            const dateStr = `2026-09-06 16:00`;
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             
             feedbackList.unshift({ name, type, score, details, date: dateStr });
             localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
@@ -1244,7 +1281,7 @@
                 item.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
                         <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${displayName} (${typeLabel})</span>
-                        <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date} น.</span>
+                        <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
                     </div>
                     <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${displayDetails}</p>
                     <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
