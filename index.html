@@ -1021,7 +1021,7 @@
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
             const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // แสดงวันของเดือนก่อนหน้าให้เต็มช่องสัปดาห์
+            // 1. เติมวันจากเดือนก่อนหน้าให้เต็มสัปดาห์
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const prevDayNum = prevMonthDays - i;
                 const cell = document.createElement('div');
@@ -1030,7 +1030,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // วันในเดือนปัจจุบันทั้งหมด
+            // 2. เติมวันทั้งหมดในเดือนปัจจุบัน
             const todayObj = new Date(2026, 8, 6);
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
@@ -1056,10 +1056,12 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // คำนวณจำนวนช่องที่เหลือให้ครบแถว (รวมเป็น 35 หรือ 42 ช่อง เพื่อให้ปฏิทินแสดงครบทุกวันไม่ขาดหาย)
-            const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
-            const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
-            for (let day = 1; day <= remainingCells; day++) {
+            // 3. เติมวันของเดือนถัดไปให้ช่องตารางครบแถวสมบูรณ์ (รวมต้องเป็น 35 หรือ 42 ช่องพอดี)
+            const totalCellsRendered = firstDayIndex + totalDaysInMonth;
+            const targetTotalCells = totalCellsRendered <= 35 ? 35 : 42;
+            const nextMonthDaysCount = targetTotalCells - totalCellsRendered;
+
+            for (let day = 1; day <= nextMonthDaysCount; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell disabled';
                 cell.innerHTML = `<span class="day-number" style="color: #666;">${day}</span>`;
