@@ -1021,7 +1021,6 @@
             const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
             const prevMonthDays = new Date(year, month, 0).getDate();
 
-            // 1. วันของเดือนก่อนหน้า (เติมช่องว่างหัวตาราง)
             for (let i = firstDayIndex - 1; i >= 0; i--) {
                 const prevDayNum = prevMonthDays - i;
                 const cell = document.createElement('div');
@@ -1030,7 +1029,6 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 2. วันของเดือนปัจจุบัน
             const todayObj = new Date();
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
@@ -1056,7 +1054,6 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // 3. วันของเดือนถัดไป (เติมช่องว่างท้ายตารางให้ครบแถวรวมเป็น 35 หรือ 42 ช่อง)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
@@ -1232,8 +1229,16 @@
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
+            // ใส่รหัส Token ของคุณลงในตัวแปรนี้เรียบร้อยแล้ว
+            const githubToken = ''; 
+
+            const headers = {};
+            if (githubToken.trim() !== '') {
+                headers['Authorization'] = `token ${githubToken}`;
+            }
+
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(apiUrl, { headers });
                 if (!response.ok) throw new Error("Rate limit or network error");
 
                 const data = await response.json();
