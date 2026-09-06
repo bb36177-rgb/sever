@@ -937,11 +937,10 @@
                 scoreLabelText: "满意度评分：",
                 copyrightText: "© 版权所有 - 本作品受版权保护，未经许可禁止复制或修改。",
                 defaultAuthorName: "颂猜",
-                defaultReviewText: "ระบบ非常易用，设计非常漂亮。"
+                defaultReviewText: "系统非常易用，设计非常漂亮。"
             }
         };
 
-        // ล็อกเวลาตายตัวไว้ที่ 15:00 น. ของวันนี้ (6 กันยายน 2569)
         let currentCalendarDate = new Date(2026, 8, 6, 15, 0, 0);
         
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
@@ -1032,7 +1031,7 @@
             }
 
             // วันในเดือนปัจจุบันทั้งหมด
-            const todayObj = new Date(2026, 8, 6); // ล็อกวันที่ปัจจุบันเป็น 6 ก.ย. 2569
+            const todayObj = new Date(2026, 8, 6);
             for (let day = 1; day <= totalDaysInMonth; day++) {
                 const cell = document.createElement('div');
                 cell.className = 'cal-cell';
@@ -1057,7 +1056,7 @@
                 cellsContainer.appendChild(cell);
             }
 
-            // คำนวณจำนวนช่องที่เหลือให้ครบแถว (รวมเป็น 35 หรือ 42 ช่อง เพื่อให้ตารางไม่แหว่ง)
+            // คำนวณจำนวนช่องที่เหลือให้ครบแถว (รวมเป็น 35 หรือ 42 ช่อง เพื่อให้ปฏิทินแสดงครบทุกวันไม่ขาดหาย)
             const totalCellsSoFar = firstDayIndex + totalDaysInMonth;
             const remainingCells = (totalCellsSoFar <= 35) ? (35 - totalCellsSoFar) : (42 - totalCellsSoFar);
             for (let day = 1; day <= remainingCells; day++) {
@@ -1172,7 +1171,6 @@
             const details = document.getElementById('fb-details').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            // ล็อกเวลาบันทึกฟอร์มเป็น 15:00 น.
             const dateStr = `2026-09-06 15:00`;
             
             feedbackList.unshift({ name, type, score, details, date: dateStr });
@@ -1239,11 +1237,13 @@
 
                 const data = await response.json();
                 if (Array.isArray(data) && data.length > 0) {
-                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ 6 กันยายน 2569 เวลา 15:00 น.`;
+                    const commitDate = new Date(data[0].commit.committer.date);
+                    const formattedDate = commitDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const formattedTime = commitDate.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                    document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดจาก GitHub API เมื่อ วันที่ ${formattedDate} เวลา ${formattedTime} น.`;
                     return;
                 }
             } catch (error) {
-                // ล็อกเวลาอัปเดตเป็น 15:00 น. ทันทีเมื่อดึง API ไม่สำเร็จ
                 document.getElementById('last-update-text').innerText = `ปรับปรุงระบบล่าสุดเมื่อ วันที่ 6 กันยายน 2569 เวลา 15:00 น.`;
             }
         }
