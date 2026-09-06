@@ -833,7 +833,7 @@
                 navHome: "Home",
                 navRobots: "Robot Web",
                 navOthers: "Other Webs",
-                navEvaluation: "Evaluation & Issue",
+                navEvaluation: "Evaluation",
                 navContact: "Contact",
                 heroTitle: "Ching Long Server - Archive Hub & Personal System",
                 heroSubtitle: "A centralized hub for project links, codes, and smart schedule calendar.",
@@ -899,7 +899,7 @@
                 navHome: "首页",
                 navRobots: "机器人网站",
                 navOthers: "其他网站",
-                navEvaluation: "评估/问题反馈",
+                navEvaluation: "评估与反馈",
                 navContact: "联系开发者",
                 heroTitle: "青龙服务器 - 档案中心与个人系统",
                 heroSubtitle: "项目链接、代码及智能日程日历的中央集成枢纽。",
@@ -939,10 +939,10 @@
                 lblName: "您的姓名 / 联系方式：",
                 namePlaceholder: "请输入您的姓名...",
                 lblType: "提交类型：",
-                optEval: "⭐ 满意度评估",
+                optEval: "⭐ 网站满意度评估",
                 optIssue: "🛠️ 报告系统错误 / 问题",
                 optSugg: "💡 建议新功能",
-                lblScore: "评分：",
+                lblScore: "满意度评分：",
                 score5: "⭐⭐⭐⭐⭐ 非常优秀 (5星)",
                 score4: "⭐⭐⭐⭐ 很好 (4星)",
                 score3: "⭐⭐ 一般 (3星)",
@@ -961,7 +961,7 @@
             }
         };
 
-        let lastCommitDateString = new Date().toISOString();
+        let lastCommitDateString = "";
 
         function changeLanguage(lang) {
             localStorage.setItem('site_lang', lang);
@@ -981,7 +981,10 @@
 
             renderCalendar();
             renderFeedbacks();
-            updateFooterTime(lastCommitDateString, lang);
+            
+            if(lastCommitDateString) {
+                updateFooterTime(lastCommitDateString, lang);
+            }
         }
 
         function copyEmailToClipboard() {
@@ -1008,9 +1011,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ตั้งค่าตัวแปรปฏิทินเริ่มต้นให้ตรงกับปัจจุบัน (ปี 2026 เดือนกันยายน)
-        let currentCalendarYear = 2026;
-        let currentCalendarMonth = 8; // กันยายน (0 = มกราคม, 8 = กันยายน)
+        // 🌟 แก้ไขจุดเริ่มต้นของปฏิทินให้เป็นวันที่ 1 ของเดือนเสมอ เพื่อให้แสดงผลครบทุกวัน
+        let currentCalendarDate = new Date(2026, 8, 1);
         
         const eventsData = JSON.parse(localStorage.getItem('my_hub_events')) || {
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1018,14 +1020,7 @@
         };
 
         function changeMonth(direction) {
-            currentCalendarMonth += direction;
-            if (currentCalendarMonth > 11) {
-                currentCalendarMonth = 0;
-                currentCalendarYear++;
-            } else if (currentCalendarMonth < 0) {
-                currentCalendarMonth = 11;
-                currentCalendarYear--;
-            }
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
             renderCalendar();
         }
 
@@ -1033,8 +1028,8 @@
             const cellsContainer = document.getElementById('cal-cells');
             cellsContainer.innerHTML = '';
 
-            const year = currentCalendarYear;
-            const month = currentCalendarMonth;
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
             const currentLang = document.getElementById('langSwitch').value;
 
             const monthNames = {
@@ -1178,7 +1173,7 @@
         }
 
         const feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks')) || [
-            { name: "คุณสมชาย", type: "evaluation", score: "5", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ", date: "2026-09-05 10:00" }
+            { nameKey: "default", typeKey: "evaluation", score: "5", detailsKey: "defaultReview", date: "2026-09-05 10:00" }
         ];
 
         function submitFeedback(event) {
@@ -1225,16 +1220,19 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
+                let displayName = fb.nameKey === "default" ? t.defaultAuthorName : fb.name;
+                let displayDetails = fb.detailsKey === "defaultReview" ? t.defaultReviewText : fb.details;
+
                 let typeLabel = t.optEval;
-                if(fb.type === 'issue') typeLabel = t.optIssue;
-                if(fb.type === 'suggestion') typeLabel = t.optSugg;
+                if(fb.type === 'issue' || fb.typeKey === 'issue') typeLabel = t.optIssue;
+                if(fb.type === 'suggestion' || fb.typeKey === 'suggestion') typeLabel = t.optSugg;
 
                 item.innerHTML = `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
-                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${fb.name} (${typeLabel})</span>
+                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${displayName} (${typeLabel})</span>
                         <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
                     </div>
-                    <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${fb.details}</p>
+                    <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${displayDetails}</p>
                     <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
                 `;
                 container.appendChild(item);
@@ -1246,24 +1244,18 @@
             const repoName = 'sever';
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=1`;
 
-            let success = false;
             try {
                 const response = await fetch(apiUrl);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.length > 0) {
-                        lastCommitDateString = data[0].commit.committer.date;
-                        success = true;
-                    }
+                if (!response.ok) throw new Error('API Error');
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    lastCommitDateString = data[0].commit.committer.date;
+                } else {
+                    lastCommitDateString = new Date().toISOString();
                 }
             } catch (error) {
-                // Ignore network error
-            }
-
-            if (!success) {
                 lastCommitDateString = new Date().toISOString();
             }
-
             const currentLang = document.getElementById('langSwitch').value;
             updateFooterTime(lastCommitDateString, currentLang);
         }
