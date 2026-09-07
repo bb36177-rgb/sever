@@ -132,6 +132,30 @@
             transform: translateY(-1px);
         }
 
+        /* สไตล์ปุ่ม Admin กลมกลืนกับธีมเว็บ */
+        .admin-nav-btn {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(139, 0, 0, 0.3));
+            border: 1px solid var(--border-gold);
+            color: var(--accent-gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .admin-nav-btn:hover {
+            background: linear-gradient(135deg, #ffea79, #d4af37);
+            color: #000;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            transform: translateY(-1px);
+        }
+
         .lang-selector {
             background: var(--surface);
             border: 1px solid var(--border-gold);
@@ -587,6 +611,11 @@
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
+                <!-- ปุ่มสำหรับ Admin เพิ่มเข้ามาตรงนี้ เรียงเข้ากับภาษา -->
+                <a href="admin_login.php" class="admin-nav-btn">
+                    ⚙️ สำหรับ Admin
+                </a>
+
                 <select id="langSwitch" class="lang-selector" onchange="changeLanguage(this.value)">
                     <option value="th">🇹🇭 ไทย</option>
                     <option value="en">🇬🇧 English</option>
@@ -763,7 +792,6 @@
     <script>
         const WORKER_URL = "https://delicate-wood-83f5.bb36177.workers.dev";
 
-        // โครงสร้างคำแปลรองรับเฉพาะ 3 ภาษา (ไทย, อังกฤษ, จีน)
         const translations = {
             th: {
                 title: "ชิงหลงเซิฟ - คลังเก็บผลงานและระบบส่วนตัว",
@@ -988,7 +1016,6 @@
             { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
         ];
 
-        // ฟังก์ชันดึงข้อมูลจาก Cloudflare Worker
         async function loadDataFromWorker() {
             try {
                 const response = await fetch(`${WORKER_URL}/get-data`);
@@ -1241,8 +1268,6 @@
             document.getElementById('event-desc').value = "";
             renderCalendar();
             renderTasksList(dateVal);
-            
-            // สามารถเรียกฟังก์ชันอัปเดตข้อมูลปฏิทินไปเก็บที่ Worker ได้ที่นี่ถ้าต้องการ
         }
 
         function deleteTask(dateKey, index) {
@@ -1256,7 +1281,6 @@
             }
         }
 
-        // 1. ฟังก์ชันส่ง Feedback ไปยัง Cloudflare Worker
         async function submitFeedback(event) {
             event.preventDefault();
             const name = document.getElementById('fb-name').value;
@@ -1293,32 +1317,6 @@
             } catch (error) {
                 console.error("เกิดข้อผิดพลาดในการส่ง Feedback:", error);
                 alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ Worker ได้");
-            }
-        }
-
-        // 2. ฟังก์ชันอัปเดตปฏิทินสำหรับ Admin (ตัวอย่างการใช้งาน)
-        async function updateCalendarData(newCalendarData, password) {
-            try {
-                const response = await fetch(`${WORKER_URL}/update-calendar`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        password: password, 
-                        data: newCalendarData 
-                    })
-                });
-                
-                if (response.status === 401) {
-                    alert("รหัสผ่านไม่ถูกต้อง!");
-                    return;
-                }
-                
-                const result = await response.json();
-                if (result.ok) {
-                    alert("อัปเดตปฏิทินขึ้น GitHub สำเร็จแล้ว!");
-                }
-            } catch (error) {
-                console.error("เกิดข้อผิดพลาด:", error);
             }
         }
 
@@ -1404,7 +1402,7 @@
             if (langSelect) langSelect.value = savedLang;
             
             changeLanguage(savedLang);
-            loadDataFromWorker(); // โหลดข้อมูลจริงจาก Worker
+            loadDataFromWorker();
             fetchGitHubLastUpdate();
         });
     </script>
