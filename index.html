@@ -761,6 +761,8 @@
     </footer>
 
     <script>
+        const WORKER_URL = "https://delicate-wood-83f5.bb36177.workers.dev";
+
         // โครงสร้างคำแปลรองรับเฉพาะ 3 ภาษา (ไทย, อังกฤษ, จีน)
         const translations = {
             th: {
@@ -948,7 +950,6 @@
             }
         };
 
-        // พจนานุกรมสำหรับแปลงชื่อข้ามภาษา (ไทย, อังกฤษ, จีน)
         const nameDictionary = {
             "ken": { th: "เคน", en: "Ken", zh: "肯" },
             "somchai": { th: "สมชาย", en: "Somchai", zh: "颂猜" },
@@ -976,37 +977,34 @@
         let selectedDateKeyGlobal = null; 
         let lastCommitDateObj = new Date("2026-09-06T21:20:00");
         
-        let rawEvents = JSON.parse(localStorage.getItem('my_hub_events'));
-        let eventsData = {};
-        if (rawEvents && typeof rawEvents === 'object') {
-            for (let key in rawEvents) {
-                if (Array.isArray(rawEvents[key])) {
-                    eventsData[key] = rawEvents[key];
-                } else if (typeof rawEvents[key] === 'string') {
-                    eventsData[key] = [rawEvents[key]];
-                } else {
-                    eventsData[key] = [];
-                }
-            }
-        } else {
-            eventsData = {
-                "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
-                "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
-                "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
-            };
-        }
+        let eventsData = {
+            "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
+            "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
+            "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
+        };
 
-        let feedbackList = JSON.parse(localStorage.getItem('my_hub_feedbacks'));
-        if (!feedbackList || feedbackList.length === 0) {
-            feedbackList = [
-                { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", score: "5", date: "2026-09-06 15:00" },
-                { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
-            ];
-            localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
+        let feedbackList = [
+            { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", score: "5", date: "2026-09-06 15:00" },
+            { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
+        ];
+
+        // ฟังก์ชันดึงข้อมูลจาก Cloudflare Worker
+        async function loadDataFromWorker() {
+            try {
+                const response = await fetch(`${WORKER_URL}/get-data`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.events) eventsData = data.events;
+                    if (data.feedbacks) feedbackList = data.feedbacks;
+                    renderCalendar();
+                    renderFeedbacks();
+                }
+            } catch (error) {
+                console.error("ไม่สามารถเชื่อมต่อ Worker เพื่อโหลดข้อมูลได้:", error);
+            }
         }
 
         function changeLanguage(lang) {
-            // บังคับจำกัดเฉพาะ 3 ภาษาที่รองรับ (th, en, zh) หากเลือกนอกเหนือจากนี้ให้fallback เป็นไทย
             if (!translations[lang]) lang = 'th';
 
             localStorage.setItem('site_lang', lang);
@@ -1240,10 +1238,11 @@
             }
             eventsData[dateVal].push(descVal.trim());
 
-            localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
             document.getElementById('event-desc').value = "";
             renderCalendar();
             renderTasksList(dateVal);
+            
+            // สามารถเรียกฟังก์ชันอัปเดตข้อมูลปฏิทินไปเก็บที่ Worker ได้ที่นี่ถ้าต้องการ
         }
 
         function deleteTask(dateKey, index) {
@@ -1252,12 +1251,12 @@
                 if(eventsData[dateKey].length === 0) {
                     delete eventsData[dateKey];
                 }
-                localStorage.setItem('my_hub_events', JSON.stringify(eventsData));
                 renderCalendar();
                 renderTasksList(dateKey);
             }
         }
 
+        // 1. ฟังก์ชันส่ง Feedback ไปยัง Cloudflare Worker
         async function submitFeedback(event) {
             event.preventDefault();
             const name = document.getElementById('fb-name').value;
@@ -1268,19 +1267,59 @@
             const now = new Date();
             const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
             
-            feedbackList.unshift({ name, score, details, date: dateStr });
-            localStorage.setItem('my_hub_feedbacks', JSON.stringify(feedbackList));
+            const newFeedback = { name, score, details, date: dateStr };
 
-            let successMsgs = {
-                th: "ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!",
-                en: "Evaluation/Issue report submitted successfully. Thank you for your feedback!",
-                zh: "评估/问题报告提交成功。感谢您的反馈！"
-            };
+            try {
+                const response = await fetch(`${WORKER_URL}/submit-feedback`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ feedback: newFeedback })
+                });
+                
+                const result = await response.json();
+                if (result.ok) {
+                    feedbackList.unshift(newFeedback);
+                    renderFeedbacks();
+                    
+                    let successMsgs = {
+                        th: "ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!",
+                        en: "Evaluation/Issue report submitted successfully. Thank you for your feedback!",
+                        zh: "评估/问题报告提交成功。感谢您的反馈！"
+                    };
+                    alert(successMsgs[currentLang]);
+                    document.getElementById('fb-name').value = '';
+                    document.getElementById('fb-details').value = '';
+                }
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาดในการส่ง Feedback:", error);
+                alert("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ Worker ได้");
+            }
+        }
 
-            alert(successMsgs[currentLang]);
-            document.getElementById('fb-name').value = '';
-            document.getElementById('fb-details').value = '';
-            renderFeedbacks();
+        // 2. ฟังก์ชันอัปเดตปฏิทินสำหรับ Admin (ตัวอย่างการใช้งาน)
+        async function updateCalendarData(newCalendarData, password) {
+            try {
+                const response = await fetch(`${WORKER_URL}/update-calendar`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        password: password, 
+                        data: newCalendarData 
+                    })
+                });
+                
+                if (response.status === 401) {
+                    alert("รหัสผ่านไม่ถูกต้อง!");
+                    return;
+                }
+                
+                const result = await response.json();
+                if (result.ok) {
+                    alert("อัปเดตปฏิทินขึ้น GitHub สำเร็จแล้ว!");
+                }
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาด:", error);
+            }
         }
 
         function renderFeedbacks() {
@@ -1302,7 +1341,6 @@
                 item.style.padding = '12px 15px';
                 item.style.borderRadius = '8px';
 
-                // แปลงชื่อผู้ใช้งานตามภาษาปัจจุบันที่เลือกทันที
                 const translatedName = translateName(fb.name, currentLang);
 
                 item.innerHTML = `
@@ -1366,6 +1404,7 @@
             if (langSelect) langSelect.value = savedLang;
             
             changeLanguage(savedLang);
+            loadDataFromWorker(); // โหลดข้อมูลจริงจาก Worker
             fetchGitHubLastUpdate();
         });
     </script>
