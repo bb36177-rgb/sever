@@ -7,6 +7,30 @@ if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'data';
+$msg = "";
+
+// จัดการเมื่อ Admin กดบันทึกปฏิทิน
+if (isset($_POST['save_calendar'])) {
+    $new_event = [
+        'title' => $_POST['event_title'],
+        'date' => $_POST['event_date'],
+        'desc' => $_POST['event_desc']
+    ];
+
+    $file = 'calendar.json';
+    $events = [];
+    
+    if (file_exists($file)) {
+        $events = json_decode(file_get_contents($file), true);
+    }
+    
+    // เอาข้อมูลใหม่ใส่เข้าไปข้างหน้าสุด
+    array_unshift($events, $new_event);
+    
+    // บันทึกลงไฟล์ JSON
+    file_put_contents($file, json_encode($events, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    $msg = "บันทึกและอัปเดตปฏิทินหน้าเว็บเรียบร้อยแล้ว!";
+}
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -31,6 +55,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'data';
         input[type="text"], input[type="date"], textarea { width: 100%; padding: 8px; margin: 8px 0 15px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
         button:hover { background: #219653; }
+        .alert { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -83,9 +108,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'data';
 
             <?php elseif ($page == 'calendar'): ?>
                 <h2>📅 ระบบแก้ไขปฏิทิน (เฉพาะ Admin)</h2>
-                <p>เพิ่มหรือแก้ไขกิจกรรมที่จะแสดงบนปฏิทินหน้าเว็บไซต์:</p>
+                <p>เพิ่มกิจกรรมใหม่เพื่อแสดงผลบนหน้าเว็บไซต์หลักให้ผู้ใช้งานทั่วไปเห็น:</p>
                 
-                <form action="" method="POST">
+                <?php if(!empty($msg)) { echo "<div class='alert'>$msg</div>"; } ?>
+
+                <form action="admin_dashboard.php?page=calendar" method="POST">
                     <label>หัวข้อกิจกรรม:</label>
                     <input type="text" name="event_title" placeholder="เช่น ประชุมประจำเดือน" required>
                     
@@ -95,14 +122,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'data';
                     <label>รายละเอียด:</label>
                     <textarea name="event_desc" rows="4" placeholder="รายละเอียดกิจกรรม..."></textarea>
                     
-                    <button type="submit" name="save_calendar">💾 บันทึกการเปลี่ยนแปลงปฏิทิน</button>
+                    <button type="submit" name="save_calendar">💾 บันทึกและเผยแพร่ปฏิทิน</button>
                 </form>
-                
-                <?php
-                if (isset($_POST['save_calendar'])) {
-                    echo "<p style='color: green; margin-top: 15px;'><strong>[สำเร็จ]</strong> บันทึกข้อมูลปฏิทินเรียบร้อยแล้ว!</p>";
-                }
-                ?>
 
             <?php elseif ($page == 'topics'): ?>
                 <h2>📝 แก้ไขหัวข้อหน้าแยก</h2>
