@@ -610,7 +610,7 @@
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
-                <!-- ปุ่ม Admin พร้อมระบบเปลี่ยนลิงก์อัตโนมัติตามสถานะล็อกอิน -->
+                <!-- ปุ่ม Admin ปรับเปลี่ยนอัตโนมัติ (หากเข้าสู่ระบบแล้วจะกดไปหน้าแดชบอร์ดแอดมินได้ทันที) -->
                 <a href="admin_login.html" id="admin-nav-link" class="admin-nav-btn">
                     ⚙️ สำหรับ Admin
                 </a>
@@ -663,7 +663,7 @@
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
-                    <!-- แผงควบคุมเพิ่มงาน (จะซ่อนอัตโนมัติหากไม่ใช่ Admin) -->
+                    <!-- แผงควบคุมเพิ่มงาน (ซ่อนอัตโนมัติหากไม่ใช่ Admin) -->
                     <div class="admin-panel" id="admin-calendar-panel" style="display: none;">
                         <strong style="font-size: 0.88rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป" readonly>
@@ -752,7 +752,13 @@
             </div>
 
             <div class="card" style="max-width: 800px; margin: 0 auto;">
-                <h3 style="color: var(--accent-gold); margin-bottom: 0.8rem;" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="color: var(--accent-gold);" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
+                    <!-- ปุ่มนำทางไปหน้า Admin Dashboard (ดูผลประเมินทั้งหมด) โดยจะพาไปที่ไฟล์ admin_dashboard.html ทันที -->
+                    <a href="admin_dashboard.html" class="action-chip" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold);">
+                        ⚙️ ดูผลประเมินทั้งหมด (Admin Dashboard)
+                    </a>
+                </div>
                 <div id="feedback-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
             </div>
         </div>
@@ -1241,7 +1247,6 @@
                 taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
                 
                 let deleteBtnHTML = "";
-                // อนุญาตให้แสดงปุ่มลบเฉพาะเมื่อเป็น Admin เท่านั้น
                 if (isAdmin) {
                     deleteBtnHTML = `<button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>`;
                 }
@@ -1340,6 +1345,8 @@
                     alert(successMsgs[currentLang]);
                     document.getElementById('fb-name').value = '';
                     document.getElementById('fb-details').value = '';
+                } else {
+                    alert("เกิดข้อผิดพลาดในการบันทึกข้อมูลจากเซิร์ฟเวอร์");
                 }
             } catch (error) {
                 console.error("เกิดข้อผิดพลาดในการส่ง Feedback:", error);
@@ -1354,7 +1361,7 @@
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
 
-            // กรองเฉพาะข้อมูลของ "สมชาย" เท่านั้น (เช็คเทียบทั้งไทย อังกฤษ จีน หรือคีย์ต่างๆ ของสมชาย)
+            // กรองแสดงเฉพาะผลงานประเมินของ "สมชาย" เท่านั้นในหน้าสาธารณะ
             const somchaiFeedbacks = feedbackList.filter(fb => {
                 if (!fb.name) return false;
                 const cleanName = fb.name.trim().toLowerCase();
@@ -1430,7 +1437,6 @@
             renderLastUpdateText();
         }
 
-        // ฟังก์ชันตรวจสอบและสลับสถานะปุ่ม Admin บน Navbar รวมถึงสิทธิ์การแสดงแผงควบคุมปฏิทิน
         function checkAdminSessionUI() {
             const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
             const adminNavLink = document.getElementById('admin-nav-link');
@@ -1446,7 +1452,6 @@
                 }
             }
 
-            // ถ้าเป็นแอดมิน ให้แสดงกล่องเพิ่ม/จัดการตารางงาน แต่ถ้าไม่ใช่จะซ่อนไว้
             if (adminCalendarPanel) {
                 adminCalendarPanel.style.display = isAdmin ? 'block' : 'none';
             }
@@ -1457,7 +1462,7 @@
             const langSelect = document.getElementById('langSwitch');
             if (langSelect) langSelect.value = savedLang;
             
-            checkAdminSessionUI(); // ตรวจสอบสถานะแอดมิน
+            checkAdminSessionUI();
             changeLanguage(savedLang);
             loadDataFromWorker();
             fetchGitHubLastUpdate();
