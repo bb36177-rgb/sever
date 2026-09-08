@@ -132,7 +132,6 @@
             transform: translateY(-1px);
         }
 
-        /* สไตล์ปุ่ม Admin กลมกลืนกับธีมเว็บ */
         .admin-nav-btn {
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(139, 0, 0, 0.3));
             border: 1px solid var(--border-gold);
@@ -611,8 +610,8 @@
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
-                <!-- ปุ่มสำหรับ Admin เพิ่มเข้ามาตรงนี้ เรียงเข้ากับภาษา -->
-                <a href="admin_login.html" class="admin-nav-btn">
+                <!-- ปุ่ม Admin พร้อมระบบเปลี่ยนลิงก์อัตโนมัติตามสถานะล็อกอิน -->
+                <a href="admin_login.html" id="admin-nav-link" class="admin-nav-btn">
                     ⚙️ สำหรับ Admin
                 </a>
 
@@ -664,7 +663,8 @@
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
-                    <div class="admin-panel">
+                    <!-- แผงควบคุมเพิ่มงาน (จะซ่อนอัตโนมัติหากไม่ใช่ Admin) -->
+                    <div class="admin-panel" id="admin-calendar-panel" style="display: none;">
                         <strong style="font-size: 0.88rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป" readonly>
                         <textarea id="event-desc" rows="2" data-i18n-placeholder="eventPlaceholder" placeholder="คลิกวันที่ในปฏิทิน หรือพิมพ์ชื่องานใหม่ที่นี่..."></textarea>
@@ -1197,8 +1197,12 @@
             };
 
             document.getElementById('selected-date-title').innerText = dateTitlePrefix[currentLang];
-            document.getElementById('event-date').value = dateKey;
-            document.getElementById('event-desc').value = "";
+            const eventDateInput = document.getElementById('event-date');
+            if (eventDateInput) eventDateInput.value = dateKey;
+            
+            const eventDescInput = document.getElementById('event-desc');
+            if (eventDescInput) eventDescInput.value = "";
+            
             renderTasksList(dateKey);
         }
 
@@ -1207,8 +1211,10 @@
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
             document.getElementById('selected-date-title').innerText = t.selTitle;
-            document.getElementById('event-date').value = "";
-            document.getElementById('event-desc').value = "";
+            const eventDateInput = document.getElementById('event-date');
+            if (eventDateInput) eventDateInput.value = "";
+            const eventDescInput = document.getElementById('event-desc');
+            if (eventDescInput) eventDescInput.value = "";
             document.getElementById('selected-date-tasks').innerHTML = `<p id="selected-date-desc" style="color: #b0a89c;">${t.selDesc}</p>`;
         }
 
@@ -1217,9 +1223,9 @@
             container.innerHTML = '';
             const currentLang = document.getElementById('langSwitch').value;
             let noDataText = { 
-                th: "ยังไม่มีรายการงานในวันนี้ สามารถพิมพ์เพิ่มด้านบนได้เลยครับ", 
-                en: "No tasks for today. You can add one above.", 
-                zh: "今天没有任务，可以在上方添加。" 
+                th: "ยังไม่มีรายการงานในวันนี้", 
+                en: "No tasks for today.", 
+                zh: "今天没有任务。" 
             };
 
             const tasks = eventsData[dateKey];
@@ -1228,18 +1234,33 @@
                 return;
             }
 
+            const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
+
             tasks.forEach((task, index) => {
                 const taskRow = document.createElement('div');
                 taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
+                
+                let deleteBtnHTML = "";
+                // อนุญาตให้แสดงปุ่มลบเฉพาะเมื่อเป็น Admin เท่านั้น
+                if (isAdmin) {
+                    deleteBtnHTML = `<button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>`;
+                }
+
                 taskRow.innerHTML = `
                     <span style="color: #fff; font-size: 0.9rem;">• ${task}</span>
-                    <button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>
+                    ${deleteBtnHTML}
                 `;
                 container.appendChild(taskRow);
             });
         }
 
         function addEvent() {
+            const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
+            if (!isAdmin) {
+                alert("เฉพาะแอดมินเท่านั้นที่สามารถเพิ่มหรือแก้ไขตารางงานได้!");
+                return;
+            }
+
             const dateVal = document.getElementById('event-date').value;
             const descVal = document.getElementById('event-desc').value;
             const currentLang = document.getElementById('langSwitch').value;
@@ -1271,6 +1292,12 @@
         }
 
         function deleteTask(dateKey, index) {
+            const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
+            if (!isAdmin) {
+                alert("เฉพาะแอดมินเท่านั้นที่สามารถลบตารางงานได้!");
+                return;
+            }
+
             if(eventsData[dateKey] && Array.isArray(eventsData[dateKey])) {
                 eventsData[dateKey].splice(index, 1);
                 if(eventsData[dateKey].length === 0) {
@@ -1327,12 +1354,19 @@
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
 
-            if (feedbackList.length === 0) {
+            // กรองเฉพาะข้อมูลของ "สมชาย" เท่านั้น (เช็คเทียบทั้งไทย อังกฤษ จีน หรือคีย์ต่างๆ ของสมชาย)
+            const somchaiFeedbacks = feedbackList.filter(fb => {
+                if (!fb.name) return false;
+                const cleanName = fb.name.trim().toLowerCase();
+                return cleanName === "somchai" || cleanName === "สมชาย" || cleanName === "颂猜";
+            });
+
+            if (somchaiFeedbacks.length === 0) {
                 container.innerHTML = `<p style="color: #888; font-size: 0.9rem;">${t.noFeedbackText}</p>`;
                 return;
             }
 
-            feedbackList.forEach(fb => {
+            somchaiFeedbacks.forEach(fb => {
                 const item = document.createElement('div');
                 item.style.background = 'rgba(0,0,0,0.4)';
                 item.style.border = '1px solid var(--border-gold)';
@@ -1396,11 +1430,34 @@
             renderLastUpdateText();
         }
 
+        // ฟังก์ชันตรวจสอบและสลับสถานะปุ่ม Admin บน Navbar รวมถึงสิทธิ์การแสดงแผงควบคุมปฏิทิน
+        function checkAdminSessionUI() {
+            const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
+            const adminNavLink = document.getElementById('admin-nav-link');
+            const adminCalendarPanel = document.getElementById('admin-calendar-panel');
+
+            if (adminNavLink) {
+                if (isAdmin) {
+                    adminNavLink.href = 'admin_dashboard.html';
+                    adminNavLink.innerHTML = '🛡️ แดชบอร์ดแอดมิน';
+                } else {
+                    adminNavLink.href = 'admin_login.html';
+                    adminNavLink.innerHTML = '⚙️ สำหรับ Admin';
+                }
+            }
+
+            // ถ้าเป็นแอดมิน ให้แสดงกล่องเพิ่ม/จัดการตารางงาน แต่ถ้าไม่ใช่จะซ่อนไว้
+            if (adminCalendarPanel) {
+                adminCalendarPanel.style.display = isAdmin ? 'block' : 'none';
+            }
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('site_lang') || 'th';
             const langSelect = document.getElementById('langSwitch');
             if (langSelect) langSelect.value = savedLang;
             
+            checkAdminSessionUI(); // ตรวจสอบสถานะแอดมิน
             changeLanguage(savedLang);
             loadDataFromWorker();
             fetchGitHubLastUpdate();
