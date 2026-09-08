@@ -35,7 +35,7 @@
             align-items: center;
             justify-content: center;
             background-image: radial-gradient(circle at 50% 0%, #1a0508 0%, var(--bg-deep) 70%);
-            padding: 1rem;
+            padding: 1.5rem 1rem;
         }
 
         .login-card {
@@ -44,9 +44,8 @@
             border-radius: 20px;
             padding: 2.5rem 2rem;
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             box-shadow: var(--shadow-gold);
-            text-align: center;
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -55,23 +54,47 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .login-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+        .badge-title {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
         }
 
         h1 {
-            color: var(--accent-gold);
-            font-size: 1.5rem;
+            color: var(--text-light);
+            font-size: 1.6rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
         p {
             color: var(--text-muted);
             font-size: 0.9rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* ปุ่มกลับหน้าหลักแบบในรูป */
+        .back-main-btn {
+            display: inline-block;
+            background: transparent;
+            color: var(--accent-gold);
+            border: 1px solid var(--border-gold);
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.8rem;
+            transition: 0.3s;
+        }
+
+        .back-main-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--accent-gold);
         }
 
         .form-group {
@@ -82,9 +105,9 @@
         .form-group label {
             display: block;
             color: var(--accent-gold);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .form-group input {
@@ -92,10 +115,10 @@
             background: #000;
             border: 1px solid var(--border-gold);
             color: #fff;
-            padding: 12px 14px;
-            border-radius: 8px;
+            padding: 14px 16px;
+            border-radius: 12px;
             outline: none;
-            font-size: 0.95rem;
+            font-size: 1rem;
             transition: 0.3s;
         }
 
@@ -109,15 +132,14 @@
             color: #000;
             border: none;
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-top: 0.5rem;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
@@ -125,21 +147,6 @@
             transform: translateY(-2px);
             box-shadow: 0 0 20px var(--accent-gold);
             filter: brightness(1.1);
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 1.5rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .back-btn:hover {
-            color: var(--accent-gold);
-            text-decoration: underline;
         }
 
         #error-msg {
@@ -153,20 +160,21 @@
 <body>
 
     <div class="login-card">
-        <div class="login-icon">🛡️</div>
-        <h1>ระบบควบคุมผู้ดูแลระบบ</h1>
-        <p>ชิงหลงเซิฟ (Ching Long Server)</p>
+        <div class="badge-title">🛡️ ADMIN SYSTEM</div>
+        <h1>เข้าสู่ระบบสำหรับผู้ดูแล</h1>
+        <p>จัดการและตรวจสอบข้อมูลของ ชิงหลงเซิฟ (Ching Long Server) ได้อย่างเต็มรูปแบบ</p>
+
+        <!-- ปุ่มกลับหน้าหลักวางไว้ด้านบนแบบในรูปตัวอย่าง -->
+        <a href="index.html" class="back-main-btn">← กลับหน้าหลัก</a>
 
         <form id="loginForm">
             <div class="form-group">
-                <label>รหัสผ่านสำหรับ Admin:</label>
-                <input type="password" id="admin-password" placeholder="กรอกรหัสผ่านแอดมิน..." required autofocus>
+                <label>รหัสผู้ดูแล</label>
+                <input type="password" id="admin-password" placeholder="กรอกรหัสผ่าน..." required autofocus>
             </div>
             <div id="error-msg">❌ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</div>
-            <button type="submit" class="gold-btn">🔐 เข้าสู่แดชบอร์ด</button>
+            <button type="submit" class="gold-btn">เข้าสู่แดชบอร์ด</button>
         </form>
-
-        <a href="index.html" class="back-btn">⬅️ ย้อนกลับสู่หน้าหลัก</a>
     </div>
 
     <script>
@@ -177,7 +185,6 @@
 
             if (password === correctPassword) {
                 localStorage.setItem('is_admin_logged', 'true');
-                // เปลี่ยนเส้นทางไปหน้าจัดการของคุณ (เช่น admin_dashboard.html)
                 window.location.href = 'admin_dashboard.html'; 
             } else {
                 document.getElementById('error-msg').style.display = 'block';
