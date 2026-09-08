@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แดชบอร์ดผู้ดูแลระบบ - ชิงหลงเซิฟ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-deep: #080203;
+            --surface: #140709;
             --surface-card: #1f0b0e;
+            --primary-red: #8b0000;
             --accent-gold: #d4af37;
+            --accent-gold-light: #f3e5ab;
             --text-light: #ffffff;
             --text-muted: #e6d58c;
             --border-gold: rgba(212, 175, 55, 0.4);
-            --shadow-gold: 0 0 25px rgba(212, 175, 55, 0.25);
+            --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.2);
         }
 
         * {
@@ -26,140 +32,215 @@
         body {
             background-color: var(--bg-deep);
             color: var(--text-light);
+            line-height: 1.7;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            padding: 20px;
             background-image: radial-gradient(circle at 50% 0%, #1a0508 0%, var(--bg-deep) 70%);
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
         header {
+            background: rgba(14, 4, 6, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-gold);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-gold);
-            padding-bottom: 15px;
         }
 
-        h1 {
-            color: var(--accent-gold);
-            font-size: 1.5rem;
-        }
-
-        .card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-gold);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-gold);
-        }
-
-        h2 {
-            color: var(--accent-gold);
+        .brand {
             font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            display: inline-block;
-            transition: 0.3s;
-        }
-
-        .gold-btn {
-            background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
-            color: #000;
-        }
-
-        .gold-btn:hover {
-            filter: brightness(1.1);
+            font-weight: 700;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .logout-btn {
             background: #8b0000;
             color: #fff;
+            border: 1px solid #ff4d4d;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .logout-btn:hover {
-            background: #a80000;
+            background: #ff4d4d;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
         }
 
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+            width: 100%;
         }
 
-        .menu-item {
-            background: rgba(0, 0, 0, 0.4);
+        .card {
+            background: var(--surface-card);
             border: 1px solid var(--border-gold);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .gold-btn {
+            background: linear-gradient(135deg, #ffea79, var(--accent-gold), #aa771c);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .gold-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--accent-gold);
+        }
+
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .feedback-table th, .feedback-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gold);
+            font-size: 0.9rem;
+        }
+
+        .feedback-table th {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .feedback-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🛡️ แดชบอร์ดผู้ดูแลระบบ - ชิงหลงเซิฟ</h1>
-            <button class="btn logout-btn" onclick="logoutAdmin()">🚪 ออกจากระบบ</button>
-        </header>
+    <header>
+        <div class="brand">
+            🛡️ แดชบอร์ดผู้ดูแลระบบ - ชิงหลงเซิฟ
+        </div>
+        <button class="logout-btn" onclick="logoutAdmin()">🚪 ออกจากระบบ</button>
+    </header>
 
-        <!-- การ์ดต้อนรับ -->
+    <div class="container">
+        <!-- ส่วนต้อนรับ -->
         <div class="card">
-            <h2>ยินดีต้อนรับเข้าสู่ระบบจัดการหลังบ้าน</h2>
-            <p>คุณได้เข้าสู่ระบบด้วยสิทธิ์ผู้ดูแลระบบ (Admin) สำเร็จแล้ว สามารถจัดการตารางงาน ตรวจสอบผลการประเมินทั้งหมด และควบคุมระบบได้จากที่นี่</p>
-            <a href="index.html" class="btn gold-btn">🏠 กลับสู่หน้าเว็บไซต์หลัก</a>
+            <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">ยินดีต้อนรับเข้าสู่ระบบจัดการหลังบ้าน</h2>
+            <p style="color: #b0a89c; margin-bottom: 1.5rem;">
+                คุณได้เข้าสู่ระบบด้วยสิทธิ์ผู้ดูแลระบบ (Admin) สำเร็จแล้ว สามารถตรวจสอบผลการประเมินของทุกคนได้จากส่วนด้านล่างนี้
+            </p>
+            <a href="index.html" class="gold-btn">🏠 กลับสู่หน้าเว็บไซต์หลัก</a>
         </div>
 
-        <!-- เมนูจัดการระบบ -->
-        <div class="menu-grid">
-            <div class="menu-item">
-                <h2>📅 จัดการปฏิทิน/นัดหมาย</h2>
-                <p>เพิ่ม ลบ หรือแก้ไขตารางงานและกิจกรรมต่างๆ ของเซิร์ฟเวอร์</p>
-                <a href="index.html" class="btn gold-btn" style="font-size: 0.9rem; padding: 8px 15px;">ไปที่หน้าปฏิทิน</a>
-            </div>
-
-            <div class="menu-item">
-                <h2>📊 ตรวจสอบผลประเมิน</h2>
-                <p>ดูผลการประเมินทั้งหมด (มองเห็นรายชื่อทุกคนโดยไม่มีการซ่อน)</p>
-                <a href="index.html" class="btn gold-btn" style="font-size: 0.9rem; padding: 8px 15px;">ดูผลประเมินทั้งหมด</a>
+        <!-- ส่วนแสดงผลประเมินทั้งหมด (มองเห็นทุกคนแบบไม่ซ่อน) -->
+        <div class="card" id="all-feedback-section">
+            <h3 style="color: var(--accent-gold); margin-bottom: 0.5rem;">📊 ผลการประเมินทั้งหมดในระบบ (สิทธิ์ Admin เท่านั้น)</h3>
+            <p style="color: #b0a89c; font-size: 0.9rem; margin-bottom: 1rem;">รายการข้อเสนอแนะและผลประเมินจากผู้ใช้งานทุกคนถูกแสดงที่นี่</p>
+            
+            <div id="admin-feedback-container" style="overflow-x: auto;">
+                <!-- ตารางข้อมูลจะถูกเรนเดอร์ตรงนี้ -->
             </div>
         </div>
     </div>
 
     <script>
-        // 🔒 ระบบป้องกัน: เช็คว่าถ้ายังไม่ได้ล็อกอิน ให้เด้งกลับไปหน้ากรอกรหัสทันที!
-        const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
-        if (!isAdmin) {
-            alert('⚠️ กรุณาเข้าสู่ระบบก่อนเข้าใช้งานแดชบอร์ด');
-            window.location.href = 'admin_login.html';
+        const WORKER_URL = "https://delicate-wood-83f5.bb36177.workers.dev";
+
+        // ตรวจสอบสิทธิ์ Admin ทันทีที่เปิดหน้า
+        function checkAdminAuth() {
+            const isAdmin = localStorage.getItem('is_admin_logged');
+            if (isAdmin !== 'true') {
+                alert("กรุณาเข้าสู่ระบบก่อนใช้งานหน้าแดชบอร์ด!");
+                window.location.href = 'admin_login.html';
+            }
         }
 
-        // ฟังก์ชันสำหรับกดออกจากระบบ
         function logoutAdmin() {
             localStorage.removeItem('is_admin_logged');
-            alert('ออกจากระบบเรียบร้อยแล้วครับ');
-            window.location.href = 'admin_login.html';
+            window.location.href = 'index.html';
         }
+
+        // ดึงข้อมูลทั้งหมดจาก Worker มาแสดง (สำหรับ Admin เห็นทุกคน)
+        async function loadAdminFeedbacks() {
+            const container = document.getElementById('admin-feedback-container');
+            container.innerHTML = '<p style="color: #b0a89c;">กำลังโหลดข้อมูลจากเซิร์ฟเวอร์...</p>';
+
+            try {
+                const response = await fetch(`${WORKER_URL}/get-data`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const feedbacks = data.feedbacks || [];
+
+                    if (feedbacks.length === 0) {
+                        container.innerHTML = '<p style="color: #b0a89c;">ยังไม่มีข้อมูลผลประเมินในระบบ</p>';
+                        return;
+                    }
+
+                    let tableHTML = `
+                        <table class="feedback-table">
+                            <thead>
+                                <tr>
+                                    <th>วันที่ / เวลา</th>
+                                    <th>ชื่อผู้ใช้งาน</th>
+                                    <th>คะแนนความพึงพอใจ</th>
+                                    <th>รายละเอียดข้อเสนอแนะ / ปัญหา</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    feedbacks.forEach(fb => {
+                        tableHTML += `
+                            <tr>
+                                <td style="white-space: nowrap; color: #aaa;">📅 ${fb.date || '-'}</td>
+                                <td style="color: var(--accent-gold); font-weight: 600;">👤 ${fb.name || 'ไม่ระบุชื่อ'}</td>
+                                <td>⭐ ${fb.score} / 5</td>
+                                <td style="color: #fff;">${fb.details || '-'}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += `</tbody></table>`;
+                    container.innerHTML = tableHTML;
+                } else {
+                    container.innerHTML = '<p style="color: #ff4d4d;">ไม่สามารถดึงข้อมูลจากเซิร์ฟเวอร์ได้</p>';
+                }
+            } catch (error) {
+                console.error("Error loading feedbacks:", error);
+                container.innerHTML = '<p style="color: #ff4d4d;">เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์</p>';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAdminAuth();
+            loadAdminFeedbacks();
+        });
     </script>
 </body>
 </html>
