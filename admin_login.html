@@ -46,12 +46,6 @@
             width: 100%;
             max-width: 450px;
             box-shadow: var(--shadow-gold);
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .badge-title {
@@ -74,10 +68,8 @@
             color: var(--text-muted);
             font-size: 0.9rem;
             margin-bottom: 1.5rem;
-            line-height: 1.5;
         }
 
-        /* ปุ่มกลับหน้าหลักแบบในรูป */
         .back-main-btn {
             display: inline-block;
             background: transparent;
@@ -94,7 +86,6 @@
 
         .back-main-btn:hover {
             background: rgba(212, 175, 55, 0.1);
-            border-color: var(--accent-gold);
         }
 
         .form-group {
@@ -119,12 +110,6 @@
             border-radius: 12px;
             outline: none;
             font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        .form-group input:focus {
-            border-color: #ffea79;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
 
         .gold-btn {
@@ -136,17 +121,8 @@
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
             font-size: 1rem;
             margin-top: 0.5rem;
-            letter-spacing: 0.5px;
-        }
-
-        .gold-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px var(--accent-gold);
-            filter: brightness(1.1);
         }
 
         #error-msg {
@@ -162,9 +138,8 @@
     <div class="login-card">
         <div class="badge-title">🛡️ ADMIN SYSTEM</div>
         <h1>เข้าสู่ระบบสำหรับผู้ดูแล</h1>
-        <p>จัดการและตรวจสอบข้อมูลของ ชิงหลงเซิฟ (Ching Long Server) ได้อย่างเต็มรูปแบบ</p>
+        <p>ชิงหลงเซิฟ (Ching Long Server)</p>
 
-        <!-- ปุ่มกลับหน้าหลักวางไว้ด้านบนแบบในรูปตัวอย่าง -->
         <a href="index.html" class="back-main-btn">← กลับหน้าหลัก</a>
 
         <form id="loginForm">
@@ -181,14 +156,12 @@
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const password = document.getElementById('admin-password').value;
-            const correctPassword = "bb-36177-banbung";
-
-            if (password === correctPassword) {
+            if (password === "bb-36177-banbung") {
                 localStorage.setItem('is_admin_logged', 'true');
+                // แก้ชื่อไฟล์ตรงนี้ให้ตรงกับหน้าแดชบอร์ดจริงของคุณ (เช่น admin_dashboard.html)
                 window.location.href = 'admin_dashboard.html'; 
             } else {
                 document.getElementById('error-msg').style.display = 'block';
-                document.getElementById('admin-password').style.borderColor = '#ff4d4d';
             }
         });
     </script>
