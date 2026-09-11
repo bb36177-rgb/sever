@@ -610,7 +610,6 @@
                     <li><button class="nav-btn" id="btn-contact" onclick="showPage('contact')" data-i18n="navContact">ติดต่อผู้พัฒนา</button></li>
                 </ul>
                 
-                <!-- ปุ่ม Admin ปรับเปลี่ยนอัตโนมัติ (หากเข้าสู่ระบบแล้วจะกดไปหน้าแดชบอร์ดแอดมินได้ทันที) -->
                 <a href="admin_login.html" id="admin-nav-link" class="admin-nav-btn">
                     ⚙️ สำหรับ Admin
                 </a>
@@ -663,7 +662,6 @@
                     </div>
                     <div class="cal-grid" id="cal-cells" style="margin-top: 8px;"></div>
 
-                    <!-- แผงควบคุมเพิ่มงาน (ซ่อนอัตโนมัติหากไม่ใช่ Admin) -->
                     <div class="admin-panel" id="admin-calendar-panel" style="display: none;">
                         <strong style="font-size: 0.88rem; color: var(--accent-gold);" data-i18n="adminTitle">⚙️ โหมดจัดการตารางงาน (เพิ่มหลายรายการต่อวัน)</strong>
                         <input type="text" id="event-date" data-i18n-placeholder="datePlaceholderFormat" placeholder="วว/ดด/ปปปป" readonly>
@@ -754,7 +752,6 @@
             <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 10px;">
                     <h3 style="color: var(--accent-gold);" data-i18n="feedbackListTitle">📋 รายการข้อเสนอแนะและปัญหาที่บันทึกไว้ในระบบ</h3>
-                    <!-- ปุ่มนำทางไปหน้า Admin Dashboard (ดูผลประเมินทั้งหมด) โดยจะพาไปที่ไฟล์ admin_dashboard.html ทันที -->
                     <a href="admin_dashboard.html" class="action-chip" style="background: rgba(212, 175, 55, 0.2); border-color: var(--accent-gold);">
                         ⚙️ ดูผลประเมินทั้งหมด (Admin Dashboard)
                     </a>
@@ -1011,14 +1008,22 @@
         let selectedDateKeyGlobal = null; 
         let lastCommitDateObj = new Date("2026-09-06T21:20:00");
         
-        let eventsData = {
+        // โหลดข้อมูลปฏิทิน (เพิ่มวันพระและวันหยุด พร้อมระบบจำค่าผ่าน localStorage)
+        let defaultEvents = {
+            "2026-09-02": ["🌕 วันพระ (วันมาฆบูชา/วันพระใหญ่)"],
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
             "2026-09-15": ["ส่งมอบงานโครงงานหุ่นยนต์ สพฐ."],
+            "2026-09-17": ["🌙 วันพระ"],
+            "2026-09-25": ["🌙 วันพระ (15 ค่ำ)"],
             "2026-09-30": ["วันสิ้นเดือนกันยายน 2569"]
         };
 
+        let savedEvents = localStorage.getItem('chinglong_events_data');
+        let eventsData = savedEvents ? JSON.parse(savedEvents) : defaultEvents;
+
+        // ข้อมูลข้อเสนอแนะตัวอย่าง (ล็อคเฉพาะของสมชายไว้แสดงตลอดไป)
         let feedbackList = [
-            { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ / The system is easy to use.", score: "5", date: "2026-09-06 15:00" },
+            { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ แนะนำให้คงระบบนี้ไว้ตลอดไป", score: "5", date: "2026-09-06 15:00" },
             { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
         ];
 
@@ -1027,8 +1032,18 @@
                 const response = await fetch(`${WORKER_URL}/get-data`);
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.events) eventsData = data.events;
-                    if (data.feedbacks) feedbackList = data.feedbacks;
+                    if (data.events) {
+                        // ผสมข้อมูลจาก Worker กับ LocalStorage
+                        eventsData = { ...defaultEvents, ...data.events, ...JSON.parse(localStorage.getItem('chinglong_events_data') || '{}') };
+                    }
+                    if (data.feedbacks) {
+                        // รวม Feedback และมั่นใจว่ามีของสมชายอยู่ด้วยเสมอ
+                        const hasSomchai = data.feedbacks.some(f => f.name && (f.name.toLowerCase() === 'somchai' || f.name === 'สมชาย'));
+                        feedbackList = data.feedbacks;
+                        if (!hasSomchai) {
+                            feedbackList.unshift({ name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ แนะนำให้คงระบบนี้ไว้ตลอดไป", score: "5", date: "2026-09-06 15:00" });
+                        }
+                    }
                     renderCalendar();
                     renderFeedbacks();
                 }
@@ -1291,6 +1306,9 @@
             }
             eventsData[dateVal].push(descVal.trim());
 
+            // บันทึกลง LocalStorage ทันที เพื่อป้องกันข้อมูลหายเวลา Refresh
+            localStorage.setItem('chinglong_events_data', JSON.stringify(eventsData));
+
             document.getElementById('event-desc').value = "";
             renderCalendar();
             renderTasksList(dateVal);
@@ -1308,6 +1326,7 @@
                 if(eventsData[dateKey].length === 0) {
                     delete eventsData[dateKey];
                 }
+                localStorage.setItem('chinglong_events_data', JSON.stringify(eventsData));
                 renderCalendar();
                 renderTasksList(dateKey);
             }
@@ -1361,37 +1380,38 @@
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
 
-            // กรองแสดงเฉพาะผลงานประเมินของ "สมชาย" เท่านั้นในหน้าสาธารณะ
+            // กรองแสดงเฉพาะข้อเสนอแนะของ "สมชาย" (Somchai / 颂猜) เท่านั้น และแสดงแค่อันเดียวตลอดไป
             const somchaiFeedbacks = feedbackList.filter(fb => {
                 if (!fb.name) return false;
                 const cleanName = fb.name.trim().toLowerCase();
                 return cleanName === "somchai" || cleanName === "สมชาย" || cleanName === "颂猜";
             });
 
-            if (somchaiFeedbacks.length === 0) {
-                container.innerHTML = `<p style="color: #888; font-size: 0.9rem;">${t.noFeedbackText}</p>`;
-                return;
-            }
+            // หากในระบบไม่มีของสมชายเลย ให้บังคับสร้างตัวอย่างของสมชายขึ้นมาแสดงทันทีเพื่อให้อยู่ตลอดไม่หาย
+            let targetFeedback = somchaiFeedbacks.length > 0 ? somchaiFeedbacks[0] : { 
+                name: "Somchai", 
+                details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ แนะนำให้คงระบบนี้ไว้ตลอดไป", 
+                score: "5", 
+                date: "2026-09-06 15:00" 
+            };
 
-            somchaiFeedbacks.forEach(fb => {
-                const item = document.createElement('div');
-                item.style.background = 'rgba(0,0,0,0.4)';
-                item.style.border = '1px solid var(--border-gold)';
-                item.style.padding = '12px 15px';
-                item.style.borderRadius = '8px';
+            const item = document.createElement('div');
+            item.style.background = 'rgba(0,0,0,0.4)';
+            item.style.border = '1px solid var(--border-gold)';
+            item.style.padding = '12px 15px';
+            item.style.borderRadius = '8px';
 
-                const translatedName = translateName(fb.name, currentLang);
+            const translatedName = translateName(targetFeedback.name, currentLang);
 
-                item.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
-                        <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${translatedName}</span>
-                        <span style="color: #888; font-size: 0.75rem;">📅 ${fb.date}</span>
-                    </div>
-                    <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${fb.details}</p>
-                    <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(fb.score))} (${fb.score}/5)</div>
-                `;
-                container.appendChild(item);
-            });
+            item.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-wrap: wrap;">
+                    <span style="color: var(--accent-gold); font-weight: 600; font-size: 0.9rem;">${translatedName} (ตัวอย่างข้อเสนอแนะ)</span>
+                    <span style="color: #888; font-size: 0.75rem;">📅 ${targetFeedback.date}</span>
+                </div>
+                <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 5px;">${targetFeedback.details}</p>
+                <div style="font-size: 0.8rem; color: #ffcc00;">${t.scoreLabelText} ${'⭐'.repeat(parseInt(targetFeedback.score))} (${targetFeedback.score}/5)</div>
+            `;
+            container.appendChild(item);
         }
 
         function renderLastUpdateText() {
