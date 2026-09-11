@@ -1025,7 +1025,6 @@
             { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
         ];
 
-        // ฟังก์ชันคำนวณวันสำคัญไทย, จีน, สากล และวันพระอัตโนมัติ สำหรับทุกปี
         function getAutoCalculatedHolidays(year, month, day) {
             let holidays = [];
             let fMonth = String(month + 1).padStart(2, '0');
@@ -1033,7 +1032,6 @@
             let mD = `${fMonth}-${fDay}`;
             let dateObj = new Date(year, month, day);
 
-            // 1. วันสำคัญสากล / ไทยแบบตายตัว (เพิ่ม คริสต์มาส, วาเลนไทน์ ฯลฯ)
             const fixedHolidays = {
                 "01-01": "🎉 วันขึ้นปีใหม่ (New Year's Day)",
                 "01-16": "📚 วันครู",
@@ -1058,12 +1056,10 @@
             };
             if (fixedHolidays[mD]) holidays.push(fixedHolidays[mD]);
 
-            // 2. วันหยุดชดเชยวันสงกรานต์
             if ((mD === "04-16" || mD === "04-17") && (year >= 2020)) {
                 holidays.push("🏖️ วันหยุดชดเชยเทศกาลสงกรานต์");
             }
 
-            // 3. จำลองการคำนวณวันพระแบบอัลกอริทึมทางจันทรคติโดยประมาณ
             let baseLunarRef = new Date(2024, 0, 25); 
             let diffDays = Math.round((dateObj - baseLunarRef) / (1000 * 60 * 60 * 24));
             if (diffDays % 7 === 0) {
@@ -1072,7 +1068,6 @@
                 holidays.push("🌙 วันพระ (8 ค่ำ)");
             }
 
-            // 4. วันสำคัญทางจีน (ตรุษจีน, สารทจีน, ไหว้พระจันทร์, เทศกาลกินเจ)
             const chineseNewYearMap = {
                 2024: "02-10", 2025: "01-29", 2026: "02-17", 2027: "02-06", 2028: "01-26", 2029: "02-13", 2030: "02-03"
             };
@@ -1094,7 +1089,6 @@
                 holidays.push("🥮 วันไหว้พระจันทร์ (Mid-Autumn Festival)");
             }
 
-            // เทศกาลกินเจ (ช่วงเดือนตุลาคมโดยประมาณ - ตัวอย่างช่วง 9 วัน)
             const vegetarianFestivalMap = {
                 2024: { start: "10-03", end: "10-11" },
                 2025: { start: "10-21", end: "10-29" },
@@ -1346,6 +1340,8 @@
                 
                 let deleteBtnHTML = "";
                 let isCustom = customTasks.includes(task);
+                
+                // แก้ไขจุดนี้: ให้ User ทั่วไปมองเห็นข้อความงานเหมือนกัน แต่ปุ่มลบจะแสดงเฉพาะ Admin เท่านั้น
                 if (isAdmin && isCustom) {
                     let customIndex = customTasks.indexOf(task);
                     deleteBtnHTML = `<button onclick="deleteTask('${dateKey}', ${customIndex})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>`;
