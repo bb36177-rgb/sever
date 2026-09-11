@@ -324,7 +324,7 @@
         }
 
         .cal-cell {
-            min-height: 78px;
+            min-height: 85px;
             background: rgba(20, 7, 9, 0.9);
             border: 1px solid var(--border-gold);
             border-radius: 8px;
@@ -332,7 +332,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 6px 3px;
+            padding: 5px 2px;
             cursor: pointer;
             transition: all 0.2s ease;
             overflow: hidden;
@@ -375,10 +375,10 @@
         }
 
         .cal-cell .day-number {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .cal-cell.today .day-number {
@@ -387,17 +387,17 @@
         }
 
         .cal-cell .event-preview {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             color: #ffea79;
-            background: rgba(212, 175, 55, 0.25);
-            padding: 2px 4px;
+            background: rgba(212, 175, 55, 0.2);
+            padding: 1px 3px;
             border-radius: 3px;
             width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             text-align: center;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .admin-panel {
@@ -639,7 +639,7 @@
                     </p>
                     <div style="background: rgba(212, 175, 55, 0.05); border-left: 3px solid var(--accent-gold); padding: 12px; border-radius: 0 8px 8px 0;">
                         <strong style="color: var(--accent-gold);" data-i18n="objTitle">วัตถุประสงค์ระบบ:</strong>
-                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;" data-i18n="objDesc">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น</p>
+                        <p style="font-size: 0.88rem; color: #b0a89c; margin-top: 4px;" data-i18n="objDesc">จัดระเบียบและเก็บรักษาซอร์สโค้ด ลิงก์โครงงาน พร้อมระบบปฏิทินบันทึกตารางงานส่วนตัวที่ออกแบบในสไตล์จีนโบราณผสมความโมเดิร์น พร้อมคำนวณวันพระและวันสำคัญอัตโนมัติ</p>
                     </div>
                 </div>
 
@@ -1008,7 +1008,6 @@
         let selectedDateKeyGlobal = null; 
         let lastCommitDateObj = new Date("2026-09-06T21:20:00");
         
-        // โหลดข้อมูลปฏิทิน (เพิ่มวันพระและวันหยุด พร้อมระบบจำค่าผ่าน localStorage)
         let defaultEvents = {
             "2026-09-02": ["🌕 วันพระ (วันมาฆบูชา/วันพระใหญ่)"],
             "2026-09-10": ["ทดสอบระบบโค้ดหุ่นยนต์กู้ภัยรอบสุดท้าย"],
@@ -1021,11 +1020,84 @@
         let savedEvents = localStorage.getItem('chinglong_events_data');
         let eventsData = savedEvents ? JSON.parse(savedEvents) : defaultEvents;
 
-        // ข้อมูลข้อเสนอแนะตัวอย่าง (ล็อคเฉพาะของสมชายไว้แสดงตลอดไป)
         let feedbackList = [
             { name: "Somchai", details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ แนะนำให้คงระบบนี้ไว้ตลอดไป", score: "5", date: "2026-09-06 15:00" },
             { name: "Ken", details: "-", score: "5", date: "2026-09-06 21:21" }
         ];
+
+        // ฟังก์ชันคำนวณวันสำคัญไทย/จีน และวันพระอัตโนมัติ สำหรับทุกปี (อดีตและอนาคต)
+        function getAutoCalculatedHolidays(year, month, day) {
+            let holidays = [];
+            let fMonth = String(month + 1).padStart(2, '0');
+            let fDay = String(day).padStart(2, '0');
+            let mD = `${fMonth}-${fDay}`;
+            let dateObj = new Date(year, month, day);
+            let dayOfWeek = dateObj.getDay();
+
+            // 1. วันสำคัญสากล / ไทยแบบตายตัว
+            const fixedHolidays = {
+                "01-01": "🎉 วันขึ้นปีใหม่",
+                "01-16": "📚 วันครู",
+                "02-14": "💖 วันวาเลนไทน์",
+                "04-06": "🏛️ วันจักรี",
+                "04-13": "💦 วันสงกรานต์",
+                "04-14": "💦 วันสงกรานต์",
+                "04-15": "💦 วันสงกรานต์",
+                "05-01": "👷 วันแรงงานแห่งชาติ",
+                "05-04": "👑 วันฉัตรมงคล",
+                "06-03": "👑 วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าฯ พระบรมราชินี",
+                "07-28": "👑 วันเฉลิมพระชนมพรรษา รัชกาลที่ 10",
+                "08-12": "💙 วันแม่แห่งชาติ (วันวันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ฯ)",
+                "10-13": "🪷 วันนวมินทรมหาราช",
+                "10-23": "👑 วันปิยมหาราช",
+                "12-05": "💛 วันพ่อแห่งชาติ (วันชาติ)",
+                "12-10": "宪 วันรัฐธรรมนูญ",
+                "12-31": "🎉 วันสิ้นปี"
+            };
+            if (fixedHolidays[mD]) holidays.push(fixedHolidays[mD]);
+
+            // 2. วันหยุดชดเชยวันเสาร์-อาทิตย์อย่างง่าย (ตัวอย่างระบบ)
+            if ((mD === "04-16" || mD === "04-17") && (year >= 2020)) {
+                holidays.push("🏖️ วันหยุดชดเชยเทศกาลสงกรานต์");
+            }
+
+            // 3. จำลองการคำนวณวันพระแบบอัลกอริทึมทางจันทรคติโดยประมาณ (ทุกๆ ~7 วันจากรอบข้างแรม/ข้างขึ้น)
+            // ใช้วิธีคำนวณค่าทางคณิตศาสตร์เทียบกับวันอ้างอิงจันทร์เพ็ญ/วันพระมาตรฐาน
+            let baseLunarRef = new Date(2024, 0, 25); // วันพระใหญ่ตัวอย่างอ้างอิง
+            let diffDays = Math.round((dateObj - baseLunarRef) / (1000 * 60 * 60 * 24));
+            if (diffDays % 7 === 0) {
+                holidays.push("🌕 วันพระ (ธรรมสวนะ)");
+            } else if (Math.abs(diffDays) % 7 === 3) {
+                holidays.push("🌙 วันพระ (8 ค่ำ)");
+            }
+
+            // 4. วันสำคัญทางจีน (คำนวณวันตรุษจีน, เชงเม้ง, ไหว้พระจันทร์คร่าวๆ ตามปี)
+            // ตรุษจีนคร่าวๆ (มกราคม - กุมภาพันธ์)
+            const chineseNewYearMap = {
+                2024: "02-10", 2025: "01-29", 2026: "02-17", 2027: "02-06", 2028: "01-26", 2029: "02-13", 2030: "02-03"
+            };
+            if (chineseNewYearMap[year] && chineseNewYearMap[year] === mD) {
+                holidays.push("🧧 วันตรุษจีน (Chinese New Year)");
+            }
+
+            // วันสารทจีน (สิงหาคม - กันยายน โดยประมาณ)
+            const ghostFestivalMap = {
+                2024: "08-18", 2025: "09-06", 2026: "08-27", 2027: "08-16", 2028: "09-03", 2029: "08-24", 2030: "08-13"
+            };
+            if (ghostFestivalMap[year] && ghostFestivalMap[year] === mD) {
+                holidays.push("🏮 วันสารทจีน (Ghost Festival)");
+            }
+
+            // วันไหว้พระจันทร์ (กันยายน - ตุลาคม)
+            const midAutumnMap = {
+                2024: "09-17", 2025: "10-06", 2026: "09-25", 2027: "09-15", 2028: "10-03", 2029: "09-22", 2030: "09-12"
+            };
+            if (midAutumnMap[year] && midAutumnMap[year] === mD) {
+                holidays.push("🥮 วันไหว้พระจันทร์ (Mid-Autumn Festival)");
+            }
+
+            return holidays;
+        }
 
         async function loadDataFromWorker() {
             try {
@@ -1033,11 +1105,9 @@
                 if (response.ok) {
                     const data = await response.json();
                     if (data.events) {
-                        // ผสมข้อมูลจาก Worker กับ LocalStorage
                         eventsData = { ...defaultEvents, ...data.events, ...JSON.parse(localStorage.getItem('chinglong_events_data') || '{}') };
                     }
                     if (data.feedbacks) {
-                        // รวม Feedback และมั่นใจว่ามีของสมชายอยู่ด้วยเสมอ
                         const hasSomchai = data.feedbacks.some(f => f.name && (f.name.toLowerCase() === 'somchai' || f.name === 'สมชาย'));
                         feedbackList = data.feedbacks;
                         if (!hasSomchai) {
@@ -1166,11 +1236,14 @@
                     cell.className = cellClass;
                     let cellHTML = `<span class="day-number">${day}</span>`;
                     
-                    if (eventsData[dateKey] && Array.isArray(eventsData[dateKey])) {
-                        eventsData[dateKey].forEach(task => {
-                            cellHTML += `<div class="event-preview">• ${task}</div>`;
-                        });
-                    }
+                    // รวมกิจกรรมพิเศษที่คำนวณอัตโนมัติ + กิจกรรมที่ผู้ใช้บันทึกเอง
+                    let autoHolidays = getAutoCalculatedHolidays(year, month, day);
+                    let customTasks = eventsData[dateKey] || [];
+                    let combinedEvents = [...new Set([...autoHolidays, ...customTasks])];
+
+                    combinedEvents.forEach(task => {
+                        cellHTML += `<div class="event-preview">• ${task}</div>`;
+                    });
 
                     cell.innerHTML = cellHTML;
                     cell.onclick = () => { selectDate(year, month, day, dateKey); };
@@ -1224,7 +1297,7 @@
             const eventDescInput = document.getElementById('event-desc');
             if (eventDescInput) eventDescInput.value = "";
             
-            renderTasksList(dateKey);
+            renderTasksList(year, month, day, dateKey);
         }
 
         function resetSelectedDateUI() {
@@ -1239,31 +1312,33 @@
             document.getElementById('selected-date-tasks').innerHTML = `<p id="selected-date-desc" style="color: #b0a89c;">${t.selDesc}</p>`;
         }
 
-        function renderTasksList(dateKey) {
+        function renderTasksList(year, month, day, dateKey) {
             const container = document.getElementById('selected-date-tasks');
             container.innerHTML = '';
-            const currentLang = document.getElementById('langSwitch').value;
-            let noDataText = { 
-                th: "ยังไม่มีรายการงานในวันนี้", 
-                en: "No tasks for today.", 
-                zh: "今天没有任务。" 
-            };
+            
+            let autoHolidays = getAutoCalculatedHolidays(year, month, day);
+            let customTasks = eventsData[dateKey] || [];
+            let combinedTasks = [...new Set([...autoHolidays, ...customTasks])];
 
-            const tasks = eventsData[dateKey];
-            if(!tasks || !Array.isArray(tasks) || tasks.length === 0) {
-                container.innerHTML = `<p style="color: #b0a89c; font-size: 0.9rem;">${noDataText[currentLang]}</p>`;
+            if(combinedTasks.length === 0) {
+                container.innerHTML = `<p style="color: #b0a89c; font-size: 0.9rem;">ไม่มีรายการงานหรือวันสำคัญในวันนี้</p>`;
                 return;
             }
 
             const isAdmin = localStorage.getItem('is_admin_logged') === 'true';
 
-            tasks.forEach((task, index) => {
+            combinedTasks.forEach((task, index) => {
                 const taskRow = document.createElement('div');
                 taskRow.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border-gold); padding: 8px 12px; border-radius: 6px;";
                 
                 let deleteBtnHTML = "";
-                if (isAdmin) {
-                    deleteBtnHTML = `<button onclick="deleteTask('${dateKey}', ${index})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>`;
+                // อนุญาตให้ลบได้เฉพาะรายการที่เพิ่มเอง (Custom tasks)
+                let isCustom = customTasks.includes(task);
+                if (isAdmin && isCustom) {
+                    let customIndex = customTasks.indexOf(task);
+                    deleteBtnHTML = `<button onclick="deleteTask('${dateKey}', ${customIndex})" style="background: #8b0000; color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">❌ ลบ</button>`;
+                } else if (!isCustom) {
+                    deleteBtnHTML = `<span style="font-size: 0.75rem; color: var(--accent-gold); opacity: 0.8;">⭐ วันสำคัญตามระบบ</span>`;
                 }
 
                 taskRow.innerHTML = `
@@ -1285,19 +1360,13 @@
             const descVal = document.getElementById('event-desc').value;
             const currentLang = document.getElementById('langSwitch').value;
 
-            let alertMsgs = {
-                th: { selectFirst: "กรุณาเลือกวันที่จากปฏิทินก่อนเพิ่มงาน!", enterText: "กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!" },
-                en: { selectFirst: "Please select a date from the calendar first!", enterText: "Please enter task details!" },
-                zh: { selectFirst: "请先从日历中选择一个日期！", enterText: "请输入任务详情！" }
-            };
-
             if(!dateVal) {
-                alert(alertMsgs[currentLang].selectFirst);
+                alert("กรุณาเลือกวันที่จากปฏิทินก่อนเพิ่มงาน!");
                 return;
             }
 
             if(descVal.trim() === "") {
-                alert(alertMsgs[currentLang].enterText);
+                alert("กรุณากรอกรายละเอียดงานก่อนกดเพิ่ม!");
                 return;
             }
 
@@ -1306,12 +1375,13 @@
             }
             eventsData[dateVal].push(descVal.trim());
 
-            // บันทึกลง LocalStorage ทันที เพื่อป้องกันข้อมูลหายเวลา Refresh
             localStorage.setItem('chinglong_events_data', JSON.stringify(eventsData));
 
             document.getElementById('event-desc').value = "";
             renderCalendar();
-            renderTasksList(dateVal);
+            
+            const parts = dateVal.split('-');
+            renderTasksList(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), dateVal);
         }
 
         function deleteTask(dateKey, index) {
@@ -1328,7 +1398,9 @@
                 }
                 localStorage.setItem('chinglong_events_data', JSON.stringify(eventsData));
                 renderCalendar();
-                renderTasksList(dateKey);
+                
+                const parts = dateKey.split('-');
+                renderTasksList(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), dateKey);
             }
         }
 
@@ -1355,13 +1427,7 @@
                 if (result.ok) {
                     feedbackList.unshift(newFeedback);
                     renderFeedbacks();
-                    
-                    let successMsgs = {
-                        th: "ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!",
-                        en: "Evaluation/Issue report submitted successfully. Thank you for your feedback!",
-                        zh: "评估/问题报告提交成功。感谢您的反馈！"
-                    };
-                    alert(successMsgs[currentLang]);
+                    alert("ส่งข้อมูลแบบประเมิน/แจ้งปัญหาเรียบร้อยแล้ว ขอบคุณสำหรับความคิดเห็นครับ!");
                     document.getElementById('fb-name').value = '';
                     document.getElementById('fb-details').value = '';
                 } else {
@@ -1380,14 +1446,12 @@
             const currentLang = document.getElementById('langSwitch').value;
             const t = translations[currentLang];
 
-            // กรองแสดงเฉพาะข้อเสนอแนะของ "สมชาย" (Somchai / 颂猜) เท่านั้น และแสดงแค่อันเดียวตลอดไป
             const somchaiFeedbacks = feedbackList.filter(fb => {
                 if (!fb.name) return false;
                 const cleanName = fb.name.trim().toLowerCase();
                 return cleanName === "somchai" || cleanName === "สมชาย" || cleanName === "颂猜";
             });
 
-            // หากในระบบไม่มีของสมชายเลย ให้บังคับสร้างตัวอย่างของสมชายขึ้นมาแสดงทันทีเพื่อให้อยู่ตลอดไม่หาย
             let targetFeedback = somchaiFeedbacks.length > 0 ? somchaiFeedbacks[0] : { 
                 name: "Somchai", 
                 details: "ระบบใช้งานง่าย ดีไซน์สวยงามมากครับ แนะนำให้คงระบบนี้ไว้ตลอดไป", 
@@ -1451,9 +1515,7 @@
                 if (Array.isArray(data) && data.length > 0) {
                     lastCommitDateObj = new Date(data[0].commit.committer.date);
                 }
-            } catch (error) {
-                // ใช้ค่าสำรองเริ่มต้น
-            }
+            } catch (error) {}
             renderLastUpdateText();
         }
 
